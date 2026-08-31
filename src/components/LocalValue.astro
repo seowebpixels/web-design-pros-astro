@@ -27,7 +27,10 @@ const localValues = [
   <div class="container">
     <div class="section-header">
       <span class="sub-heading">ENGINEERED FOR LOCAL GROWTH</span>
-      <h2 class="section-title">Web Design Built for Johannesburg & Pretoria Businesses</h2>
+      
+      <!-- Changed from h2 to h1 for primary Hero heading -->
+      <h1 class="section-title">Web Design Built for Johannesburg & Pretoria Businesses</h1>
+      
       <p class="section-intro">
         We craft ultra-fast, search-optimized websites designed specifically to capture market share across South Africa’s economic heartbeat—from Sandton and Midrand to Rosebank and Centurion.
       </p>
@@ -54,7 +57,7 @@ const localValues = [
 
   .section-header {
     text-align: center;
-    max-width: 800px;
+    max-width: 100%; /* Expanded to allow the full single line to render */
     margin: 0 auto 3.5rem auto;
   }
 
@@ -66,18 +69,44 @@ const localValues = [
     text-transform: uppercase;
   }
 
+  /* Prominent Gradient H1 Styling */
   .section-title {
-    font-size: 2.25rem;
-    color: #ffffff;
+    font-size: 7rem;
+    font-weight: 700;
     margin-top: 0.5rem;
     margin-bottom: 1rem;
-    line-height: 1.2;
+    line-height: 1.1;
+    
+    /* Blue Gradient Effect */
+    background-image: linear-gradient(180deg, var(--gradient-h1-from, #0096FF) 0%, var(--gradient-h1-to, #89CFF0) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  /* Desktop single line rule */
+  @media (min-width: 1200px) {
+    .section-title {
+      white-space: nowrap; /* Forces H1 into a single line on desktop */
+      font-size: 3.2rem;   /* Scaled so all words comfortably fit across standard 1200px screens */
+    }
+  }
+
+  /* Tablet & Mobile responsive fallback */
+  @media (max-width: 1199px) {
+    .section-title {
+      font-size: 2.5rem;
+      white-space: normal; /* Allows wrapping on smaller viewports */
+    }
   }
 
   .section-intro {
     font-size: 1rem;
     color: rgba(230, 230, 230, 0.8);
     line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto;
   }
 
   .value-grid {
