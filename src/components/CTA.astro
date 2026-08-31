@@ -96,6 +96,12 @@
   let selectedBudget = '';
   let selectedTimeline = '';
 
+  function checkPhase3Reveal() {
+    if (selectedBudget && selectedTimeline) {
+      phase3?.classList.remove('hidden');
+    }
+  }
+
   // Step 1 Selection
   serviceBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -121,3 +127,183 @@
   // Step 2 Timeline Selection
   timelineBtns.forEach(btn => {
     btn.addEventListener('click', () => {
+      timelineBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedTimeline = btn.getAttribute('data-value') || '';
+      checkPhase3Reveal();
+    });
+  });
+</script>
+
+<style>
+  .cta-section {
+    background-color: #000000;
+    color: #ffffff;
+    padding: 5rem 1.5rem;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .sub-heading {
+    color: #0096FF;
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+  }
+
+  .section-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin: 0.5rem 0 1rem;
+  }
+
+  .section-intro {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.1rem;
+  }
+
+  .form-phase {
+    margin-bottom: 2.5rem;
+    background: #080808;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+  }
+
+  .form-phase.hidden {
+    display: none;
+  }
+
+  .phase-label {
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #89CFF0;
+  }
+
+  .option-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+
+  .option-btn {
+    background: #111111;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 1.25rem;
+    color: #ffffff;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .option-btn:hover, .option-btn.active {
+    border-color: #0096FF;
+    background: rgba(0, 150, 255, 0.1);
+  }
+
+  .btn-icon {
+    font-size: 1.5rem;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .btn-title {
+    display: block;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .btn-desc {
+    display: block;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .selection-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .group-title {
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .pill-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .pill-btn {
+    background: #111111;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50px;
+    padding: 0.6rem 1.25rem;
+    color: #ffffff;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .pill-btn:hover, .pill-btn.active {
+    border-color: #0096FF;
+    background: #0096FF;
+  }
+
+  .mad-libs-text {
+    font-size: 1.2rem;
+    line-height: 2;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .inline-input {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid #0096FF;
+    color: #ffffff;
+    padding: 0.25rem 0.5rem;
+    font-size: 1.1rem;
+    outline: none;
+    width: auto;
+    min-width: 150px;
+  }
+
+  .inline-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .submit-wrapper {
+    margin-top: 2rem;
+    text-align: center;
+  }
+
+  .submit-btn {
+    background: #0096FF;
+    color: #ffffff;
+    font-weight: 700;
+    border: none;
+    border-radius: 6px;
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .submit-btn:hover {
+    background: #0077cc;
+  }
+</style>
