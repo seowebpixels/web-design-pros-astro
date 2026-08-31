@@ -28,7 +28,6 @@ const localValues = [
     <div class="section-header">
       <span class="sub-heading">ENGINEERED FOR LOCAL GROWTH</span>
       
-      <!-- Changed from h2 to h1 for primary Hero heading -->
       <h1 class="section-title">Web Design Built for Johannesburg & Pretoria Businesses</h1>
       
       <p class="section-intro">
@@ -55,29 +54,46 @@ const localValues = [
     margin: 0 auto;
   }
 
-  .section-header {
-    text-align: center;
-    max-width: 100%; /* Expanded to allow the full single line to render */
-    margin: 0 auto 3.5rem auto;
+  .container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
+  .section-header {
+    text-align: center;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto 3.5rem auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Increased by ~15px (~1.8rem) for prominent display */
   .sub-heading {
     color: var(--accent-secondary, #89CFF0);
-    font-size: 0.85rem;
+    font-size: 1.8rem;
     font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 0.75rem;
   }
 
-  /* Prominent Gradient H1 Styling */
+  /* Prominent Gradient H1 Styling with Responsive Scaling */
   .section-title {
-    font-size: 7rem;
+    /* Uses clamp to smoothly scale text without bursting past container edges */
+    font-size: clamp(2.2rem, 4.2vw, 4rem);
     font-weight: 700;
     margin-top: 0.5rem;
     margin-bottom: 1rem;
-    line-height: 1.1;
+    line-height: 1.15;
+    text-align: center;
+    width: 100%;
     
-    /* Blue Gradient Effect */
+    /* Gradient Effect */
     background-image: linear-gradient(180deg, var(--gradient-h1-from, #0096FF) 0%, var(--gradient-h1-to, #89CFF0) 100%);
     -webkit-background-clip: text;
     background-clip: text;
@@ -85,19 +101,15 @@ const localValues = [
     color: transparent;
   }
 
-  /* Desktop single line rule */
-  @media (min-width: 1200px) {
+  @media (min-width: 1024px) {
     .section-title {
-      white-space: nowrap; /* Forces H1 into a single line on desktop */
-      font-size: 3.2rem;   /* Scaled so all words comfortably fit across standard 1200px screens */
+      white-space: nowrap; /* Keeps heading on one line on desktop */
     }
   }
 
-  /* Tablet & Mobile responsive fallback */
-  @media (max-width: 1199px) {
+  @media (max-width: 1023px) {
     .section-title {
-      font-size: 2.5rem;
-      white-space: normal; /* Allows wrapping on smaller viewports */
+      white-space: normal; /* Allows natural wrapping on smaller screens */
     }
   }
 
@@ -107,12 +119,14 @@ const localValues = [
     line-height: 1.6;
     max-width: 800px;
     margin: 0 auto;
+    text-align: center;
   }
 
   .value-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 1.5rem;
+    width: 100%;
   }
 
   .value-card {

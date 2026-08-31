@@ -20,7 +20,7 @@ const metrics = [
   },
   {
     icon: '🎯',
-    stat: '+15% Leads',
+    stat: '+38% Leads',
     label: 'Higher lead conversion',
     description: 'Clear CTAs, contact forms, and direct WhatsApp call-to-action integration.'
   }
@@ -50,6 +50,24 @@ const metrics = [
 </section>
 
 <style>
+  /* Desktop Layout: Force exactly 4 equal columns */
+  @media (min-width: 1024px) {
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+    }
+  }
+
+  /* Tablet & Mobile Layout: Wrap naturally */
+  @media (max-width: 1023px) {
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+  }
+  
   .metrics-section {
     padding: 4rem 2rem;
     max-width: 1200px;
