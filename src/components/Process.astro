@@ -1,0 +1,122 @@
+---
+const steps = [
+  {
+    number: '01',
+    title: 'Discovery & Strategy',
+    description: 'We analyze your business goals, target audience, and local competitors across Gauteng to craft a tailored digital roadmap.'
+  },
+  {
+    number: '02',
+    title: 'Design & UX',
+    description: 'Custom UI designs engineered for high engagement, clear call-to-actions, and maximum conversion rate performance.'
+  },
+  {
+    number: '03',
+    title: 'Custom Development',
+    description: 'Built with ultra-fast Astro code rather than heavy WordPress templates, securing load speeds up to 8× faster on mobile networks.'
+  },
+  {
+    number: '04',
+    title: 'Local SEO & Launch',
+    description: 'We configure precision on-page SEO, schema structure, and WhatsApp integrations before launching your website live.'
+  }
+];
+---
+
+<section class="process-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="sub-heading">HOW WE WORK</span>
+      <h2 class="section-title">Our Simple 4-Step Web Design Process</h2>
+      <p class="section-intro">
+        From initial concept to final launch, we keep your web design project transparent, on schedule, and aligned with your business targets.
+      </p>
+    </div>
+
+    <div class="process-grid">
+      {steps.map((step) => (
+        <div class="process-card">
+          <div class="step-number">{step.number}</div>
+          <h3>{step.title}</h3>
+          <p>{step.description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .process-section {
+    padding: 5rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 3.5rem auto;
+  }
+
+  .sub-heading {
+    color: var(--accent-secondary, #89CFF0);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .section-title {
+    font-size: 2.25rem;
+    color: #ffffff;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .section-intro {
+    font-size: 1rem;
+    color: rgba(230, 230, 230, 0.8);
+  }
+
+  .process-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    position: relative;
+  }
+
+  .process-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 2.25rem 1.5rem 2rem 1.5rem;
+    position: relative;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+
+  .process-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-primary, #0096FF);
+  }
+
+  .step-number {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent-primary, #0096FF);
+    margin-bottom: 1rem;
+    font-family: var(--font-heading, sans-serif);
+  }
+
+  .process-card h3 {
+    font-size: 1.25rem;
+    color: #ffffff;
+    margin-bottom: 0.75rem;
+  }
+
+  .process-card p {
+    font-size: 0.875rem;
+    color: rgba(230, 230, 230, 0.75);
+    line-height: 1.5;
+  }
+</style>

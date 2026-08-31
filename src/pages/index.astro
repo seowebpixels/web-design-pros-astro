@@ -1,11 +1,40 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Pricing from '../components/Pricing.astro';
+import LocalValue from '../components/LocalValue.astro';
+import MetricsBar from '../components/MetricsBar.astro';
+import Process from '../components/Process.astro';
+import Portfolio from '../components/Portfolio.astro';
+import CTA from '../components/CTA.astro';
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Web Design Pros | High-Performance Custom Web Design Gauteng">
+  <main>
+    <!-- Core Local Value & Positioning -->
+    <LocalValue />
+
+    <!-- Performance & Speed Statistics -->
+    <MetricsBar />
+
+    <!-- 4-Step Process & Workflow -->
+    <Process />
+
+    <!-- Featured Custom-Coded Projects -->
+    <Portfolio />
+
+    <!-- Transparent Web Design & WaaS Pricing -->
+    <Pricing />
+
+    <!-- Interactive Contact Form & CTA -->
+    <CTA />
+  </main>
 </Layout>
+
+<style>
+  main {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    overflow-x: hidden;
+  }
+</style>

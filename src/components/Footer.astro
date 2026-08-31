@@ -1,0 +1,244 @@
+---
+import { Image } from 'astro:assets';
+import logoImage from '../assets/wdp-logo-new-site.avif';
+---
+
+<footer class="site-footer">
+  <div class="footer-container">
+    
+    <!-- Column 1: Brand & Compliance Badges -->
+    <div class="footer-col brand-col">
+      <a href="/" class="footer-logo-link">
+        <Image 
+          src={logoImage} 
+          alt="Web Design Pros Logo" 
+          class="footer-logo"
+        />
+      </a>
+      
+      <p class="brand-desc">
+        <strong>Web Design Pros</strong> is a premier boutique digital agency in Randburg, Johannesburg. We specialize in engineering High-Performance Digital Assets for South African Growth.
+      </p>
+
+      <div class="compliance-badges">
+        <p><strong>B-BBEE:</strong> Level 1 Contributor</p>
+        <p><strong>CIPC Registered:</strong> 2026/282129/07</p>
+        <p><strong>SARS Tax Compliant</strong></p>
+      </div>
+    </div>
+
+    <!-- Column 2: Quick Links -->
+    <div class="footer-col">
+      <h3 class="col-title">Quick Links</h3>
+      <ul class="footer-links">
+        <li><a href="/"><span class="chevron">›</span> Home</a></li>
+        <li><a href="/#portfolio"><span class="chevron">›</span> Services Portfolio</a></li>
+        <li><a href="/pricing"><span class="chevron">›</span> Get a Quotation</a></li>
+        <li><a href="/#contact"><span class="chevron">›</span> Contact Us Directly</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 3: Our Services -->
+    <div class="footer-col">
+      <h3 class="col-title">Our Services</h3>
+      <ul class="footer-links">
+        <li><a href="/#services"><span class="chevron">›</span> Starter Website</a></li>
+        <li><a href="/#services"><span class="chevron">›</span> Business Website</a></li>
+        <li><a href="/#services"><span class="chevron">›</span> Website Redesign</a></li>
+        <li><a href="/#services"><span class="chevron">›</span> Website Maintenance</a></li>
+        <li><a href="/#services"><span class="chevron">›</span> Graphic Design</a></li>
+        <li><a href="/#services"><span class="chevron">›</span> Social Media Marketing</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 4: Contact (NAP) & Compliance Downloads -->
+    <div class="footer-col">
+      <h3 class="col-title">About Us</h3>
+      <div class="contact-info">
+        <p>📍 15 Madge Avenue, Northcliff, Johannesburg</p>
+        <p>📞 <a href="tel:0752216842">075 221 6842</a></p>
+        <p>✉️ <a href="mailto:info@webdesignpros.co.za">info@webdesignpros.co.za</a></p>
+      </div>
+
+      <h3 class="col-title compliance-title">Compliance</h3>
+      <ul class="footer-links">
+        <li>
+          <a href="/docs/b-bbee-certificate.pdf" download>
+            <span class="chevron">›</span> Download B-BBEE Certificate
+          </a>
+        </li>
+        <li>
+          <a href="/docs/cipc-registration-certificate.pdf" download>
+            <span class="chevron">›</span> Download CIPC Certificate
+          </a>
+        </li>
+        <li>
+          <a href="/docs/income-tax-notice-of-registration.pdf" download>
+            <span class="chevron">›</span> Download SARS Certificate
+          </a>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <div class="footer-bottom-container">
+      <p>&copy; {new Date().getFullYear()} Web Design Pros. All Rights Reserved.</p>
+      <p class="designer-credit">
+        Designed by <a href="/" class="brand-credit-link">Web Design Pros</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background-color: #000000;
+    color: #ffffff;
+    padding-top: 4rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-family: inherit;
+  }
+
+  .footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem 3rem 1.5rem;
+    display: grid;
+    grid-template-columns: 1.2fr 0.9fr 1fr 1.1fr;
+    gap: 2.5rem;
+  }
+
+  .footer-logo {
+    height: 110px;
+    width: auto;
+    object-fit: contain;
+    margin-bottom: 1.25rem;
+  }
+
+  .brand-desc {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 1.5rem;
+  }
+
+  .compliance-badges {
+    font-size: 0.825rem;
+    color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .col-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 1.25rem;
+  }
+
+  .compliance-title {
+    margin-top: 1.75rem;
+  }
+
+  .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .footer-links a {
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: color 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .footer-links a:hover {
+    color: var(--accent-primary, #0096FF);
+  }
+
+  .chevron {
+    color: var(--accent-primary, #0096FF);
+    font-weight: bold;
+  }
+
+  .contact-info {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.85);
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    line-height: 1.4;
+  }
+
+  .contact-info a {
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+  }
+
+  .contact-info a:hover {
+    color: var(--accent-primary, #0096FF);
+  }
+
+  .footer-bottom {
+    background-color: #050505;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 1.25rem 1.5rem;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .footer-bottom-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .designer-credit {
+    margin: 0;
+  }
+
+  .brand-credit-link {
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    font-weight: 400;
+    transition: font-weight 0.2s ease, color 0.2s ease;
+  }
+
+  .brand-credit-link:hover {
+    font-weight: 700;
+    color: var(--accent-primary, #0096FF);
+  }
+
+  /* Responsive Breakdown */
+  @media (max-width: 992px) {
+    .footer-container {
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .footer-container {
+      grid-template-columns: 1fr;
+    }
+
+    .footer-bottom-container {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+</style>

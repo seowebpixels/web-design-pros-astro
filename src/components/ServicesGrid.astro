@@ -1,0 +1,121 @@
+---
+/* Data array for core services */
+const services = [
+  {
+    title: 'Web Design & Development',
+    description: 'Custom, high-converting websites built for maximum speed and performance.',
+    link: '/services/web-design',
+    icon: '💻'
+  },
+  {
+    title: 'Website Maintenance & Performance',
+    description: 'Keep your site secure, updated, and running at peak performance continuously.',
+    link: '/services/website-maintenance',
+    icon: '⚡'
+  },
+  {
+    title: 'Web Hosting',
+    description: 'Reliable, lightning-fast hosting infrastructure tailored for growing businesses.',
+    link: '/services/web-hosting',
+    icon: '🚀'
+  },
+  {
+    title: 'SEO Optimization & Local Search',
+    description: 'Drive organic traffic and boost your local search visibility to land more clients.',
+    link: '/services/seo-optimization',
+    icon: '🔍'
+  },
+  {
+    title: 'Social Media Marketing',
+    description: 'Engage your target audience and grow your brand presence across key platforms.',
+    link: '/services/social-media-marketing',
+    icon: '📱'
+  },
+  {
+    title: 'Branding Services',
+    description: 'Establish a memorable brand identity that stands out from competitors.',
+    link: '/services/branding-services',
+    icon: '🎨'
+  }
+];
+---
+
+<section class="services-section">
+  <div class="container">
+    <h2 class="section-title">Our Services</h2>
+    <div class="services-grid">
+      {services.map((service) => (
+        <a href={service.link} class="service-card">
+          <div class="icon">{service.icon}</div>
+          <h3>{service.title}</h3>
+          <p>{service.description}</p>
+          <span class="card-link">Learn More &rarr;</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .services-section {
+    padding: 5rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: #ffffff;
+    text-align: center;
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .service-card {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 2rem;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .service-card:hover {
+    transform: translateY(-4px);
+    border-color: #9EEAFC;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  .icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .service-card h3 {
+    font-size: 1.5rem;
+    color: #ffffff;
+    margin-bottom: 0.75rem;
+  }
+
+  .service-card p {
+    font-size: 1rem;
+    opacity: 0.85;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+    flex-grow: 1;
+  }
+
+  .card-link {
+    color: #9EEAFC;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+</style>

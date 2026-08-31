@@ -1,0 +1,121 @@
+---
+const localValues = [
+  {
+    icon: '⚡',
+    title: 'Gauteng-Optimized Speed',
+    description: 'Built on lightweight Astro architecture to load instantly across local mobile and fiber networks in Johannesburg, Pretoria, and surrounding hubs.'
+  },
+  {
+    icon: '🎯',
+    title: 'Conversion-Focused Design',
+    description: 'Strategic UI/UX engineered to convert high-intent traffic into direct enquiries, phone calls, and WhatsApp messages for your business.'
+  },
+  {
+    icon: '📱',
+    title: 'Mobile-First Engineering',
+    description: 'Over 70% of local South African searches happen on smartphones. We ensure seamless performance and flawless layouts on every screen size.'
+  },
+  {
+    icon: '📍',
+    title: 'Precision On-Page Local SEO',
+    description: 'Clean HTML, structured schema data, and strategic district targeting (from Sandton to Centurion) so Google ranks you in local search results.'
+  }
+];
+---
+
+<section class="local-value-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="sub-heading">ENGINEERED FOR LOCAL GROWTH</span>
+      <h2 class="section-title">Web Design Built for Johannesburg & Pretoria Businesses</h2>
+      <p class="section-intro">
+        We craft ultra-fast, search-optimized websites designed specifically to capture market share across South Africa’s economic heartbeat—from Sandton and Midrand to Rosebank and Centurion.
+      </p>
+    </div>
+
+    <div class="value-grid">
+      {localValues.map((value) => (
+        <div class="value-card">
+          <div class="card-icon">{value.icon}</div>
+          <h3>{value.title}</h3>
+          <p>{value.description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .local-value-section {
+    padding: 5rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 3.5rem auto;
+  }
+
+  .sub-heading {
+    color: var(--accent-secondary, #89CFF0);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .section-title {
+    font-size: 2.25rem;
+    color: #ffffff;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  .section-intro {
+    font-size: 1rem;
+    color: rgba(230, 230, 230, 0.8);
+    line-height: 1.6;
+  }
+
+  .value-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .value-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 2rem 1.5rem;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .value-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-primary, #0096FF);
+    box-shadow: 0 8px 24px rgba(0, 150, 255, 0.12);
+  }
+
+  .card-icon {
+    font-size: 2.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .value-card h3 {
+    font-size: 1.25rem;
+    color: #ffffff;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+  }
+
+  .value-card p {
+    font-size: 0.9rem;
+    color: rgba(230, 230, 230, 0.75);
+    line-height: 1.5;
+  }
+</style>

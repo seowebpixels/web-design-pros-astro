@@ -1,0 +1,120 @@
+---
+const metrics = [
+  {
+    icon: '📈',
+    stat: 'Up to 83%',
+    label: 'Higher enquiry rates',
+    description: 'With conversion-focused layouts tailored for local market response.'
+  },
+  {
+    icon: '⚡',
+    stat: '8× faster',
+    label: 'Mobile loading speed',
+    description: 'Custom code vs traditional WordPress templates for mobile speed.'
+  },
+  {
+    icon: '🔍',
+    stat: 'SEO-First',
+    label: 'Search-ready architecture',
+    description: 'Structure built for Google & local search optimization across South Africa.'
+  },
+  {
+    icon: '🎯',
+    stat: '+15% Leads',
+    label: 'Higher lead conversion',
+    description: 'Clear CTAs, contact forms, and direct WhatsApp call-to-action integration.'
+  }
+];
+---
+
+<section class="metrics-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Measurable impact, not just pretty pages</h2>
+      <p class="section-intro">
+        We design for outcomes — traffic, leads, and revenue — backed by performance and SEO best practices.
+      </p>
+    </div>
+
+    <div class="metrics-grid">
+      {metrics.map((item) => (
+        <div class="metric-card">
+          <div class="metric-icon">{item.icon}</div>
+          <div class="metric-stat">{item.stat}</div>
+          <h3 class="metric-label">{item.label}</h3>
+          <p class="metric-desc">{item.description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .metrics-section {
+    padding: 4rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 3rem auto;
+  }
+
+  .section-title {
+    font-size: 2.25rem;
+    color: #ffffff;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-intro {
+    font-size: 1rem;
+    color: rgba(230, 230, 230, 0.8);
+  }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .metric-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+
+  .metric-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-primary, #0096FF);
+  }
+
+  .metric-icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .metric-stat {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--accent-primary, #0096FF);
+    margin-bottom: 0.25rem;
+  }
+
+  .metric-label {
+    font-size: 1.1rem;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+  }
+
+  .metric-desc {
+    font-size: 0.85rem;
+    color: rgba(230, 230, 230, 0.7);
+    line-height: 1.4;
+  }
+</style>

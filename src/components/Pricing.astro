@@ -1,0 +1,514 @@
+---
+/* 1. Core Web Design Packages */
+const buildPackages = [
+  {
+    name: 'Starter',
+    price: 'R4,000',
+    description: 'Perfect for small businesses getting started online.',
+    features: [
+      'Up to 3 custom-designed pages',
+      'Mobile-friendly responsive design',
+      'Contact form & enquiry setup',
+      'Basic on-page SEO setup',
+      'WhatsApp call-to-action integration'
+    ],
+    bestFor: 'Startups · Local businesses · Personal brands',
+    highlight: false
+  },
+  {
+    name: 'Website Redesign',
+    price: 'R6,000',
+    description: 'Transform your existing site for speed and modern visuals.',
+    features: [
+      'Complete UI/UX design refresh',
+      'Core Web Vitals speed optimization',
+      'Content migration & cleanup',
+      'Mobile optimization',
+      'SEO structure preservation'
+    ],
+    bestFor: 'Existing businesses needing a modern upgrade',
+    highlight: false
+  },
+  {
+    name: 'Business Website',
+    price: 'R9,500',
+    description: 'Comprehensive setup for growing companies needing leads.',
+    features: [
+      '5–12 custom pages',
+      'Custom UI design & animations',
+      'Advanced SEO & local search setup',
+      'Lead capture forms & integrations',
+      'High-performance Astro build'
+    ],
+    bestFor: 'Growing businesses · Service companies',
+    highlight: true // Triggers "Most Popular" top-border badge
+  },
+  {
+    name: 'E-Commerce Website',
+    price: 'R17,000',
+    description: 'Full online store built to convert visitors into buyers.',
+    features: [
+      'Full custom online store build',
+      'Payment gateway integration',
+      'Product catalog & inventory setup',
+      'Conversion-focused checkout UX',
+      'Security & SSL configuration'
+    ],
+    bestFor: 'Brands selling products online',
+    highlight: false
+  }
+];
+
+/* 2. WaaS Offers */
+const waasOffers = [
+  {
+    title: 'Website as a Service',
+    price: 'R1,200',
+    period: '/ month',
+    details: 'No upfront fee · Hosting + SEO + ongoing support bundle'
+  },
+  {
+    title: 'eCommerce as a Service',
+    price: 'R2,200',
+    period: '/ month',
+    details: 'No upfront fee · Store hosting + SEO + ongoing support bundle'
+  }
+];
+
+/* 3. Hosting Tiers */
+const hostingTiers = [
+  {
+    name: 'Starter',
+    price: 'R60',
+    storage: '5GB Storage Space',
+    bandwidth: '10GB Bandwidth',
+    email: 'Unlimited cPanel Email Accounts',
+    support: '24/7 Support & SSL'
+  },
+  {
+    name: 'Budget',
+    price: 'R80',
+    storage: '8GB Storage Space',
+    bandwidth: '25GB Bandwidth',
+    email: 'Unlimited cPanel Email Accounts',
+    support: '24/7 Support & SSL'
+  },
+  {
+    name: 'Business',
+    price: 'R100',
+    storage: '10GB Storage Space',
+    bandwidth: '50GB Bandwidth',
+    email: 'Unlimited cPanel Email Accounts',
+    support: '24/7 Support & Daily Backups'
+  },
+  {
+    name: 'eCommerce',
+    price: 'R150',
+    storage: '20GB Storage Space',
+    bandwidth: 'Unmetered Bandwidth',
+    email: 'Unlimited cPanel Email Accounts',
+    support: '24/7 Priority Support & SSL'
+  }
+];
+---
+
+<section class="pricing-section">
+  <div class="container">
+    
+    <!-- Section 1: Web Design Packages -->
+    <div class="section-header">
+      <span class="sub-heading">TRANSPARENT PRICING</span>
+      <h2 class="section-title">Web Design & Development Packages</h2>
+    </div>
+
+    <div class="pricing-grid">
+      {buildPackages.map((pkg) => (
+        <div class={`glass-card ${pkg.highlight ? 'featured' : ''}`}>
+          {pkg.highlight && <span class="badge">Most Popular</span>}
+          <h3>{pkg.name}</h3>
+          <div class="price">{pkg.price}</div>
+          <p class="description">{pkg.description}</p>
+          
+          <ul class="features-list">
+            {pkg.features.map((feature) => (
+              <li><span class="check-icon">✓</span> {feature}</li>
+            ))}
+          </ul>
+
+          <div class="best-for">
+            <strong>BEST FOR</strong>
+            <span>{pkg.bestFor}</span>
+          </div>
+
+          <a href="/contact" class="btn-select">Launch Your Project</a>
+        </div>
+      ))}
+    </div>
+
+    <!-- Section 2: Website As A Service (WaaS) -->
+    <div class="waas-wrapper">
+      <div class="waas-header">
+        <span class="sub-label">WEBSITE AS A SERVICE</span>
+        <h3>SaaS-style Monthly Offers</h3>
+      </div>
+      <div class="waas-grid">
+        {waasOffers.map((offer) => (
+          <div class="waas-card">
+            <h4>{offer.title}</h4>
+            <div class="waas-price">
+              {offer.price} <span class="period">{offer.period}</span>
+            </div>
+            <p>{offer.details}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Section 3: Web Hosting Tiers -->
+    <div class="hosting-wrapper">
+      <div class="hosting-header">
+        <span class="sub-label">HIGH-SPEED INFRASTRUCTURE</span>
+        <h3>Web Hosting Packages</h3>
+        <p>Ultra-fast edge hosting with full cPanel email administration for your team.</p>
+      </div>
+
+      <div class="hosting-grid">
+        {hostingTiers.map((tier) => (
+          <div class="hosting-card">
+            <div class="hosting-icon">🌐</div>
+            <h4>{tier.name}</h4>
+            <div class="hosting-price">
+              {tier.price} <span class="period">/monthly</span>
+            </div>
+            <ul class="hosting-specs">
+              <li>{tier.storage}</li>
+              <li>{tier.bandwidth}</li>
+              <li>{tier.email}</li>
+              <li>cPanel Admin Access</li>
+              <li>{tier.support}</li>
+            </ul>
+            <a href="/contact" class="btn-hosting">Get Started</a>
+          </div>
+        ))}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .pricing-section {
+    padding: 5rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 3.5rem;
+  }
+
+  .sub-heading {
+    color: #89CFF0; /* Soft Ice Blue */
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+  }
+
+  .section-title {
+    font-size: 2.5rem;
+    color: #ffffff;
+    margin-top: 0.5rem;
+  }
+
+  /* 1. Design Cards Grid */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 2.25rem 1.25rem 2rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  /* Featured Card Top Border & Glow */
+  .glass-card.featured {
+    border-color: #0096FF;
+    background: rgba(0, 150, 255, 0.04);
+    box-shadow: 0 0 20px rgba(0, 150, 255, 0.15);
+  }
+
+  /* Badge Sitting Right Over Top Border */
+  .badge {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #0096FF 0%, #89CFF0 100%);
+    color: #16213E;
+    font-weight: 800;
+    font-size: 0.75rem;
+    padding: 0.3rem 0.85rem;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+
+  h3 {
+    font-size: 1.35rem;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+  }
+
+  .price {
+    font-size: 2.1rem;
+    font-weight: 700;
+    color: #0096FF; /* Electric Blue */
+    margin-bottom: 0.75rem;
+  }
+
+  .description {
+    font-size: 0.875rem;
+    opacity: 0.8;
+    margin-bottom: 1.25rem;
+  }
+
+  .features-list {
+    list-style: none;
+    margin-bottom: 1.5rem;
+    flex-grow: 1;
+  }
+
+  .features-list li {
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.9;
+  }
+
+  .check-icon {
+    color: #89CFF0; /* Soft Ice Blue Accent */
+    font-weight: bold;
+    margin-right: 0.25rem;
+  }
+
+  .best-for {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .best-for strong {
+    color: #89CFF0;
+  }
+
+  .best-for span {
+    opacity: 0.8;
+  }
+
+  .btn-select {
+    display: block;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .glass-card.featured .btn-select {
+    background: #0096FF;
+    color: #ffffff;
+  }
+
+  .btn-select:hover {
+    background: #89CFF0;
+    color: #16213E;
+  }
+
+  /* 2. WaaS Container */
+  .waas-wrapper {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 2.5rem;
+    margin-bottom: 4rem;
+  }
+
+  .waas-header .sub-label {
+    color: #89CFF0;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .waas-header h3 {
+    font-size: 1.75rem;
+    margin-top: 0.25rem;
+    margin-bottom: 2rem;
+  }
+
+  .waas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .waas-card {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+
+  .waas-card h4 {
+    color: #ffffff;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .waas-price {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #0096FF;
+    margin-bottom: 0.5rem;
+  }
+
+  .waas-price .period {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .waas-card p {
+    font-size: 0.85rem;
+    opacity: 0.75;
+  }
+
+  /* 3. Hosting Section */
+  .hosting-wrapper {
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 2.5rem;
+  }
+
+  .hosting-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .hosting-header .sub-label {
+    color: #89CFF0;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .hosting-header h3 {
+    font-size: 1.85rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .hosting-header p {
+    font-size: 0.95rem;
+    opacity: 0.8;
+  }
+
+  .hosting-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .hosting-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 1.75rem 1.25rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hosting-icon {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+    color: #0096FF;
+  }
+
+  .hosting-card h4 {
+    font-size: 1.25rem;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+  }
+
+  .hosting-price {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #0096FF;
+    margin-bottom: 1.25rem;
+  }
+
+  .hosting-price .period {
+    font-size: 0.85rem;
+    font-weight: 400;
+    opacity: 0.7;
+  }
+
+  .hosting-specs {
+    list-style: none;
+    margin-bottom: 1.5rem;
+    width: 100%;
+    flex-grow: 1;
+  }
+
+  .hosting-specs li {
+    font-size: 0.85rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    opacity: 0.85;
+  }
+
+  .hosting-specs li:last-child {
+    border-bottom: none;
+  }
+
+  .btn-hosting {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: #0096FF;
+    color: #ffffff;
+    padding: 0.65rem 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: background 0.2s ease;
+  }
+
+  .btn-hosting:hover {
+    background: #89CFF0;
+    color: #16213E;
+  }
+</style>

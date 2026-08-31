@@ -1,0 +1,368 @@
+---
+import { Image } from 'astro:assets';
+import logoImage from '../assets/wdp-logo-new-site.avif';
+
+// Rich service data with descriptions matching your design layout
+const services = [
+  {
+    title: "Web Design Services",
+    description: "We craft high-performance, visually striking websites that blend modern aesthetics with strategic user experience. Our designs are fully responsive and SEO-optimized to ensure your brand stands out and converts visitors across the South African market."
+  },
+  {
+    title: "Website Maintenance",
+    description: "Keep your digital assets running at peak performance with proactive security patches, plugin updates, and regular health checks. We handle the technical heavy lifting and database optimization so your site remains fast, secure, and always online."
+  },
+  {
+    title: "Web Hosting",
+    description: "Experience lightning-fast load times and 99.9% uptime with our secure, high-tech hosting infrastructure tailored for modern web applications. Our local server environments provide the speed and reliability your business needs to scale with confidence."
+  },
+  {
+    title: "SEO Optimization",
+    description: "Boost your online visibility and drive high-quality organic traffic with our data-driven SEO strategies. We optimize your site's technical foundation and content structure to ensure you rank higher on search engines and reach your ideal customers across South Africa."
+  }
+];
+---
+
+<header class="site-header">
+  <div class="header-container">
+    
+    <!-- Logo Section -->
+    <a href="/" class="logo-link">
+      <Image 
+        src={logoImage} 
+        alt="Web Design Pros Logo" 
+        class="header-logo"
+        loading="eager"
+      />
+    </a>
+
+    <!-- Centered Mobile Hamburger Toggle -->
+    <button class="mobile-toggle" id="menuToggle" aria-label="Toggle Navigation Menu">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+
+    <!-- Navigation Menu -->
+    <nav class="nav-menu" id="navMenu">
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="/" class="nav-link">Home</a>
+        </li>
+
+        <!-- Services Dropdown Item -->
+        <li class="nav-item dropdown-item">
+          <button class="dropdown-toggle" aria-haspopup="true">
+            Services <span class="arrow">▼</span>
+          </button>
+          
+          <div class="dropdown-panel">
+            <div class="dropdown-content">
+              {services.map((service) => (
+                <div class="service-card">
+                  <h4 class="service-title">{service.title}</h4>
+                  <p class="service-desc">{service.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </li>
+
+        <li class="nav-item">
+          <a href="/pricing" class="nav-link">Pricing</a>
+        </li>
+
+        <li class="nav-item">
+          <a href="/about" class="nav-link">About Us</a>
+        </li>
+      </ul>
+
+      <!-- CTA Button inside mobile drawer / desktop end -->
+      <div class="header-cta-wrapper">
+        <a href="#contact" class="header-cta">Let’s Talk Architecture 🚀</a>
+      </div>
+    </nav>
+
+  </div>
+</header>
+
+<script>
+  // Mobile Hamburger Toggle Logic
+  const toggleBtn = document.getElementById('menuToggle');
+  const navMenu = document.getElementById('navMenu');
+
+  toggleBtn?.addEventListener('click', () => {
+    toggleBtn.classList.toggle('active');
+    navMenu?.classList.toggle('active');
+  });
+
+  // Mobile Accordion Toggle for Services Dropdown
+  const dropdownToggle = document.querySelector('.dropdown-toggle');
+  const dropdownItem = document.querySelector('.dropdown-item');
+
+  dropdownToggle?.addEventListener('click', (e) => {
+    if (window.innerWidth <= 992) {
+      e.preventDefault();
+      dropdownItem?.classList.toggle('mobile-open');
+    }
+  });
+</script>
+
+<style>
+  .site-header {
+    background-color: #000000;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+  }
+
+  .header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  /* Crisp Logo Sizing */
+  .logo-link {
+    display: flex;
+    align-items: center;
+  }
+
+  .header-logo {
+    height: 80px;
+    width: auto;
+    object-fit: contain;
+    transition: height 0.3s ease;
+  }
+
+  /* Navigation Links */
+  .nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .nav-list {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    gap: 1.75rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-link, 
+  .dropdown-toggle {
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0;
+    transition: color 0.3s ease;
+  }
+
+  .nav-link:hover, 
+  .dropdown-toggle:hover {
+    color: var(--accent-secondary, #89CFF0);
+  }
+
+  .arrow {
+    font-size: 0.65rem;
+    transition: transform 0.3s ease;
+  }
+
+  /* Desktop Hover Dropdown */
+  .dropdown-item {
+    position: relative;
+  }
+
+  .dropdown-panel {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    width: 480px;
+    background: #0080FF; /* Electric Blue Match */
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    padding: 1.25rem;
+    z-index: 100;
+  }
+
+  @media (min-width: 993px) {
+    .dropdown-item:hover .dropdown-panel {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .dropdown-item:hover .arrow {
+      transform: rotate(180deg);
+    }
+  }
+
+  .dropdown-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+
+  .service-card {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    padding-bottom: 1rem;
+  }
+
+  .service-card:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .service-title {
+    color: #ffffff;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+  }
+
+  .service-desc {
+    color: #ffffff;
+    font-size: 0.825rem;
+    line-height: 1.45;
+    opacity: 0.95;
+  }
+
+  /* Header CTA */
+  .header-cta {
+    background: linear-gradient(135deg, var(--accent-primary, #0096FF) 0%, #0066CC 100%);
+    color: #ffffff;
+    padding: 0.6rem 1.25rem;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .header-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 150, 255, 0.4);
+  }
+
+  /* Mobile Toggle (Hamburger) */
+  .mobile-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+  }
+
+  .mobile-toggle .bar {
+    height: 3px;
+    width: 100%;
+    background-color: var(--accent-primary, #0096FF);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+  }
+
+  /* Mobile Responsive Styles */
+  @media (max-width: 992px) {
+    .header-logo {
+      height: 48px;
+    }
+
+    /* Centered Hamburger Layout */
+    .header-container {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+    }
+
+    .logo-link {
+      grid-column: 1;
+    }
+
+    .mobile-toggle {
+      display: flex;
+      grid-column: 2; /* Forces hamburger into absolute center */
+      justify-self: center;
+    }
+
+    .nav-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      background-color: #000000;
+      flex-direction: column;
+      align-items: stretch;
+      padding: 1.5rem;
+      gap: 1.5rem;
+      display: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-menu.active {
+      display: flex;
+    }
+
+    .nav-list {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+      width: 100%;
+    }
+
+    .dropdown-panel {
+      position: static;
+      transform: none;
+      width: 100%;
+      display: none;
+      opacity: 1;
+      visibility: visible;
+      margin-top: 0.5rem;
+    }
+
+    .dropdown-item.mobile-open .dropdown-panel {
+      display: block;
+    }
+
+    .dropdown-item.mobile-open .arrow {
+      transform: rotate(180deg);
+    }
+
+    .header-cta-wrapper {
+      width: 100%;
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+
+    .header-cta {
+      display: block;
+      width: 100%;
+    }
+  }
+</style>

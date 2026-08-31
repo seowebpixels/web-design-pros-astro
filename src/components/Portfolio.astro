@@ -1,0 +1,202 @@
+---
+const projects = [
+  {
+    title: 'Facet Architecture',
+    category: 'Architecture & Design',
+    highlight: '100/100 Performance Score',
+    image: '/facet_2.jpg',
+    url: 'https://facetarchitecture.co.za/'
+  },
+  {
+    title: 'Star Recruitment',
+    category: 'HR & Recruitment',
+    highlight: 'Sub-Second Load Time',
+    image: '/star.jpg',
+    url: 'https://starrecruitmentagents.co.za/'
+  },
+  {
+    title: 'Uncut Electro-Mechanical',
+    category: 'Industrial Engineering',
+    highlight: 'High-Intent Lead Engine',
+    image: '/uncut_2.jpg',
+    url: 'https://uncutelecmech.co.za/'
+  }
+];
+---
+
+<section class="portfolio-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="sub-heading">FEATURED WORK</span>
+      <h2 class="section-title">Custom-Coded Web Projects</h2>
+      <p class="section-intro">
+        No bloated templates or heavy WordPress setups. Pure, custom-coded high performance designed to convert.
+      </p>
+    </div>
+
+    <div class="portfolio-grid">
+      {projects.map((project) => (
+        <a href={project.url} target="_blank" rel="noopener noreferrer" class="portfolio-card">
+          <div class="image-wrapper">
+            <img src={project.image} alt={`${project.title} Preview`} class="portfolio-img" />
+            <div class="overlay">
+              <span class="visit-btn">Visit Live Site ↗</span>
+            </div>
+          </div>
+          <div class="card-content">
+            <span class="category">{project.category}</span>
+            <h3 class="card-title">{project.title}</h3>
+            <div class="highlight-badge">
+              <span class="badge-icon">⚡</span>
+              <span>{project.highlight}</span>
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .portfolio-section {
+    padding: 5rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 3.5rem auto;
+  }
+
+  .sub-heading {
+    color: var(--accent-secondary, #89CFF0);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .section-title {
+    font-size: 2.25rem;
+    color: #ffffff;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .section-intro {
+    font-size: 1rem;
+    color: rgba(230, 230, 230, 0.8);
+  }
+
+  /* Grid layout to align 3 cards side-by-side */
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.75rem;
+  }
+
+  /* Responsive stack for tablets & mobile */
+  @media (max-width: 900px) {
+    .portfolio-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .portfolio-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    overflow: hidden;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+
+  .portfolio-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--accent-primary, #0096FF);
+  }
+
+  .image-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  /* Uniform 16:9 aspect ratio enforcement */
+  .portfolio-img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+
+  .portfolio-card:hover .portfolio-img {
+    transform: scale(1.04);
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .portfolio-card:hover .overlay {
+    opacity: 1;
+  }
+
+  .visit-btn {
+    background: var(--accent-primary, #0096FF);
+    color: #ffffff;
+    padding: 0.6rem 1.2rem;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+
+  .card-content {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+
+  .category {
+    font-size: 0.75rem;
+    color: var(--accent-secondary, #89CFF0);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+  }
+
+  .card-title {
+    font-size: 1.25rem;
+    color: #ffffff;
+    margin: 0 0 1rem 0;
+  }
+
+  .highlight-badge {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.825rem;
+    color: rgba(230, 230, 230, 0.9);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.4rem 0.75rem;
+    border-radius: 8px;
+    width: fit-content;
+  }
+</style>
