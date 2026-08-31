@@ -1,24 +1,29 @@
 ---
+import { Image } from 'astro:assets';
+import facetImg from '../assets/facet.png';
+import starImg from '../assets/star.png';
+import uncutImg from '../assets/uncut.png';
+
 const projects = [
   {
     title: 'Facet Architecture',
     category: 'Architecture & Design',
     highlight: '100/100 Performance Score',
-    image: '/facet.png',
+    image: facetImg,
     url: 'https://facetarchitecture.co.za/'
   },
   {
     title: 'Star Recruitment',
     category: 'HR & Recruitment',
     highlight: 'Sub-Second Load Time',
-    image: '/star.png',
+    image: starImg,
     url: 'https://starrecruitmentagents.co.za/'
   },
   {
     title: 'Uncut Electro-Mechanical',
     category: 'Industrial Engineering',
     highlight: 'High-Intent Lead Engine',
-    image: '/uncut.png',
+    image: uncutImg,
     url: 'https://uncutelecmech.co.za/'
   }
 ];
@@ -38,7 +43,7 @@ const projects = [
       {projects.map((project) => (
         <a href={project.url} target="_blank" rel="noopener noreferrer" class="portfolio-card">
           <div class="image-wrapper">
-            <img src={project.image} alt={`${project.title} Preview`} class="portfolio-img" />
+            <Image src={project.image} alt={`${project.title} Preview`} class="portfolio-img" />
             <div class="overlay">
               <span class="visit-btn">Visit Live Site ↗</span>
             </div>
@@ -130,6 +135,7 @@ const projects = [
   /* Uniform 16:9 aspect ratio enforcement */
   .portfolio-img {
     width: 100%;
+    height: auto;
     aspect-ratio: 16 / 9;
     object-fit: cover;
     object-position: top center;
