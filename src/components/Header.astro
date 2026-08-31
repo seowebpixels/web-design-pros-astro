@@ -118,16 +118,16 @@ const services = [
     width: 100%;
   }
 
-  /* Desktop Header Container (70px Top / 40px Bottom) */
+  /* Desktop Header Container */
   .header-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 10px 1.5rem 10px 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: relative;
-  }
+  max-width: 1200px;
+  margin: -40px auto -10px auto; /* Negative top/bottom margins pull content inward */
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
 
   /* Crisp Logo Sizing */
   .logo-link {
