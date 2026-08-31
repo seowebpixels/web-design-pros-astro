@@ -121,7 +121,7 @@ const services = [
   .header-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px 1.5rem; /* Strict 20px top and bottom border spacing */
+    padding: 5px 1.5rem; /* Reduced to 5px top/bottom to keep header size fixed while logo grows */
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -135,7 +135,7 @@ const services = [
   }
 
   .header-logo {
-    height: 190px; /* Requested desktop logo size */
+    height: 220px; /* Increased by 30px */
     width: auto;
     object-fit: contain;
     display: block;
@@ -291,7 +291,7 @@ const services = [
   /* Mobile Responsive Styles */
   @media (max-width: 992px) {
     .header-logo {
-      height: 123px; /* 98px + 25px increase */
+      height: 153px; /* Increased by 30px */
     }
 
     /* Centered Hamburger Layout */
@@ -299,7 +299,7 @@ const services = [
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      padding: 20px 1.5rem; /* Maintains 20px top and bottom border spacing on mobile */
+      padding: 5px 1.5rem; /* Reduced to 5px top/bottom to keep header size fixed */
     }
 
     .logo-link {
