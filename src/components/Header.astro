@@ -130,16 +130,15 @@ const services = [
 
   /* Crisp Logo Sizing */
   .logo-link {
-    display: flex;
-    align-items: center;
+    position: relative; /* Acts as an anchor */
   }
 
   .header-logo {
-    height: 170px; /* Updated: Increased from 120px to 170px (+50px) */
-    width: auto;
-    object-fit: contain;
-    transition: height 0.3s ease;
-  }
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%); /* Centers it vertically */
+  height: 200px; /* Desired large size */
+}
 
   /* Navigation Links */
   .nav-menu {
