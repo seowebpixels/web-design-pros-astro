@@ -71,7 +71,7 @@ const localValues = [
     align-items: center;
   }
 
-  /* Increased by ~15px (~1.8rem) for prominent display */
+  /* Sub-heading sizing (+15px increase) */
   .sub-heading {
     color: var(--accent-secondary, #89CFF0);
     font-size: 1.8rem;
@@ -82,35 +82,22 @@ const localValues = [
     margin-bottom: 0.75rem;
   }
 
-  /* Prominent Gradient H1 Styling with Responsive Scaling */
+  /* Centered, scale-optimized H1 */
   .section-title {
-    /* Uses clamp to smoothly scale text without bursting past container edges */
-    font-size: clamp(2.2rem, 4.2vw, 4rem);
+    font-size: clamp(2.5rem, 4vw, 3.75rem);
     font-weight: 700;
     margin-top: 0.5rem;
     margin-bottom: 1rem;
     line-height: 1.15;
     text-align: center;
     width: 100%;
+    white-space: normal; /* Prevents edge-clipping */
     
-    /* Gradient Effect */
     background-image: linear-gradient(180deg, var(--gradient-h1-from, #0096FF) 0%, var(--gradient-h1-to, #89CFF0) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
-  }
-
-  @media (min-width: 1024px) {
-    .section-title {
-      white-space: nowrap; /* Keeps heading on one line on desktop */
-    }
-  }
-
-  @media (max-width: 1023px) {
-    .section-title {
-      white-space: normal; /* Allows natural wrapping on smaller screens */
-    }
   }
 
   .section-intro {
@@ -122,11 +109,19 @@ const localValues = [
     text-align: center;
   }
 
+  /* Value Grid Forced to 4 Columns on Desktop */
   .value-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
     width: 100%;
+  }
+
+  @media (max-width: 1023px) {
+    .value-grid {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
   }
 
   .value-card {
