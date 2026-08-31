@@ -78,11 +78,20 @@ const steps = [
     color: rgba(230, 230, 230, 0.8);
   }
 
+  /* Base grid for mobile & tablet */
   .process-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
     position: relative;
+  }
+
+  /* Force 4 equal columns on desktop screens */
+  @media (min-width: 1024px) {
+    .process-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+    }
   }
 
   .process-card {
@@ -90,7 +99,7 @@ const steps = [
     backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
-    padding: 2.25rem 1.5rem 2rem 1.5rem;
+    padding: 2rem 1.25rem;
     position: relative;
     transition: transform 0.3s ease, border-color 0.3s ease;
   }
