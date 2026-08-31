@@ -52,10 +52,25 @@ h1 {
   -webkit-text-fill-color: transparent;
   color: transparent;
 
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
-
-  font-size: 5rem;
-  font-weight: 700;
+  /* Increased size for prominence */
+  font-size: 7rem;
+  font-weight: 800;
   text-transform: capitalize;
   margin-bottom: 2rem;
+  text-align: center;
+}
+
+/* Desktop single-line rule & responsive sizing */
+@media (min-width: 1024px) {
+  h1 {
+    white-space: nowrap; /* Forces H1 onto a single line for desktop */
+    font-size: 3.5rem;   /* Calibrated so a long heading fits across standard screen widths */
+  }
+}
+
+@media (max-width: 1023px) {
+  h1 {
+    font-size: 2.5rem;
+    white-space: normal; /* Allows wrapping on smaller mobile screens */
+  }
 }
