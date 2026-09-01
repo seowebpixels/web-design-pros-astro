@@ -1,11 +1,11 @@
 /* Import Fonts */
-@import url('https://api.fontshare.com/v2/css?f[]=ranade@700,500,400&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800,700,500,400&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
 :root {
   /* Typography Variables */
-  --font-heading: 'Ranade', sans-serif;
+  --font-heading: 'Cabinet Grotesk', sans-serif;
   --font-body: 'Plus Jakarta Sans', sans-serif;
 
   /* Color Variables */
@@ -40,13 +40,9 @@ h1, h2, h3, h4, h5 {
   font-family: var(--font-heading);
 }
 
-/* Paragraph Text */
-p {
-  font-family: var(--font-body);
-}
-
-/* Specific H1 Styling */
+/* Specific Heading Weights */
 h1 {
+  font-weight: 800; /* Extrabold */
   background-image: linear-gradient(180deg, var(--gradient-h1-from) 0%, var(--gradient-h1-to) 100%);
   -webkit-background-clip: text;
   background-clip: text;
@@ -55,10 +51,26 @@ h1 {
 
   /* Increased size for prominence */
   font-size: 6rem;
-  font-weight: 800;
   text-transform: capitalize;
   margin-bottom: 2rem;
   text-align: center;
+}
+
+h2 {
+  font-weight: 700; /* Bold */
+}
+
+h3 {
+  font-weight: 500; /* Medium */
+}
+
+h4 {
+  font-weight: 400; /* Regular */
+}
+
+/* Paragraph Text */
+p {
+  font-family: var(--font-body);
 }
 
 /* Desktop single-line rule & responsive sizing */
