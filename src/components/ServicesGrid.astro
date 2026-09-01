@@ -70,10 +70,24 @@ const services = [
     text-align: center;
   }
 
+  /* 3x2 Grid Layout for Desktop */
   .services-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 992px) {
+    .services-grid {
+      grid-template-columns: repeat(2, 1fr); /* 2 columns on tablets */
+    }
+  }
+
+  @media (max-width: 640px) {
+    .services-grid {
+      grid-template-columns: 1fr; /* Single column on mobile */
+    }
   }
 
   .service-card {
