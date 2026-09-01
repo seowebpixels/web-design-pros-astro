@@ -245,23 +245,30 @@ const hostingTiers = [
     display: flex;
     flex-direction: column;
     position: relative;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
 
-  /* Featured Card Top Border & Glow */
-  .glass-card.featured {
+  /* Hover effect for standard cards: Highlight border in blue */
+  .glass-card:not(.featured):hover {
     border-color: #0096FF;
-    background: rgba(0, 150, 255, 0.04);
-    box-shadow: 0 0 20px rgba(0, 150, 255, 0.15);
+    box-shadow: 0 0 15px rgba(0, 150, 255, 0.3);
   }
 
-  /* Badge Sitting Right Over Top Border */
+  /* Featured Card Top Border & Glow: Bright Orange */
+  .glass-card.featured {
+    border-color: #FF6600;
+    background: rgba(255, 102, 0, 0.04);
+    box-shadow: 0 0 20px rgba(255, 102, 0, 0.2);
+  }
+
+  /* Badge Sitting Right Over Top Border: Gradient Orange */
   .badge {
     position: absolute;
     top: -14px;
     left: 50%;
     transform: translateX(-50%);
-    background: linear-gradient(135deg, #0096FF 0%, #89CFF0 100%);
-    color: #16213E;
+    background: linear-gradient(135deg, #FF6600 0%, #FF8C00 100%);
+    color: #ffffff;
     font-weight: 800;
     font-size: 0.75rem;
     padding: 0.3rem 0.85rem;
@@ -341,7 +348,7 @@ const hostingTiers = [
   }
 
   .glass-card.featured .btn-select {
-    background: #0096FF;
+    background: #FF6600;
     color: #ffffff;
   }
 
@@ -383,6 +390,12 @@ const hostingTiers = [
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 12px;
     padding: 1.5rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .waas-card:hover {
+    border-color: #0096FF;
+    box-shadow: 0 0 15px rgba(0, 150, 255, 0.3);
   }
 
   .waas-card h4 {
@@ -462,6 +475,12 @@ const hostingTiers = [
     display: flex;
     flex-direction: column;
     align-items: center;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .hosting-card:hover {
+    border-color: #0096FF;
+    box-shadow: 0 0 15px rgba(0, 150, 255, 0.3);
   }
 
   .hosting-icon {
