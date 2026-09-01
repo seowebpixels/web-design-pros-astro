@@ -91,34 +91,27 @@ const locations: LocationCard[] = [
 ];
 ---
 
-<section class="py-16 bg-slate-900 text-white">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<section class="areas-section">
+  <div class="areas-container">
     
-    <div class="text-center max-w-3xl mx-auto mb-12">
-      <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
-        Areas We Serve Across Gauteng
-      </h2>
-      <p class="text-slate-400 text-lg">
-        We build ultra fast, high-converting custom coded websites tailored specifically for growing businesses across major Gauteng hubs. No slow WordPress templates or heavy plugin bloated websites. 
+    <div class="areas-header">
+      <h2>Areas We Serve Across Gauteng</h2>
+      <p>
+        We build ultra fast, high-converting custom coded websites tailored specifically for growing businesses across major Gauteng hubs. No slow WordPress templates or heavy plugin bloated websites.
       </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="areas-grid">
       {locations.map((loc) => (
-        <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-6 flex flex-col justify-between hover:border-sky-500/50 transition-all duration-300 hover:-translate-y-1">
-          <div>
-            <h3 class="text-xl font-semibold text-white mb-3">{loc.name}</h3>
-            <p class="text-slate-300 text-sm leading-relaxed mb-6">
-              {loc.description}
-            </p>
+        <div class="area-card">
+          <div class="card-content">
+            <h3>{loc.name}</h3>
+            <p>{loc.description}</p>
           </div>
-          <div>
-            <a 
-              href={`/${loc.slug}`} 
-              class="inline-flex items-center text-xs font-medium text-sky-400 hover:text-sky-300 uppercase tracking-wider transition-colors"
-            >
-              Learn More
-              <svg class="w-3.5 h-3.5 ml-1 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="card-action">
+            <a href={`/${loc.slug}`} class="learn-more-link">
+              <span>Learn More</span>
+              <svg class="arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
               </svg>
             </a>
@@ -129,3 +122,106 @@ const locations: LocationCard[] = [
 
   </div>
 </section>
+
+<style>
+  .areas-section {
+    padding: 4rem 1rem;
+    background-color: #0f172a;
+    color: #ffffff;
+  }
+
+  .areas-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .areas-header {
+    text-align: center;
+    max-width: 48rem;
+    margin: 0 auto 3rem auto;
+  }
+
+  .areas-header h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 1rem;
+  }
+
+  .areas-header p {
+    color: #94a3b8;
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+
+  .areas-grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .areas-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .areas-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .area-card {
+    background-color: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(51, 65, 85, 0.6);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+  }
+
+  .area-card:hover {
+    border-color: rgba(14, 165, 233, 0.5);
+    transform: translateY(-0.25rem);
+  }
+
+  .card-content h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 0.75rem;
+  }
+
+  .card-content p {
+    color: #cbd5e1;
+    font-size: 0.875rem;
+    line-height: 1.625;
+    margin-bottom: 1.5rem;
+  }
+
+  .learn-more-link {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #38bdf8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .learn-more-link:hover {
+    color: #7dd3fc;
+  }
+
+  .arrow-icon {
+    width: 0.875rem;
+    height: 0.875rem;
+    margin-left: 0.25rem;
+  }
+</style>

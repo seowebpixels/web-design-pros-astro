@@ -1,6 +1,7 @@
 /* Import Fonts */
 @import url('https://api.fontshare.com/v2/css?f[]=ranade@700,500,400&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap');
+@import "tailwindcss";
 
 :root {
   /* Typography Variables */
