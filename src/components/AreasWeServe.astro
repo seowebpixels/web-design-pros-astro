@@ -1,0 +1,131 @@
+---
+// src/components/AreasWeServe.astro
+
+interface LocationCard {
+  name: string;
+  slug: string;
+  description: string;
+}
+
+const locations: LocationCard[] = [
+  {
+    name: "Sandton",
+    slug: "web-design-sandton",
+    description: "High-performance, conversion-engineered websites built to help Sandton's corporate & professional firms outrank competitors."
+  },
+  {
+    name: "Randburg",
+    slug: "web-design-randburg",
+    description: "Fast-loading, mobile-optimized web design tailored for Randburg service providers and growing local businesses."
+  },
+  {
+    name: "Midrand",
+    slug: "web-design-midrand",
+    description: "Scalable digital solutions and localized SEO strategies engineered for Midrand's expanding tech and enterprise hubs."
+  },
+  {
+    name: "Centurion",
+    slug: "web-design-centurion",
+    description: "Astro-powered web development that drives targeted local inquiries for Centurion commercial and trade brands."
+  },
+  {
+    name: "Menlo Park",
+    slug: "web-design-menlo-park",
+    description: "Bespoke, fast-loading web design tailored for Menlo Park's high-end professional practices and consultancies."
+  },
+  {
+    name: "Waterkloof",
+    slug: "web-design-waterkloof",
+    description: "Premium, ultra-fast web design tailored to reflect the prestige of Waterkloof's executive services and luxury practices."
+  },
+  {
+    name: "Brooklyn",
+    slug: "web-design-brooklyn",
+    description: "Sleek, trustworthy digital designs built for Brooklyn's legal, medical, and executive service firms."
+  },
+  {
+    name: "Roodepoort",
+    slug: "web-design-roodepoort",
+    description: "Result-driven websites and local Search Engine Optimization for Roodepoort contractors, trades, and retailers."
+  },
+  {
+    name: "Krugersdorp",
+    slug: "web-design-krugersdorp",
+    description: "Robust, modern website builds designed to capture local search demand across Krugersdorp's industrial sectors."
+  },
+  {
+    name: "Kempton Park",
+    slug: "web-design-kempton-park",
+    description: "Clean, high-speed sites engineered for Kempton Park logistics, warehousing, and commercial enterprises."
+  },
+  {
+    name: "Benoni",
+    slug: "web-design-benoni",
+    description: "High-converting, transparently priced web design that helps Benoni businesses turn web traffic into real leads."
+  },
+  {
+    name: "Alberton",
+    slug: "web-design-alberton",
+    description: "Dominant local SEO and modern web architectures for Alberton commercial, retail, and industrial brands."
+  },
+  {
+    name: "Meyerton",
+    slug: "web-design-meyerton",
+    description: "Performance-focused, local search-optimized websites helping Meyerton commercial and industrial businesses grow."
+  },
+  {
+    name: "Vanderbijlpark",
+    slug: "web-design-vanderbijlpark",
+    description: "Tailored web design services focused on establishing a strong online footprint for Vaal Triangle enterprises."
+  },
+  {
+    name: "Vereeniging",
+    slug: "web-design-vereeniging",
+    description: "Lightweight, ultra-fast business websites engineered to capture active searchers in Vereeniging."
+  },
+  {
+    name: "Lenasia",
+    slug: "web-design-lenasia",
+    description: "Mobile-first, conversion-focused web development helping Lenasia commerce and retail brands expand their reach."
+  }
+];
+---
+
+<section class="py-16 bg-slate-900 text-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <div class="text-center max-w-3xl mx-auto mb-12">
+      <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-white mb-4">
+        Areas We Serve Across Gauteng
+      </h2>
+      <p class="text-slate-400 text-lg">
+        We build ultra fast, high-converting custom coded websites tailored specifically for growing businesses across major Gauteng hubs. No slow WordPress templates or heavy plugin bloated websites. 
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {locations.map((loc) => (
+        <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl p-6 flex flex-col justify-between hover:border-sky-500/50 transition-all duration-300 hover:-translate-y-1">
+          <div>
+            <h3 class="text-xl font-semibold text-white mb-3">{loc.name}</h3>
+            <p class="text-slate-300 text-sm leading-relaxed mb-6">
+              {loc.description}
+            </p>
+          </div>
+          <div>
+            <a 
+              href={`/${loc.slug}`} 
+              class="inline-flex items-center text-xs font-medium text-sky-400 hover:text-sky-300 uppercase tracking-wider transition-colors"
+            >
+              Learn More
+              <svg class="w-3.5 h-3.5 ml-1 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>
