@@ -62,7 +62,7 @@
         <label class="phase-label">3. Final details ✍️</label>
         
         <div class="mad-libs-container">
-          <p class="mad-libs-text">
+          <p class="group-title">
             Hi, my name is 
             <input type="text" id="name" placeholder="First Name" required class="inline-input" /> 
             and I run a business in 
@@ -183,9 +183,11 @@
     display: none;
   }
 
+  /* Phase Label (Styled to H3 scale with Cabinet Grotesk) */
   .phase-label {
     display: block;
-    font-size: 1.25rem;
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 1.5rem;
     color: #89CFF0;
@@ -219,10 +221,12 @@
     margin-bottom: 0.5rem;
   }
 
+  /* Button Title (Styled to H4 scale with Cabinet Grotesk) */
   .btn-title {
     display: block;
+    font-family: 'Cabinet Grotesk', sans-serif;
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 1.25rem;
     margin-bottom: 0.25rem;
   }
 
@@ -262,12 +266,6 @@
   .pill-btn:hover, .pill-btn.active {
     border-color: #0096FF;
     background: #0096FF;
-  }
-
-  .mad-libs-text {
-    font-size: 1.2rem;
-    line-height: 2;
-    color: rgba(255, 255, 255, 0.9);
   }
 
   .inline-input {
