@@ -1,0 +1,124 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Terms of Service | Web Design Pros">
+  <main class="legal-page">
+    <div class="container">
+      <h1>Terms of Service</h1>
+      <p class="last-updated">Last Updated: September 2, 2026</p>
+
+      <section class="legal-section">
+        <h2>1. Overview & Scope</h2>
+        <p>
+          These Terms of Service govern the use of this website and the digital development services provided by <strong>Web Design Pros</strong> ("Developer", "we", "us"). By engaging our services or accessing our website, you agree to these terms, which align with our master Website Development & Service Level Agreement.
+        </p>
+      </section>
+
+      <section class="legal-section">
+        <h2>2. Intellectual Property & Code Ownership</h2>
+        <p>
+          <strong>Client Ownership:</strong> Upon full settlement of all final milestones, the Client retains ownership of all written copy, branding graphics, logos, and specific media assets provided or created directly for their business.
+        </p>
+        <p>
+          <strong>Developer IP & Source Code:</strong> The underlying engineering architecture, custom template designs, proprietary code structures, API endpoint scripts, configuration files, custom components, and uncompiled Astro source code remain the sole intellectual property of Web Design Pros.
+        </p>
+        <p>
+          <strong>Usage License:</strong> Clients are granted a non-exclusive, perpetual license to use the compiled, production-ready website assets strictly for the single live project deployed by the Developer.
+        </p>
+      </section>
+
+      <section class="legal-section">
+        <h2>3. Website Data Requests & Source Code Buyout</h2>
+        <p>
+          If a client requests a complete extraction or transfer of website data, deliverables are governed as follows:
+        </p>
+        <ul>
+          <li>
+            <strong>Standard Data Deliverables:</strong> Includes only original client media assets and final compiled static production files (HTML, CSS, and minified client-side JS).
+          </li>
+          <li>
+            <strong>Exclusion of Source Code:</strong> Standard requests explicitly exclude uncompiled raw Astro source code, Astro layouts, dynamic components, backend JavaScript/TypeScript route logic, local schemas, and live Git repository access.
+          </li>
+          <li>
+            <strong>Intellectual Property Buyout Fee:</strong> Release of the uncompiled Astro source code or repository transfer requires a mandatory <strong>200% Buyout Fee (R19,000.00)</strong>.
+          </li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>4. Hosting, Revisions & Maintenance Releases</h2>
+        <p>
+          Complimentary secure hosting remains active indefinitely provided the website is managed exclusively by Web Design Pros. Granting third-party access to site files or server backends voids free hosting immediately.
+        </p>
+        <p>
+          Handing over data, compiled output, or source files releases Web Design Pros from all future maintenance, security, and performance liabilities. Any subsequent engineering assistance will be billed at standard ad-hoc hourly rates.
+        </p>
+      </section>
+
+      <section class="legal-section">
+        <h2>5. Contact Information</h2>
+        <p>
+          For any questions regarding these Terms, please contact us at <strong>info@webdesignpros.co.za</strong> or call <strong>075 221 6842</strong>.
+        </p>
+      </section>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .legal-page {
+    padding: 4rem 1.5rem;
+    color: #ffffff;
+    background-color: #050505;
+    min-height: 80vh;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--accent-primary, #0096FF);
+  }
+
+  .last-updated {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 2.5rem;
+  }
+
+  .legal-section {
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+
+  .legal-section h2 {
+    font-size: 1.35rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: #ffffff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 0.5rem;
+  }
+
+  .legal-section p {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .legal-section ul {
+    margin: 0.75rem 0 0.75rem 1.5rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.95rem;
+  }
+
+  .legal-section li {
+    margin-bottom: 0.5rem;
+  }
+</style>
