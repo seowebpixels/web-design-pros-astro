@@ -70,13 +70,27 @@ import logoImage from '../assets/wdp-logo-new-design-one.avif';
       </ul>
     </div>
 
-    <!-- Column 4: Contact (NAP) & Compliance Links/Downloads -->
+    <!-- Column 4: Contact (NAP), Map & Compliance Links/Downloads -->
     <div class="footer-col">
       <h3 class="col-title">About Us</h3>
       <div class="contact-info">
         <p>📍 15 Madge Avenue, Northcliff, Johannesburg, 2115</p>
         <p>📞 <a href="tel:0752216842">075 221 6842</a></p>
         <p>✉️ <a href="mailto:info@webdesignpros.co.za">info@webdesignpros.co.za</a></p>
+      </div>
+
+      <!-- Embedded Google Map -->
+      <div class="map-container">
+        <iframe 
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3241.2293814651857!2d27.94620757508111!3d-26.142135861448487!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1e950ba3c1c6fdbf%3A0xda852fa15b6d1bee!2sWeb%20Design%20Pros!5e1!3m2!1sen!2sza!4v1788367024256!5m2!1sen!2sza" 
+          width="100%" 
+          height="160" 
+          style="border:0;" 
+          allowfullscreen="" 
+          loading="lazy" 
+          referrerpolicy="strict-origin-when-cross-origin"
+          title="Web Design Pros Google Map Location">
+        </iframe>
       </div>
 
       <h3 class="col-title compliance-title">Compliance</h3>
@@ -229,6 +243,7 @@ import logoImage from '../assets/wdp-logo-new-design-one.avif';
     flex-direction: column;
     gap: 0.65rem;
     line-height: 1.4;
+    margin-bottom: 1.25rem;
   }
 
   .contact-info a {
@@ -238,6 +253,19 @@ import logoImage from '../assets/wdp-logo-new-design-one.avif';
 
   .contact-info a:hover {
     color: var(--accent-primary, #0096FF);
+  }
+
+  /* Map Container Styling */
+  .map-container {
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .map-container iframe {
+    display: block;
   }
 
   .footer-bottom {
