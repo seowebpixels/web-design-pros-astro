@@ -5,37 +5,100 @@ const services = [
     title: 'Web Design & Development',
     description: 'Custom, high-converting websites built for maximum speed and performance.',
     link: '/services/web-design',
-    icon: '💻'
+    icon: '💻',
+    features: [
+      'Ultra-fast Astro Framework Builds',
+      'Mobile-First & Responsive Layouts',
+      'High-Converting UI/UX Design'
+    ]
   },
   {
     title: 'Website Maintenance & Performance',
     description: 'Keep your site secure, updated, and running at peak performance continuously.',
     link: '/services/website-maintenance',
-    icon: '⚡'
+    icon: '⚡',
+    features: [
+      'Core Speed & Asset Optimization',
+      'Security Cleanups & Uptime Checks',
+      'Regular Content Updates & Edits'
+    ]
   },
   {
     title: 'Web Hosting',
     description: 'Reliable, lightning-fast hosting infrastructure tailored for growing businesses.',
     link: '/services/web-hosting',
-    icon: '🚀'
+    icon: '🚀',
+    features: [
+      'Complimentary Enterprise Cloud Hosting',
+      'Free SSL Certificate Integration',
+      'Daily Backups & Server Protection'
+    ]
   },
   {
     title: 'SEO Optimization & Local Search',
     description: 'Drive organic traffic and boost your local search visibility to land more clients.',
     link: '/services/seo-optimization',
-    icon: '🔍'
+    icon: '🔍',
+    features: [
+      'Local Business Schema & Maps Sync',
+      'Technical On-Page & Speed SEO',
+      'Google Search Console Management'
+    ]
   },
   {
     title: 'Social Media Marketing',
     description: 'Engage your target audience and grow your brand presence across key platforms.',
     link: '/services/social-media-marketing',
-    icon: '📱'
+    icon: '📱',
+    features: [
+      'Custom Visual Content Creation',
+      'Targeted Audience Growth Strategies',
+      'Consistent Brand Voice Alignment'
+    ]
   },
   {
     title: 'Branding Services',
     description: 'Establish a memorable brand identity that stands out from competitors.',
     link: '/services/branding-services',
-    icon: '🎨'
+    icon: '🎨',
+    features: [
+      'Custom Logo & Asset Creation',
+      'Typography & Color Palette Rules',
+      'Professional Brand Style Guides'
+    ]
+  },
+  {
+    title: 'Hybrid SaaS & Micro-Tools',
+    description: 'Web applications engineered for workflow automation, interactive tools, and portals.',
+    link: '/services/saas-micro-tools',
+    icon: '⚙️',
+    features: [
+      'Custom API & Webhook Integrations',
+      'Interactive Micro-Tools & Calculators',
+      'Scalable Dynamic Astro App Structures'
+    ]
+  },
+  {
+    title: 'Custom E-Commerce',
+    description: 'High-converting online stores optimized for local payment gateways and seamless checkout.',
+    link: '/services/e-commerce',
+    icon: '🛒',
+    features: [
+      'PayFast, Yoco & Ozow Integrations',
+      'Zero-Friction Mobile Checkout',
+      'Scalable Product Catalog Management'
+    ]
+  },
+  {
+    title: 'Google Ads & PPC Marketing',
+    description: 'High-intent pay-per-click campaigns structured to generate immediate, qualified leads.',
+    link: '/services/google-ads',
+    icon: '🎯',
+    features: [
+      'High-Converting Search & Local Ads',
+      'Conversion Tracking & GA4 Setup',
+      'Continuous Keyword & Bid Optimization'
+    ]
   }
 ];
 ---
@@ -49,6 +112,15 @@ const services = [
           <div class="icon">{service.icon}</div>
           <h3>{service.title}</h3>
           <p>{service.description}</p>
+          
+          <ul class="feature-list">
+            {service.features.map((feature) => (
+              <li>
+                <span class="bullet-check">✓</span> {feature}
+              </li>
+            ))}
+          </ul>
+
           <span class="card-link">Learn More &rarr;</span>
         </a>
       ))}
@@ -70,7 +142,7 @@ const services = [
     text-align: center;
   }
 
-  /* 3x2 Grid Layout for Desktop */
+  /* 3x3 Grid Layout for Desktop */
   .services-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -120,16 +192,41 @@ const services = [
   }
 
   .service-card p {
-    font-size: 1rem;
+    font-size: 0.95rem;
     opacity: 0.85;
     line-height: 1.5;
-    margin-bottom: 1.5rem;
-    flex-grow: 1;
+    margin-bottom: 1.25rem;
+  }
+
+  /* Bullet List Styling */
+  .feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex-grow: 1; /* Pushes the Learn More link to the bottom evenly */
+  }
+
+  .feature-list li {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .bullet-check {
+    color: #9EEAFC;
+    font-weight: bold;
+    font-size: 0.9rem;
   }
 
   .card-link {
     color: #9EEAFC;
     font-weight: 600;
     font-size: 0.95rem;
+    margin-top: auto;
   }
 </style>
