@@ -3,218 +3,301 @@
 ---
 
 <!-- Trigger Button Below Services Grid -->
-<div class="text-center my-10">
+<div class="w-full flex justify-center items-center my-14 px-4">
   <button 
     id="open-growth-modal" 
-    class="bg-[#0096FF] hover:bg-[#89CFF0] text-white hover:text-[#16213E] font-bold py-4 px-8 rounded-xl transition duration-300 shadow-lg cursor-pointer text-lg flex items-center justify-center gap-2 mx-auto"
+    class="custom-growth-btn font-bold py-4 px-12 text-white text-lg transition duration-300 shadow-xl cursor-pointer text-center block"
+    style="background-color: #0096FF; border-radius: 12px !important; width: 100%; max-width: 480px; border: 1px solid rgba(0, 150, 255, 0.4);"
   >
-    <span>🚀 Find Your Growth Package</span>
+    Find Your Growth Package
   </button>
 </div>
 
 <!-- Modal Backdrop -->
-<div id="growth-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
-  <!-- Modal Card -->
-  <div class="bg-[#16213E] border border-[#0096FF]/30 text-white rounded-2xl max-w-4xl w-full p-6 md:p-10 relative shadow-2xl overflow-hidden">
+<div id="growth-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden z-50 flex items-center justify-center p-4 md:p-8 overflow-y-auto">
+  
+  <!-- Outer Modal Card -->
+  <div 
+    class="bg-[#16213E] border border-[#0096FF]/30 text-white w-full max-w-5xl relative shadow-2xl my-auto p-6 md:p-10"
+    style="border-radius: 24px !important;"
+  >
     
-    <!-- Close Button -->
-    <button id="close-growth-modal" class="absolute top-6 right-6 bg-[#0f172a] hover:bg-[#0096FF]/20 text-zinc-400 hover:text-[#89CFF0] rounded-full p-2 border border-[#0096FF]/20 transition">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+    <!-- Close Button (X) -->
+    <button 
+      id="close-growth-modal" 
+      class="absolute top-5 right-5 bg-[#0f172a] hover:bg-[#0096FF]/20 text-zinc-400 hover:text-white p-2.5 border border-[#0096FF]/30 transition cursor-pointer z-20 flex items-center justify-center"
+      style="border-radius: 10px !important;"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
     </button>
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
       
-      <!-- Left Column: Context Branding -->
-      <div class="lg:col-span-5 space-y-6">
-        <span class="inline-block bg-[#0f172a] text-[#89CFF0] border border-[#0096FF]/30 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">
-          📊 Before You Go
-        </span>
-        
-        <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">
-          What would help your business grow faster?
-        </h2>
-        <p class="text-zinc-300 text-sm leading-relaxed">
-          Answer a few quick questions and we'll recommend the right web design, SEO, and growth system for your South African business.
-        </p>
+      <!-- LEFT COLUMN: BRANDING & VALUE PROP -->
+      <div class="lg:col-span-5 flex flex-col justify-between space-y-6 pr-0 lg:pr-2">
+        <div class="space-y-6">
+          <!-- Top Tag -->
+          <div>
+            <span 
+              class="inline-block bg-[#0f172a] text-[#89CFF0] border border-[#0096FF]/30 text-[11px] font-bold px-3.5 py-1.5 uppercase tracking-wider"
+              style="border-radius: 8px !important;"
+            >
+              📊 BEFORE YOU GO
+            </span>
+          </div>
 
-        <!-- Feature Steps Indicators -->
-        <div class="grid grid-cols-3 gap-2 text-center text-[10px] font-bold uppercase tracking-wider">
-          <div class="bg-[#0f172a] border border-[#0096FF]/30 text-[#89CFF0] p-2 rounded-lg">01 Growth</div>
-          <div class="bg-[#0f172a] border border-[#0096FF]/30 text-[#89CFF0] p-2 rounded-lg">02 Conversion</div>
-          <div class="bg-[#0f172a] border border-[#0096FF]/30 text-[#89CFF0] p-2 rounded-lg">03 Follow-Up</div>
+          <!-- Logo Header -->
+          <div class="text-[#0096FF] font-black text-2xl tracking-wider">
+            WEB DESIGN PROS
+          </div>
+
+          <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white leading-tight">
+            What would help your business grow faster?
+          </h2>
+
+          <p class="text-zinc-300 text-sm leading-relaxed">
+            Answer a few quick questions and we'll recommend the right web design, SEO, and growth system for your South African business.
+          </p>
         </div>
 
-        <div class="bg-[#0f172a]/80 border border-[#0096FF]/20 p-4 rounded-xl flex items-start gap-3">
-          <div class="bg-[#0096FF]/20 text-[#89CFF0] p-2 rounded-lg">🚀</div>
-          <div>
-            <h4 class="text-sm font-semibold text-white">Get a practical next step</h4>
-            <p class="text-xs text-zinc-400">No generic pitch — a tailored growth recommendation based on your answers.</p>
+        <!-- 3-Step Feature Badges -->
+        <div class="space-y-6 pt-2">
+          <div class="grid grid-cols-3 gap-2.5 text-center">
+            <div class="bg-[#0f172a] border border-[#0096FF]/25 p-3" style="border-radius: 10px !important;">
+              <span class="block text-[10px] font-bold text-[#89CFF0]">01</span>
+              <span class="block text-xs font-bold text-white uppercase tracking-wider mt-0.5">GROWTH</span>
+            </div>
+            <div class="bg-[#0f172a] border border-[#0096FF]/25 p-3" style="border-radius: 10px !important;">
+              <span class="block text-[10px] font-bold text-[#89CFF0]">02</span>
+              <span class="block text-xs font-bold text-white uppercase tracking-wider mt-0.5">CONVERSION</span>
+            </div>
+            <div class="bg-[#0f172a] border border-[#0096FF]/25 p-3" style="border-radius: 10px !important;">
+              <span class="block text-[10px] font-bold text-[#89CFF0]">03</span>
+              <span class="block text-xs font-bold text-white uppercase tracking-wider mt-0.5">FOLLOW-UP</span>
+            </div>
+          </div>
+
+          <!-- Next Step Callout Box -->
+          <div class="bg-[#0f172a]/90 border border-[#0096FF]/30 p-4 flex items-center gap-3.5" style="border-radius: 14px !important;">
+            <div class="bg-[#0096FF]/20 text-[#89CFF0] p-2.5 flex-shrink-0" style="border-radius: 10px !important;">
+              🚀
+            </div>
+            <div>
+              <h4 class="text-xs font-bold text-white">Get a practical next step</h4>
+              <p class="text-[11px] text-zinc-400 mt-0.5">No generic pitch — a tailored growth recommendation based on your answers.</p>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Right Column: Interactive Form -->
-      <div class="lg:col-span-7 bg-[#0f172a] border border-[#0096FF]/20 p-6 md:p-8 rounded-xl shadow-inner">
+      <!-- RIGHT COLUMN: INTERACTIVE FORM CONTAINER -->
+      <div 
+        class="lg:col-span-7 bg-[#0f172a] border border-[#0096FF]/20 p-6 md:p-8 flex flex-col justify-between"
+        style="border-radius: 18px !important;"
+      >
         
-        <!-- Header & Privacy Badge -->
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-xs font-bold text-[#89CFF0] tracking-wider uppercase">Growth Check</span>
-          <span class="text-xs text-zinc-400 border border-[#0096FF]/20 bg-[#16213E] px-2 py-0.5 rounded">🔒 Private</span>
-        </div>
-        
-        <!-- Dynamic Progress Bar -->
-        <p id="step-indicator" class="text-xs text-[#89CFF0] font-medium mb-1">STEP 1 OF 2</p>
-        <div class="w-full bg-[#16213E] h-1.5 rounded-full mb-6 overflow-hidden border border-[#0096FF]/20">
-          <div id="progress-bar" class="bg-[#0096FF] h-full w-1/2 transition-all duration-300"></div>
-        </div>
-
-        <form id="growth-check-form" class="space-y-4">
-          
-          <!-- STEP 1: REQUIREMENTS -->
-          <div id="modal-step-1" class="space-y-4">
-            
-            <!-- Category Tabs -->
-            <div class="grid grid-cols-3 gap-2 mb-4">
-              <div class="border border-[#0096FF] bg-[#0096FF]/10 text-[#89CFF0] rounded-lg p-2.5 text-center">
-                <span class="block text-xs font-bold">NEED</span>
-              </div>
-              <div class="border border-zinc-800 bg-[#16213E] text-zinc-500 rounded-lg p-2.5 text-center">
-                <span class="block text-xs font-bold">GOAL</span>
-              </div>
-              <div class="border border-zinc-800 bg-[#16213E] text-zinc-500 rounded-lg p-2.5 text-center">
-                <span class="block text-xs font-bold">PLAN</span>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs text-zinc-300 font-medium mb-1">What are you trying to improve?</label>
-                <select required class="w-full bg-[#16213E] border border-[#0096FF]/30 rounded-lg p-2.5 text-xs text-white focus:border-[#0096FF] focus:outline-none">
-                  <option value="" disabled selected>Select...</option>
-                  <option value="website-traffic">Website traffic</option>
-                  <option value="lead-generation">Lead generation</option>
-                  <option value="online-sales">Online sales</option>
-                  <option value="brand-credibility">Brand credibility</option>
-                  <option value="google-rankings">Google rankings</option>
-                </select>
-              </div>
-
-              <div>
-                <label class="block text-xs text-zinc-300 font-medium mb-1">What is your goal?</label>
-                <select required class="w-full bg-[#16213E] border border-[#0096FF]/30 rounded-lg p-2.5 text-xs text-white focus:border-[#0096FF] focus:outline-none">
-                  <option value="" disabled selected>Select...</option>
-                  <option value="more-enquiries">More enquiries</option>
-                  <option value="conversion-rate">Higher conversion rate</option>
-                  <option value="faster-website">Faster website</option>
-                  <option value="seo-visibility">Better SEO visibility</option>
-                  <option value="full-redesign">Full redesign</option>
-                </select>
-              </div>
-
-              <div>
-                <label class="block text-xs text-zinc-300 font-medium mb-1">What is your timeline?</label>
-                <select required class="w-full bg-[#16213E] border border-[#0096FF]/30 rounded-lg p-2.5 text-xs text-white focus:border-[#0096FF] focus:outline-none">
-                  <option value="" disabled selected>Select...</option>
-                  <option value="asap">ASAP (2–4 weeks)</option>
-                  <option value="1-2-months">1–2 months</option>
-                  <option value="3-plus-months">3+ months</option>
-                  <option value="exploring">Just exploring</option>
-                </select>
-              </div>
-
-              <div>
-                <label class="block text-xs text-zinc-300 font-medium mb-1">What is your budget?</label>
-                <select required class="w-full bg-[#16213E] border border-[#0096FF]/30 rounded-lg p-2.5 text-xs text-white focus:border-[#0096FF] focus:outline-none">
-                  <option value="" disabled selected>Select...</option>
-                  <option value="under-10k">Under R10,000</option>
-                  <option value="10k-25k">R10,000 – R25,000</option>
-                  <option value="25k-60k">R25,000 – R60,000</option>
-                  <option value="60k-plus">R60,000+</option>
-                </select>
-              </div>
-            </div>
-
-            <button 
-              type="button" 
-              id="goto-step-2" 
-              class="w-full bg-[#0096FF] hover:bg-[#89CFF0] text-white hover:text-[#16213E] font-bold py-3 rounded-lg text-sm transition mt-4 flex items-center justify-center gap-2 cursor-pointer"
+        <div>
+          <!-- Header Bar: Title & Private Badge -->
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs font-bold text-[#89CFF0] tracking-wider uppercase">GROWTH CHECK</span>
+            <span 
+              class="text-[11px] text-zinc-300 border border-[#0096FF]/30 bg-[#16213E] px-3 py-1 flex items-center gap-1"
+              style="border-radius: 6px !important;"
             >
-              <span>Continue</span>
-              <span>→</span>
-            </button>
+              🔒 Private
+            </span>
+          </div>
+          
+          <!-- Progress Bar & Indicator -->
+          <p id="step-indicator" class="text-[11px] font-bold text-zinc-300 tracking-wider mb-2 uppercase">STEP 1 OF 2</p>
+          <div class="w-full bg-[#16213E] h-2 mb-8 overflow-hidden border border-[#0096FF]/20" style="border-radius: 999px !important;">
+            <div id="progress-bar" class="bg-[#0096FF] h-full w-1/2 transition-all duration-300"></div>
           </div>
 
-          <!-- STEP 2: CONTACT DETAILS -->
-          <div id="modal-step-2" class="space-y-4 hidden">
-            <h3 class="text-lg font-bold text-white mb-2">Where should we send your plan?</h3>
+          <form id="growth-check-form">
+            
+            <!-- ================= STEP 1: REQUIREMENTS ================= -->
+            <div id="modal-step-1" class="space-y-6">
+              
+              <!-- Tab Navigation Cards -->
+              <div class="grid grid-cols-3 gap-3">
+                <div class="border-2 border-[#0096FF] bg-[#0096FF]/10 text-white p-3 text-center" style="border-radius: 10px !important;">
+                  <span class="block text-xs font-extrabold tracking-wider">NEED</span>
+                </div>
+                <div class="border border-zinc-800 bg-[#16213E] text-zinc-500 p-3 text-center" style="border-radius: 10px !important;">
+                  <span class="block text-xs font-extrabold tracking-wider">GOAL</span>
+                </div>
+                <div class="border border-zinc-800 bg-[#16213E] text-zinc-500 p-3 text-center" style="border-radius: 10px !important;">
+                  <span class="block text-xs font-extrabold tracking-wider">PLAN</span>
+                </div>
+              </div>
 
-            <div>
-              <label class="block text-xs text-zinc-300 font-medium mb-1">Your name</label>
-              <input 
-                type="text" 
-                placeholder="Full name" 
-                required 
-                class="w-full bg-[#16213E] border border-[#0096FF]/30 rounded-lg p-2.5 text-xs text-white placeholder-zinc-500 focus:border-[#0096FF] focus:outline-none"
-              />
-            </div>
+              <!-- Select Field Inputs Grid with Generous Spacing -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-6 pt-2">
+                <div>
+                  <label class="block text-xs text-zinc-200 font-semibold mb-2">What are you trying to improve?</label>
+                  <select 
+                    required 
+                    class="w-full bg-[#16213E] border border-[#0096FF]/40 p-3 text-xs text-white focus:border-[#0096FF] focus:outline-none cursor-pointer"
+                    style="border-radius: 8px !important;"
+                  >
+                    <option value="" disabled selected>Select...</option>
+                    <option value="website-traffic">Website traffic</option>
+                    <option value="lead-generation">Lead generation</option>
+                    <option value="online-sales">Online sales</option>
+                    <option value="brand-credibility">Brand credibility</option>
+                    <option value="google-rankings">Google rankings</option>
+                  </select>
+                </div>
 
-            <div>
-              <label class="block text-xs text-zinc-300 font-medium mb-1">Email address*</label>
-              <input 
-                type="email" 
-                placeholder="you@company.co.za" 
-                required 
-                class="w-full bg-[#16213E] border border-[#0096FF]/30 rounded-lg p-2.5 text-xs text-white placeholder-zinc-500 focus:border-[#0096FF] focus:outline-none"
-              />
-            </div>
+                <div>
+                  <label class="block text-xs text-zinc-200 font-semibold mb-2">What is your goal?</label>
+                  <select 
+                    required 
+                    class="w-full bg-[#16213E] border border-[#0096FF]/40 p-3 text-xs text-white focus:border-[#0096FF] focus:outline-none cursor-pointer"
+                    style="border-radius: 8px !important;"
+                  >
+                    <option value="" disabled selected>Select...</option>
+                    <option value="more-enquiries">More enquiries</option>
+                    <option value="conversion-rate">Higher conversion rate</option>
+                    <option value="faster-website">Faster website</option>
+                    <option value="seo-visibility">Better SEO visibility</option>
+                    <option value="full-redesign">Full redesign</option>
+                  </select>
+                </div>
 
-            <div>
-              <label class="block text-xs text-zinc-300 font-medium mb-1">Phone number*</label>
-              <input 
-                type="tel" 
-                placeholder="+27 82 000 0000" 
-                required 
-                class="w-full bg-[#16213E] border border-[#0096FF]/30 rounded-lg p-2.5 text-xs text-white placeholder-zinc-500 focus:border-[#0096FF] focus:outline-none"
-              />
-            </div>
+                <div>
+                  <label class="block text-xs text-zinc-200 font-semibold mb-2">What is your timeline?</label>
+                  <select 
+                    required 
+                    class="w-full bg-[#16213E] border border-[#0096FF]/40 p-3 text-xs text-white focus:border-[#0096FF] focus:outline-none cursor-pointer"
+                    style="border-radius: 8px !important;"
+                  >
+                    <option value="" disabled selected>Select...</option>
+                    <option value="asap">ASAP (2–4 weeks)</option>
+                    <option value="1-2-months">1–2 months</option>
+                    <option value="3-plus-months">3+ months</option>
+                    <option value="exploring">Just exploring</option>
+                  </select>
+                </div>
 
-            <div>
-              <label class="block text-xs text-zinc-300 font-medium mb-1">Business name</label>
-              <input 
-                type="text" 
-                placeholder="Company or brand" 
-                class="w-full bg-[#16213E] border border-[#0096FF]/30 rounded-lg p-2.5 text-xs text-white placeholder-zinc-500 focus:border-[#0096FF] focus:outline-none"
-              />
-            </div>
+                <div>
+                  <label class="block text-xs text-zinc-200 font-semibold mb-2">What is your budget?</label>
+                  <select 
+                    required 
+                    class="w-full bg-[#16213E] border border-[#0096FF]/40 p-3 text-xs text-white focus:border-[#0096FF] focus:outline-none cursor-pointer"
+                    style="border-radius: 8px !important;"
+                  >
+                    <option value="" disabled selected>Select...</option>
+                    <option value="under-10k">Under R10,000</option>
+                    <option value="10k-25k">R10,000 – R25,000</option>
+                    <option value="25k-60k">R25,000 – R60,000</option>
+                    <option value="60k-plus">R60,000+</option>
+                  </select>
+                </div>
+              </div>
 
-            <div class="flex gap-2 pt-2">
+              <!-- Continue Button -->
               <button 
                 type="button" 
-                id="back-to-step-1" 
-                class="w-1/3 bg-[#16213E] border border-[#0096FF]/30 text-[#89CFF0] font-semibold py-3 rounded-lg text-sm transition hover:bg-[#0096FF]/10 cursor-pointer"
+                id="goto-step-2" 
+                class="w-full bg-[#0096FF] hover:bg-[#89CFF0] text-white hover:text-[#16213E] font-bold py-3.5 text-sm transition mt-6 flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+                style="border-radius: 10px !important;"
               >
-                ← Back
-              </button>
-
-              <button 
-                type="submit" 
-                class="w-2/3 bg-[#0096FF] hover:bg-[#89CFF0] text-white hover:text-[#16213E] font-bold py-3 rounded-lg text-sm transition flex items-center justify-center gap-2 cursor-pointer shadow-lg"
-              >
-                <span>Get my growth plan</span>
+                <span>Continue</span>
+                <span>→</span>
               </button>
             </div>
-          </div>
 
-        </form>
+            <!-- ================= STEP 2: CONTACT DETAILS ================= -->
+            <div id="modal-step-2" class="space-y-5 hidden">
+              <h3 class="text-xl font-bold text-white mb-4">Where should we send your plan?</h3>
 
-        <p class="text-[10px] text-zinc-400 text-center mt-3">
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-xs text-zinc-200 font-semibold mb-1.5">Your name</label>
+                  <input 
+                    type="text" 
+                    placeholder="Full name" 
+                    required 
+                    class="w-full bg-[#16213E] border border-[#0096FF]/40 p-3 text-xs text-white placeholder-zinc-500 focus:border-[#0096FF] focus:outline-none"
+                    style="border-radius: 8px !important;"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-xs text-zinc-200 font-semibold mb-1.5">Email address*</label>
+                  <input 
+                    type="email" 
+                    placeholder="you@company.co.za" 
+                    required 
+                    class="w-full bg-[#16213E] border border-[#0096FF]/40 p-3 text-xs text-white placeholder-zinc-500 focus:border-[#0096FF] focus:outline-none"
+                    style="border-radius: 8px !important;"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-xs text-zinc-200 font-semibold mb-1.5">Phone number*</label>
+                  <input 
+                    type="tel" 
+                    placeholder="+27 82 000 0000" 
+                    required 
+                    class="w-full bg-[#16213E] border border-[#0096FF]/40 p-3 text-xs text-white placeholder-zinc-500 focus:border-[#0096FF] focus:outline-none"
+                    style="border-radius: 8px !important;"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-xs text-zinc-200 font-semibold mb-1.5">Business name</label>
+                  <input 
+                    type="text" 
+                    placeholder="Company or brand" 
+                    class="w-full bg-[#16213E] border border-[#0096FF]/40 p-3 text-xs text-white placeholder-zinc-500 focus:border-[#0096FF] focus:outline-none"
+                    style="border-radius: 8px !important;"
+                  />
+                </div>
+              </div>
+
+              <!-- Final Submit Controls -->
+              <div class="flex gap-3 pt-3">
+                <button 
+                  type="button" 
+                  id="back-to-step-1" 
+                  class="w-1/3 bg-[#16213E] border border-[#0096FF]/40 text-[#89CFF0] font-semibold py-3.5 text-xs transition hover:bg-[#0096FF]/10 cursor-pointer"
+                  style="border-radius: 10px !important;"
+                >
+                  ← Back
+                </button>
+
+                <button 
+                  type="submit" 
+                  class="w-2/3 bg-[#0096FF] hover:bg-[#89CFF0] text-white hover:text-[#16213E] font-bold py-3.5 text-xs transition flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+                  style="border-radius: 10px !important;"
+                >
+                  <span>Get my growth plan</span>
+                </button>
+              </div>
+            </div>
+
+          </form>
+        </div>
+
+        <p class="text-[11px] text-zinc-400 text-center mt-6">
           ✨ Better details help us recommend the right growth system.
         </p>
+
       </div>
 
     </div>
   </div>
 </div>
+
+<style>
+  .custom-growth-btn:hover {
+    background-color: #89CFF0 !important;
+    color: #16213E !important;
+  }
+</style>
 
 <script is:inline>
   const openBtn = document.getElementById('open-growth-modal');
@@ -248,7 +331,7 @@
     if (stepIndicator) stepIndicator.textContent = 'STEP 1 OF 2';
   });
 
-  // Close on outer backdrop click
+  // Close on backdrop click
   modal?.addEventListener('click', (e) => {
     if (e.target === modal) modal.classList.add('hidden');
   });
