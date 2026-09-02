@@ -5,19 +5,91 @@ import '../styles/global.css';
 
 interface Props {
   title: string;
+  description?: string;
 }
 
-const { title } = Astro.props;
+const { 
+  title, 
+  description = "Web Design Pros - Premier boutique digital agency in Randburg, Johannesburg. We engineer High-Performance Digital Assets for South African growth." 
+} = Astro.props;
+
+const schemaData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://webdesignpros.co.za/#website",
+      "url": "https://webdesignpros.co.za",
+      "name": "Web Design Pros",
+      "description": "Boutique digital agency in Randburg, Johannesburg specializing in high-performance web development and digital assets.",
+      "publisher": {
+        "@id": "https://webdesignpros.co.za/#organization"
+      },
+      "inLanguage": "en-ZA"
+    },
+    {
+      "@type": "WebDesignCompany",
+      "@id": "https://webdesignpros.co.za/#organization",
+      "name": "Web Design Pros",
+      "url": "https://webdesignpros.co.za",
+      "logo": {
+        "@type": "ImageObject",
+        "@id": "https://webdesignpros.co.za/#logo",
+        "url": "https://webdesignpros.co.za/wdp-logo-new-design-one.avif",
+        "caption": "Web Design Pros Logo"
+      },
+      "image": {
+        "@id": "https://webdesignpros.co.za/#logo"
+      },
+      "description": "Premier boutique digital agency in Randburg, Johannesburg. We specialize in engineering High-Performance Digital Assets for South African Growth.",
+      "telephone": "+27752216842",
+      "email": "info@webdesignpros.co.za",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "15 Madge Ave",
+        "addressLocality": "Northcliff",
+        "addressRegion": "Johannesburg",
+        "postalCode": "2115",
+        "addressCountry": "ZA"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -26.1421358,
+        "longitude": 27.9462075
+      },
+      "hasMap": "https://www.google.com/maps?cid=15746142183424105454",
+      "vatID": "2026/282129/07",
+      "taxID": "2026/282129/07",
+      "knowsAbout": [
+        "Web Design",
+        "Web Development",
+        "Astro Framework",
+        "Search Engine Optimization",
+        "Graphic Design",
+        "Social Media Marketing"
+      ],
+      "sameAs": [
+        "https://www.facebook.com/profile.php?id=100089762679031",
+        "https://www.instagram.com/web_design_pros/",
+        "https://www.linkedin.com/in/web-design-pros-a048ba428"
+      ],
+      "priceRange": "$$"
+    }
+  ]
+};
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content="Web Design Pros - Custom Hand-Coded Web Agency in Gauteng" />
+    <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
+
+    <!-- Global JSON-LD Schema -->
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(schemaData)} />
   </head>
   <body>
     <Header />
