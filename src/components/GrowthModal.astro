@@ -2,56 +2,51 @@
 /* GrowthModal.astro */
 ---
 
-<!-- Trigger Button Below Services Grid -->
-<div class="w-full flex justify-center items-center my-14 px-4">
+<!-- Trigger Button (Matches button.png: centered rounded rectangle, border-radius 12px) -->
+<div class="w-full flex justify-center items-center my-12 px-4">
   <button 
     id="open-growth-modal" 
-    class="custom-growth-btn font-bold py-4 px-12 text-white text-lg transition duration-300 shadow-xl cursor-pointer text-center block"
-    style="background-color: #0096FF; border-radius: 12px !important; width: 100%; max-width: 480px; border: 1px solid rgba(0, 150, 255, 0.4);"
+    type="button"
+    class="font-semibold text-white text-base py-3.5 px-8 transition-all duration-200 shadow-md hover:bg-[#89CFF0] hover:text-[#16213E] cursor-pointer text-center inline-flex items-center justify-center"
+    style="background-color: #0096FF; border-radius: 12px !important; min-width: 260px;"
   >
     Find Your Growth Package
   </button>
 </div>
 
 <!-- Modal Backdrop -->
-<div id="growth-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden z-50 flex items-center justify-center p-4 md:p-8 overflow-y-auto">
+<div id="growth-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 md:p-8 overflow-y-auto">
   
-  <!-- Outer Modal Card -->
+  <!-- Outer Modal Card Container -->
   <div 
     class="bg-[#16213E] border border-[#0096FF]/30 text-white w-full max-w-5xl relative shadow-2xl my-auto p-6 md:p-10"
-    style="border-radius: 24px !important;"
+    style="border-radius: 20px !important;"
   >
     
     <!-- Close Button (X) -->
     <button 
       id="close-growth-modal" 
-      class="absolute top-5 right-5 bg-[#0f172a] hover:bg-[#0096FF]/20 text-zinc-400 hover:text-white p-2.5 border border-[#0096FF]/30 transition cursor-pointer z-20 flex items-center justify-center"
-      style="border-radius: 10px !important;"
+      type="button"
+      class="absolute top-6 right-6 bg-[#0f172a] hover:bg-[#0096FF]/20 text-zinc-400 hover:text-white p-2.5 rounded-full border border-[#0096FF]/30 transition cursor-pointer z-30 flex items-center justify-center"
     >
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
     </button>
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
+    <!-- Main Grid Layout (50/50 Split Matching Reference Images) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
       
       <!-- LEFT COLUMN: BRANDING & VALUE PROP -->
-      <div class="lg:col-span-5 flex flex-col justify-between space-y-6 pr-0 lg:pr-2">
+      <div class="lg:col-span-5 flex flex-col justify-between space-y-6 py-2">
         <div class="space-y-6">
           <!-- Top Tag -->
           <div>
-            <span 
-              class="inline-block bg-[#0f172a] text-[#89CFF0] border border-[#0096FF]/30 text-[11px] font-bold px-3.5 py-1.5 uppercase tracking-wider"
-              style="border-radius: 8px !important;"
-            >
-              📊 BEFORE YOU GO
+            <span class="inline-flex items-center gap-1.5 bg-[#0f172a] border border-[#0096FF]/30 text-[#89CFF0] text-[11px] font-medium px-3 py-1 rounded-md uppercase tracking-wide">
+              <span>📊</span> BEFORE YOU GO
             </span>
           </div>
 
-          <!-- Logo Header -->
-          <div class="text-[#0096FF] font-black text-2xl tracking-wider">
-            WEB DESIGN PROS
-          </div>
-
-          <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white leading-tight">
+          <!-- Title & Copy -->
+          <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-white leading-tight">
             What would help your business grow faster?
           </h2>
 
@@ -60,26 +55,25 @@
           </p>
         </div>
 
-        <!-- 3-Step Feature Badges -->
-        <div class="space-y-6 pt-2">
+        <!-- Left Column Badges & Callout Box -->
+        <div class="space-y-5">
           <div class="grid grid-cols-3 gap-2.5 text-center">
-            <div class="bg-[#0f172a] border border-[#0096FF]/25 p-3" style="border-radius: 10px !important;">
-              <span class="block text-[10px] font-bold text-[#89CFF0]">01</span>
-              <span class="block text-xs font-bold text-white uppercase tracking-wider mt-0.5">GROWTH</span>
+            <div class="bg-[#0f172a] border border-[#0096FF]/20 p-3 rounded-lg">
+              <span class="block text-[11px] font-bold text-[#89CFF0]">01</span>
+              <span class="block text-[10px] font-bold text-white uppercase mt-0.5 tracking-wider">GROWTH</span>
             </div>
-            <div class="bg-[#0f172a] border border-[#0096FF]/25 p-3" style="border-radius: 10px !important;">
-              <span class="block text-[10px] font-bold text-[#89CFF0]">02</span>
-              <span class="block text-xs font-bold text-white uppercase tracking-wider mt-0.5">CONVERSION</span>
+            <div class="bg-[#0f172a] border border-[#0096FF]/20 p-3 rounded-lg">
+              <span class="block text-[11px] font-bold text-[#89CFF0]">02</span>
+              <span class="block text-[10px] font-bold text-white uppercase mt-0.5 tracking-wider">CONVERSION</span>
             </div>
-            <div class="bg-[#0f172a] border border-[#0096FF]/25 p-3" style="border-radius: 10px !important;">
-              <span class="block text-[10px] font-bold text-[#89CFF0]">03</span>
-              <span class="block text-xs font-bold text-white uppercase tracking-wider mt-0.5">FOLLOW-UP</span>
+            <div class="bg-[#0f172a] border border-[#0096FF]/20 p-3 rounded-lg">
+              <span class="block text-[11px] font-bold text-[#89CFF0]">03</span>
+              <span class="block text-[10px] font-bold text-white uppercase mt-0.5 tracking-wider">FOLLOW-UP</span>
             </div>
           </div>
 
-          <!-- Next Step Callout Box -->
-          <div class="bg-[#0f172a]/90 border border-[#0096FF]/30 p-4 flex items-center gap-3.5" style="border-radius: 14px !important;">
-            <div class="bg-[#0096FF]/20 text-[#89CFF0] p-2.5 flex-shrink-0" style="border-radius: 10px !important;">
+          <div class="bg-[#0f172a]/90 border border-[#0096FF]/30 p-4 rounded-xl flex items-center gap-3.5">
+            <div class="bg-[#0096FF]/20 text-[#89CFF0] p-2.5 rounded-lg flex-shrink-0">
               🚀
             </div>
             <div>
@@ -90,56 +84,53 @@
         </div>
       </div>
 
-      <!-- RIGHT COLUMN: INTERACTIVE FORM CONTAINER -->
+      <!-- RIGHT COLUMN: FORM CONTAINER (Expanded with spacing and breathing room) -->
       <div 
-        class="lg:col-span-7 bg-[#0f172a] border border-[#0096FF]/20 p-6 md:p-8 flex flex-col justify-between"
-        style="border-radius: 18px !important;"
+        class="lg:col-span-7 bg-[#0f172a] border border-[#0096FF]/20 p-7 md:p-9 flex flex-col justify-between"
+        style="border-radius: 16px !important;"
       >
-        
         <div>
-          <!-- Header Bar: Title & Private Badge -->
-          <div class="flex items-center justify-between mb-4">
+          <!-- Form Header -->
+          <div class="flex items-center justify-between mb-3">
             <span class="text-xs font-bold text-[#89CFF0] tracking-wider uppercase">GROWTH CHECK</span>
-            <span 
-              class="text-[11px] text-zinc-300 border border-[#0096FF]/30 bg-[#16213E] px-3 py-1 flex items-center gap-1"
-              style="border-radius: 6px !important;"
-            >
+            <span class="text-[10px] text-zinc-300 border border-[#0096FF]/30 bg-[#16213E] px-2.5 py-0.5 rounded flex items-center gap-1">
               🔒 Private
             </span>
           </div>
           
-          <!-- Progress Bar & Indicator -->
-          <p id="step-indicator" class="text-[11px] font-bold text-zinc-300 tracking-wider mb-2 uppercase">STEP 1 OF 2</p>
-          <div class="w-full bg-[#16213E] h-2 mb-8 overflow-hidden border border-[#0096FF]/20" style="border-radius: 999px !important;">
+          <!-- Progress Indicator -->
+          <p id="step-indicator" class="text-[10px] font-bold text-zinc-400 tracking-wider mb-2 uppercase">STEP 1 OF 2</p>
+          <div class="w-full bg-[#16213E] h-1.5 mb-8 overflow-hidden rounded-full border border-[#0096FF]/20">
             <div id="progress-bar" class="bg-[#0096FF] h-full w-1/2 transition-all duration-300"></div>
           </div>
 
-          <form id="growth-check-form">
+          <form id="growth-check-form" name="growth-calculator" method="POST" data-netlify="true">
+            <input type="hidden" name="form-name" value="growth-calculator" />
             
-            <!-- ================= STEP 1: REQUIREMENTS ================= -->
+            <!-- STEP 1: REQUIREMENTS -->
             <div id="modal-step-1" class="space-y-6">
               
-              <!-- Tab Navigation Cards -->
+              <!-- Tab Indicators -->
               <div class="grid grid-cols-3 gap-3">
-                <div class="border-2 border-[#0096FF] bg-[#0096FF]/10 text-white p-3 text-center" style="border-radius: 10px !important;">
-                  <span class="block text-xs font-extrabold tracking-wider">NEED</span>
+                <div class="border-2 border-[#0096FF] bg-[#0096FF]/20 text-white p-3 text-center rounded-lg">
+                  <span class="block text-xs font-bold tracking-wider">🎯 NEED</span>
                 </div>
-                <div class="border border-zinc-800 bg-[#16213E] text-zinc-500 p-3 text-center" style="border-radius: 10px !important;">
-                  <span class="block text-xs font-extrabold tracking-wider">GOAL</span>
+                <div class="border border-zinc-800 bg-[#16213E] text-zinc-500 p-3 text-center rounded-lg">
+                  <span class="block text-xs font-bold tracking-wider">📈 GOAL</span>
                 </div>
-                <div class="border border-zinc-800 bg-[#16213E] text-zinc-500 p-3 text-center" style="border-radius: 10px !important;">
-                  <span class="block text-xs font-extrabold tracking-wider">PLAN</span>
+                <div class="border border-zinc-800 bg-[#16213E] text-zinc-500 p-3 text-center rounded-lg">
+                  <span class="block text-xs font-bold tracking-wider">🛡️ PLAN</span>
                 </div>
               </div>
 
-              <!-- Select Field Inputs Grid with Generous Spacing -->
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-6 pt-2">
+              <!-- Select Field Inputs Grid -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-7 pt-2">
                 <div>
-                  <label class="block text-xs text-zinc-200 font-semibold mb-2">What are you trying to improve?</label>
+                  <label class="block text-xs text-zinc-200 font-medium mb-2">What are you trying to improve?</label>
                   <select 
+                    name="improvement_area"
                     required 
-                    class="w-full bg-[#16213E] border border-[#0096FF]/40 p-3 text-xs text-white focus:border-[#0096FF] focus:outline-none cursor-pointer"
-                    style="border-radius: 8px !important;"
+                    class="w-full bg-[#16213E] border border-[#0096FF]/40 p-3.5 text-xs text-white rounded-lg focus:border-[#0096FF] focus:outline-none cursor-pointer"
                   >
                     <option value="" disabled selected>Select...</option>
                     <option value="website-traffic">Website traffic</option>
@@ -151,11 +142,11 @@
                 </div>
 
                 <div>
-                  <label class="block text-xs text-zinc-200 font-semibold mb-2">What is your goal?</label>
+                  <label class="block text-xs text-zinc-200 font-medium mb-2">What is your goal?</label>
                   <select 
+                    name="goal"
                     required 
-                    class="w-full bg-[#16213E] border border-[#0096FF]/40 p-3 text-xs text-white focus:border-[#0096FF] focus:outline-none cursor-pointer"
-                    style="border-radius: 8px !important;"
+                    class="w-full bg-[#16213E] border border-[#0096FF]/40 p-3.5 text-xs text-white rounded-lg focus:border-[#0096FF] focus:outline-none cursor-pointer"
                   >
                     <option value="" disabled selected>Select...</option>
                     <option value="more-enquiries">More enquiries</option>
@@ -167,11 +158,11 @@
                 </div>
 
                 <div>
-                  <label class="block text-xs text-zinc-200 font-semibold mb-2">What is your timeline?</label>
+                  <label class="block text-xs text-zinc-200 font-medium mb-2">What is your timeline?</label>
                   <select 
+                    name="timeline"
                     required 
-                    class="w-full bg-[#16213E] border border-[#0096FF]/40 p-3 text-xs text-white focus:border-[#0096FF] focus:outline-none cursor-pointer"
-                    style="border-radius: 8px !important;"
+                    class="w-full bg-[#16213E] border border-[#0096FF]/40 p-3.5 text-xs text-white rounded-lg focus:border-[#0096FF] focus:outline-none cursor-pointer"
                   >
                     <option value="" disabled selected>Select...</option>
                     <option value="asap">ASAP (2–4 weeks)</option>
@@ -182,11 +173,11 @@
                 </div>
 
                 <div>
-                  <label class="block text-xs text-zinc-200 font-semibold mb-2">What is your budget?</label>
+                  <label class="block text-xs text-zinc-200 font-medium mb-2">What is your budget?</label>
                   <select 
+                    name="budget"
                     required 
-                    class="w-full bg-[#16213E] border border-[#0096FF]/40 p-3 text-xs text-white focus:border-[#0096FF] focus:outline-none cursor-pointer"
-                    style="border-radius: 8px !important;"
+                    class="w-full bg-[#16213E] border border-[#0096FF]/40 p-3.5 text-xs text-white rounded-lg focus:border-[#0096FF] focus:outline-none cursor-pointer"
                   >
                     <option value="" disabled selected>Select...</option>
                     <option value="under-10k">Under R10,000</option>
@@ -201,78 +192,75 @@
               <button 
                 type="button" 
                 id="goto-step-2" 
-                class="w-full bg-[#0096FF] hover:bg-[#89CFF0] text-white hover:text-[#16213E] font-bold py-3.5 text-sm transition mt-6 flex items-center justify-center gap-2 cursor-pointer shadow-lg"
-                style="border-radius: 10px !important;"
+                class="w-full bg-[#0096FF] hover:bg-[#89CFF0] text-white hover:text-[#16213E] font-bold py-4 text-sm transition mt-6 flex items-center justify-center gap-2 rounded-lg cursor-pointer shadow-lg"
               >
                 <span>Continue</span>
                 <span>→</span>
               </button>
             </div>
 
-            <!-- ================= STEP 2: CONTACT DETAILS ================= -->
+            <!-- STEP 2: CONTACT FORM (No header text branding) -->
             <div id="modal-step-2" class="space-y-5 hidden">
-              <h3 class="text-xl font-bold text-white mb-4">Where should we send your plan?</h3>
+              <h3 class="text-xl font-bold text-white mb-5">Where should we send your plan?</h3>
 
               <div class="space-y-4">
                 <div>
-                  <label class="block text-xs text-zinc-200 font-semibold mb-1.5">Your name</label>
+                  <label class="block text-xs text-zinc-200 font-medium mb-2">Your name</label>
                   <input 
                     type="text" 
+                    name="full_name"
                     placeholder="Full name" 
                     required 
-                    class="w-full bg-[#16213E] border border-[#0096FF]/40 p-3 text-xs text-white placeholder-zinc-500 focus:border-[#0096FF] focus:outline-none"
-                    style="border-radius: 8px !important;"
+                    class="w-full bg-[#16213E] border border-[#0096FF]/40 p-3.5 text-xs text-white placeholder-zinc-500 rounded-lg focus:border-[#0096FF] focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label class="block text-xs text-zinc-200 font-semibold mb-1.5">Email address*</label>
+                  <label class="block text-xs text-zinc-200 font-medium mb-2">Email address*</label>
                   <input 
                     type="email" 
+                    name="email"
                     placeholder="you@company.co.za" 
                     required 
-                    class="w-full bg-[#16213E] border border-[#0096FF]/40 p-3 text-xs text-white placeholder-zinc-500 focus:border-[#0096FF] focus:outline-none"
-                    style="border-radius: 8px !important;"
+                    class="w-full bg-[#16213E] border border-[#0096FF]/40 p-3.5 text-xs text-white placeholder-zinc-500 rounded-lg focus:border-[#0096FF] focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label class="block text-xs text-zinc-200 font-semibold mb-1.5">Phone number*</label>
+                  <label class="block text-xs text-zinc-200 font-medium mb-2">Phone number*</label>
                   <input 
                     type="tel" 
+                    name="phone"
                     placeholder="+27 82 000 0000" 
                     required 
-                    class="w-full bg-[#16213E] border border-[#0096FF]/40 p-3 text-xs text-white placeholder-zinc-500 focus:border-[#0096FF] focus:outline-none"
-                    style="border-radius: 8px !important;"
+                    class="w-full bg-[#16213E] border border-[#0096FF]/40 p-3.5 text-xs text-white placeholder-zinc-500 rounded-lg focus:border-[#0096FF] focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label class="block text-xs text-zinc-200 font-semibold mb-1.5">Business name</label>
+                  <label class="block text-xs text-zinc-200 font-medium mb-2">Business name</label>
                   <input 
                     type="text" 
+                    name="business_name"
                     placeholder="Company or brand" 
-                    class="w-full bg-[#16213E] border border-[#0096FF]/40 p-3 text-xs text-white placeholder-zinc-500 focus:border-[#0096FF] focus:outline-none"
-                    style="border-radius: 8px !important;"
+                    class="w-full bg-[#16213E] border border-[#0096FF]/40 p-3.5 text-xs text-white placeholder-zinc-500 rounded-lg focus:border-[#0096FF] focus:outline-none"
                   />
                 </div>
               </div>
 
-              <!-- Final Submit Controls -->
+              <!-- Action Buttons -->
               <div class="flex gap-3 pt-3">
                 <button 
                   type="button" 
                   id="back-to-step-1" 
-                  class="w-1/3 bg-[#16213E] border border-[#0096FF]/40 text-[#89CFF0] font-semibold py-3.5 text-xs transition hover:bg-[#0096FF]/10 cursor-pointer"
-                  style="border-radius: 10px !important;"
+                  class="w-1/3 bg-[#16213E] border border-[#0096FF]/40 text-[#89CFF0] font-semibold py-3.5 text-xs transition hover:bg-[#0096FF]/20 rounded-lg cursor-pointer"
                 >
                   ← Back
                 </button>
 
                 <button 
                   type="submit" 
-                  class="w-2/3 bg-[#0096FF] hover:bg-[#89CFF0] text-white hover:text-[#16213E] font-bold py-3.5 text-xs transition flex items-center justify-center gap-2 cursor-pointer shadow-lg"
-                  style="border-radius: 10px !important;"
+                  class="w-2/3 bg-[#0096FF] hover:bg-[#89CFF0] text-white hover:text-[#16213E] font-bold py-3.5 text-xs transition rounded-lg flex items-center justify-center gap-2 cursor-pointer shadow-lg"
                 >
                   <span>Get my growth plan</span>
                 </button>
@@ -282,22 +270,14 @@
           </form>
         </div>
 
-        <p class="text-[11px] text-zinc-400 text-center mt-6">
-          ✨ Better details help us recommend the right growth system.
+        <p class="text-[11px] text-zinc-400 text-center mt-6 flex items-center justify-center gap-1">
+          <span>✨</span> Better details help us recommend the right growth system.
         </p>
-
       </div>
 
     </div>
   </div>
 </div>
-
-<style>
-  .custom-growth-btn:hover {
-    background-color: #89CFF0 !important;
-    color: #16213E !important;
-  }
-</style>
 
 <script is:inline>
   const openBtn = document.getElementById('open-growth-modal');
@@ -315,7 +295,6 @@
   openBtn?.addEventListener('click', () => modal?.classList.remove('hidden'));
   closeBtn?.addEventListener('click', () => modal?.classList.add('hidden'));
 
-  // Step 1 -> Step 2
   nextBtn?.addEventListener('click', () => {
     step1?.classList.add('hidden');
     step2?.classList.remove('hidden');
@@ -323,7 +302,6 @@
     if (stepIndicator) stepIndicator.textContent = 'STEP 2 OF 2';
   });
 
-  // Step 2 -> Step 1
   backBtn?.addEventListener('click', () => {
     step2?.classList.add('hidden');
     step1?.classList.remove('hidden');
@@ -331,7 +309,6 @@
     if (stepIndicator) stepIndicator.textContent = 'STEP 1 OF 2';
   });
 
-  // Close on backdrop click
   modal?.addEventListener('click', (e) => {
     if (e.target === modal) modal.classList.add('hidden');
   });
