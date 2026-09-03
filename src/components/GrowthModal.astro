@@ -229,7 +229,7 @@ import wdpLogo from '../assets/wdp-transparent-logo.avif';
   </div>
 </div>
 
-<style>
+<style is:global>
   @font-face {
     font-family: 'Cabinet Grotesk';
     src: url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@700&display=swap');
@@ -263,16 +263,22 @@ import wdpLogo from '../assets/wdp-transparent-logo.avif';
     color: #ffffff !important;
   }
 
-  /* Force rectangular shape with rounded corners for both step buttons */
-#btn-continue,
-#growth-form button[type="submit"] {
-  border-radius: 0.75rem !important; /* Matches rounded-xl */
-}
-
-#open-growth-modal {
+ #open-growth-modal {
   border-radius: 0.75rem !important;
   padding: 30px !important;
 }
+
+/* Force rectangular shape with rounded corners on all three modal buttons */
+  #btn-continue,
+  #growth-form button[type="submit"],
+  #open-growth-modal {
+    border-radius: 0.75rem !important; /* 12px rounded corners */
+  }
+
+  /* Specific padding for the Trigger Button */
+  #open-growth-modal {
+    padding: 30px !important;
+  }
 </style>
 
 <script>
