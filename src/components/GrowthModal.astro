@@ -4,49 +4,58 @@ import { Image } from 'astro:assets';
 import wdpLogo from '../assets/wdp-transparent-logo.avif';
 ---
 
+<!-- Trigger Button Section -->
 <div class="w-full flex justify-center items-center my-16 px-4">
   <button 
     id="open-growth-modal" 
     type="button"
-    class="bg-[#0096FF] hover:bg-[#89CFF0] hover:text-[#16213E] text-white font-jakarta font-bold text-lg md:text-xl px-[30px] py-[30px] rounded-xl shadow-xl transition-all duration-200 cursor-pointer inline-flex items-center justify-center border-none text-center"
+    class="bg-[#0096FF] hover:bg-[#89CFF0] hover:text-[#16213E] text-white font-jakarta font-bold text-lg md:text-xl px-10 py-5 rounded-xl shadow-xl transition-all duration-200 cursor-pointer inline-flex items-center justify-center border-none text-center"
   >
     Find Your Growth Package
   </button>
 </div>
 
-<div id="growth-modal" class="fixed inset-0 z-[9999] hidden min-h-screen w-screen flex items-center justify-center bg-black/80 p-4 sm:p-6 md:p-10 backdrop-blur-md overflow-y-auto">
+<!-- Modal Backdrop -->
+<div id="growth-modal" class="fixed inset-0 z-[9999] hidden min-h-screen w-screen flex items-center justify-center bg-black/85 p-4 sm:p-6 md:p-10 backdrop-blur-md overflow-y-auto">
   
-  <div class="relative w-full max-w-[95vw] lg:max-w-[85vw] xl:max-w-[1400px] min-h-[70vh] bg-[#16213E] text-white rounded-2xl border border-[#0096FF]/30 shadow-2xl p-8 md:p-12 lg:p-16 my-auto flex flex-col justify-between">
+  <!-- Outer Modal Card Container -->
+  <div class="relative w-full max-w-[95vw] lg:max-w-[85vw] xl:max-w-[1350px] bg-[#16213E] text-white rounded-2xl border border-[#0096FF]/30 shadow-2xl p-8 md:p-12 lg:p-14 my-auto flex flex-col justify-between">
     
+    <!-- Close Button -->
     <button id="close-modal" type="button" class="absolute top-6 right-6 text-gray-400 hover:text-white text-3xl font-bold cursor-pointer transition-colors z-20 p-2" aria-label="Close modal">
       ✕
     </button>
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-stretch h-full my-auto">
+    <!-- Main Grid Layout (50px Spacing Gap) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-stretch h-full my-auto">
       
-      <div class="lg:col-span-5 flex flex-col justify-between space-y-8">
+      <!-- LEFT COLUMN -->
+      <div class="lg:col-span-5 flex flex-col justify-between space-y-10">
         
-        <div class="space-y-6">
+        <!-- Header & Logo Section -->
+        <div class="space-y-8">
           <div class="flex justify-start">
-            <span class="inline-block bg-[#0f172a] border border-[#0096FF]/30 text-[#89CFF0] text-sm font-bold px-5 py-2.5 rounded-md uppercase tracking-wider font-jakarta">
+            <span class="inline-block bg-[#0f172a] border border-[#0096FF]/30 text-[#89CFF0] text-xs md:text-sm font-bold px-5 py-2.5 rounded-lg uppercase tracking-wider font-jakarta">
               BEFORE YOU GO
             </span>
           </div>
 
+          <!-- Scaled Logo (Legible Size) -->
           <div class="flex justify-start">
-            <Image src={wdpLogo} alt="Web Design Pros Logo" class="h-12 w-auto object-contain" />
+            <Image src={wdpLogo} alt="Web Design Pros Logo" class="h-16 md:h-20 w-auto object-contain" />
           </div>
 
           <h3 class="font-cabinet font-bold text-3xl md:text-4xl xl:text-5xl text-white leading-tight">
             Let us help your business grow faster.
           </h3>
 
-          <p class="font-jakarta text-base text-gray-300 leading-relaxed">
+          <p class="font-jakarta text-sm md:text-base text-gray-300 leading-relaxed">
             Answer a few quick questions and let us recommend the perfect web design, SEO, and growth strategy for your South African business.
           </p>
         </div>
 
-        <div class="grid grid-cols-3 gap-4 py-3">
+        <!-- 01, 02, 03 Indicator Boxes -->
+        <div class="grid grid-cols-3 gap-4">
           <div class="bg-[#0f172a]/80 border border-[#0096FF]/30 rounded-xl p-4 text-center flex flex-col justify-center items-center">
             <span class="text-[#0096FF] font-bold text-lg font-jakarta">01</span>
             <span class="font-jakarta font-bold text-xs tracking-wider text-white uppercase mt-1">GROWTH</span>
@@ -61,6 +70,7 @@ import wdpLogo from '../assets/wdp-transparent-logo.avif';
           </div>
         </div>
 
+        <!-- Feature Box -->
         <div class="bg-[#0f172a]/80 border border-[#0096FF]/30 rounded-xl p-6 space-y-2">
           <h4 class="font-jakarta font-bold text-base text-white">Get a clear direction</h4>
           <p class="font-jakarta text-sm text-gray-300 leading-relaxed">
@@ -70,45 +80,69 @@ import wdpLogo from '../assets/wdp-transparent-logo.avif';
 
       </div>
 
-      <div class="lg:col-span-7 bg-[#0f172a]/60 border border-[#0096FF]/30 rounded-2xl p-8 md:p-12 flex flex-col justify-between space-y-8">
+      <!-- RIGHT COLUMN BOX -->
+      <div class="lg:col-span-7 bg-[#0f172a]/60 border border-[#0096FF]/30 rounded-2xl p-8 md:p-12 flex flex-col justify-between space-y-10">
         
+        <!-- Step Header & Rectangular Progress Bars -->
         <div class="space-y-4">
           <div class="flex justify-between items-center">
-            <span id="step-label" class="font-jakarta text-sm font-bold text-gray-300 uppercase tracking-wider">STEP 1 OF 2</span>
-            <span class="font-jakarta font-bold text-sm text-[#0096FF] tracking-wider uppercase">GROWTH CHECK</span>
+            <span id="step-label" class="font-jakarta text-xs md:text-sm font-bold text-gray-300 uppercase tracking-wider">STEP 1 OF 2</span>
+            <span class="font-jakarta font-bold text-xs md:text-sm text-[#0096FF] tracking-wider uppercase">GROWTH CHECK</span>
           </div>
           
+          <!-- Rectangular Progress Bar Container -->
           <div class="flex items-center gap-3 w-full">
-            <div id="bar-1" class="h-3 flex-1 bg-[#0096FF] rounded-full transition-all duration-300"></div>
-            <div id="bar-2" class="h-3 flex-1 bg-slate-700 rounded-full transition-all duration-300"></div>
+            <div id="bar-1" class="h-2.5 flex-1 bg-[#0096FF] rounded-md transition-all duration-300"></div>
+            <div id="bar-2" class="h-2.5 flex-1 bg-slate-700 rounded-md transition-all duration-300"></div>
           </div>
         </div>
 
-        <div id="step-1-content" class="space-y-8">
+        <!-- STEP 1 VIEW -->
+        <div id="step-1-content" class="space-y-10">
           
+          <!-- Tab Category Cards with #0096FF SVGs -->
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <button type="button" data-tab="need" class="tab-btn bg-[#0f172a] border border-[#0096FF]/30 rounded-xl p-4 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-[#0096FF]">
-              <span class="text-2xl mb-2">🎯</span>
+            
+            <!-- NEED TAB -->
+            <button type="button" data-tab="need" class="tab-btn bg-[#0f172a] border border-[#0096FF]/30 rounded-xl p-5 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-[#0096FF] gap-3">
+              <svg class="w-6 h-6 text-[#0096FF]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="9" />
+                <circle cx="12" cy="12" r="5" />
+                <circle cx="12" cy="12" r="1" />
+              </svg>
               <span class="font-jakarta font-bold text-xs text-white uppercase">NEED</span>
             </button>
-            <button type="button" data-tab="goal" class="tab-btn bg-[#0f172a] border border-[#0096FF]/30 rounded-xl p-4 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-[#0096FF]">
-              <span class="text-2xl mb-2">📈</span>
+
+            <!-- GOAL TAB -->
+            <button type="button" data-tab="goal" class="tab-btn bg-[#0f172a] border border-[#0096FF]/30 rounded-xl p-5 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-[#0096FF] gap-3">
+              <svg class="w-6 h-6 text-[#0096FF]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              </svg>
               <span class="font-jakarta font-bold text-xs text-white uppercase">GOAL</span>
             </button>
-            <button type="button" data-tab="plan" class="tab-btn bg-[#0f172a] border border-[#0096FF]/30 rounded-xl p-4 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-[#0096FF]">
-              <span class="text-2xl mb-2">🛡️</span>
+
+            <!-- PLAN TAB -->
+            <button type="button" data-tab="plan" class="tab-btn bg-[#0f172a] border border-[#0096FF]/30 rounded-xl p-5 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-[#0096FF] gap-3">
+              <svg class="w-6 h-6 text-[#0096FF]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
               <span class="font-jakarta font-bold text-xs text-white uppercase">PLAN</span>
             </button>
-            <button type="button" data-tab="budget" class="tab-btn bg-[#0f172a] border border-[#0096FF]/30 rounded-xl p-4 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-[#0096FF]">
-              <span class="text-2xl mb-2">💰</span>
+
+            <!-- BUDGET TAB -->
+            <button type="button" data-tab="budget" class="tab-btn bg-[#0f172a] border border-[#0096FF]/30 rounded-xl p-5 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-[#0096FF] gap-3">
+              <svg class="w-6 h-6 text-[#0096FF]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V6m0 12v-2m0 0c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
               <span class="font-jakarta font-bold text-xs text-white uppercase">BUDGET</span>
             </button>
           </div>
 
+          <!-- Select Dropdowns Grid -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div class="space-y-2">
               <label for="select-need" class="block font-jakarta text-xs md:text-sm text-gray-300">What do you want to improve?</label>
-              <select id="select-need" data-target="need" class="growth-select w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-4 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all cursor-pointer">
+              <select id="select-need" data-target="need" class="growth-select w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-3.5 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all cursor-pointer">
                 <option value="" disabled selected>Select...</option>
                 <option value="leads">Lead Generation</option>
                 <option value="sales">Online Sales</option>
@@ -118,7 +152,7 @@ import wdpLogo from '../assets/wdp-transparent-logo.avif';
 
             <div class="space-y-2">
               <label for="select-goal" class="block font-jakarta text-xs md:text-sm text-gray-300">What is your goal?</label>
-              <select id="select-goal" data-target="goal" class="growth-select w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-4 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all cursor-pointer">
+              <select id="select-goal" data-target="goal" class="growth-select w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-3.5 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all cursor-pointer">
                 <option value="" disabled selected>Select...</option>
                 <option value="2x">Double Monthly Revenue</option>
                 <option value="automation">Automate Inquiries</option>
@@ -128,7 +162,7 @@ import wdpLogo from '../assets/wdp-transparent-logo.avif';
 
             <div class="space-y-2">
               <label for="select-plan" class="block font-jakarta text-xs md:text-sm text-gray-300">What is your time frame?</label>
-              <select id="select-plan" data-target="plan" class="growth-select w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-4 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all cursor-pointer">
+              <select id="select-plan" data-target="plan" class="growth-select w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-3.5 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all cursor-pointer">
                 <option value="" disabled selected>Select...</option>
                 <option value="asap">Immediate (ASAP)</option>
                 <option value="1month">Within 1 Month</option>
@@ -138,7 +172,7 @@ import wdpLogo from '../assets/wdp-transparent-logo.avif';
 
             <div class="space-y-2">
               <label for="select-budget" class="block font-jakarta text-xs md:text-sm text-gray-300">What is your budget?</label>
-              <select id="select-budget" data-target="budget" class="growth-select w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-4 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all cursor-pointer">
+              <select id="select-budget" data-target="budget" class="growth-select w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-3.5 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all cursor-pointer">
                 <option value="" disabled selected>Select...</option>
                 <option value="starter">R10,000 – R25,000</option>
                 <option value="growth">R25,000 – R50,000</option>
@@ -147,8 +181,9 @@ import wdpLogo from '../assets/wdp-transparent-logo.avif';
             </div>
           </div>
 
-          <div class="pt-4">
-            <button id="btn-continue" type="button" class="w-full bg-[#0096FF] hover:bg-[#89CFF0] hover:text-[#16213E] text-white font-jakarta font-bold text-lg py-5 px-8 rounded-xl transition-all duration-200 cursor-pointer flex items-center justify-center gap-3 shadow-lg">
+          <!-- Continue Button (Rectangular with Curved Edges) -->
+          <div class="pt-2">
+            <button id="btn-continue" type="button" class="w-full bg-[#0096FF] hover:bg-[#89CFF0] hover:text-[#16213E] text-white font-jakarta font-bold text-lg py-4 px-8 rounded-xl transition-all duration-200 cursor-pointer flex items-center justify-center gap-3 shadow-lg">
               <span>Continue</span>
               <span>→</span>
             </button>
@@ -159,7 +194,8 @@ import wdpLogo from '../assets/wdp-transparent-logo.avif';
           </p>
         </div>
 
-        <div id="step-2-content" class="space-y-6 hidden">
+        <!-- STEP 2 VIEW -->
+        <div id="step-2-content" class="space-y-8 hidden">
           <h3 class="font-cabinet font-bold text-2xl text-white">
             Where should we send your plan?
           </h3>
@@ -167,26 +203,27 @@ import wdpLogo from '../assets/wdp-transparent-logo.avif';
           <form id="growth-form" class="space-y-5">
             <div class="space-y-2">
               <label for="full-name" class="block font-jakarta text-xs md:text-sm text-gray-300">Your name *</label>
-              <input type="text" id="full-name" required placeholder="Full name" class="w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-4 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all" />
+              <input type="text" id="full-name" required placeholder="Full name" class="w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-3.5 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all" />
             </div>
 
             <div class="space-y-2">
               <label for="email-address" class="block font-jakarta text-xs md:text-sm text-gray-300">Email address *</label>
-              <input type="email" id="email-address" required placeholder="you@company.co.za" class="w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-4 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all" />
+              <input type="email" id="email-address" required placeholder="you@company.co.za" class="w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-3.5 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all" />
             </div>
 
             <div class="space-y-2">
               <label for="phone-number" class="block font-jakarta text-xs md:text-sm text-gray-300">Phone number *</label>
-              <input type="tel" id="phone-number" required placeholder="Phone number" class="w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-4 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all" />
+              <input type="tel" id="phone-number" required placeholder="Phone number" class="w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-3.5 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all" />
             </div>
 
             <div class="space-y-2">
               <label for="business-name" class="block font-jakarta text-xs md:text-sm text-gray-300">Business name</label>
-              <input type="text" id="business-name" placeholder="Name of your company or business" class="w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-4 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all" />
+              <input type="text" id="business-name" placeholder="Name of your company or business" class="w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-3.5 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all" />
             </div>
 
-            <div class="pt-4">
-              <button type="submit" class="w-full bg-[#0096FF] hover:bg-[#89CFF0] hover:text-[#16213E] text-white font-jakarta font-bold text-lg py-5 px-8 rounded-xl transition-all duration-200 cursor-pointer text-center shadow-lg">
+            <!-- Get My Growth Plan Button (Rectangular with Curved Edges) -->
+            <div class="pt-2">
+              <button type="submit" class="w-full bg-[#0096FF] hover:bg-[#89CFF0] hover:text-[#16213E] text-white font-jakarta font-bold text-lg py-4 px-8 rounded-xl transition-all duration-200 cursor-pointer text-center shadow-lg">
                 Get my growth plan
               </button>
             </div>
@@ -231,6 +268,11 @@ import wdpLogo from '../assets/wdp-transparent-logo.avif';
   .bg-selected {
     background-color: #0096FF !important;
     border-color: #89CFF0 !important;
+  }
+
+  .bg-selected stroke,
+  .bg-selected svg {
+    color: #ffffff !important;
   }
 </style>
 
