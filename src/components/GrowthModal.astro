@@ -1,276 +1,215 @@
 ---
-/* GrowthModal.astro */
+// GrowthModal.astro
+import { Image } from 'astro:assets';
+import wdpLogo from '../assets/wdp-transparent-logo.avif';
 ---
 
-<!-- Trigger Button (Item 13: Matches button_3.png exactly) -->
-<div class="w-full flex justify-center items-center my-12 px-4">
-  <button 
-    id="open-growth-modal" 
-    type="button"
-    class="font-bold text-white text-xl py-6 px-12 transition-all duration-200 shadow-xl hover:bg-[#89CFF0] hover:text-[#16213E] cursor-pointer text-center inline-flex items-center justify-center rounded-2xl w-full max-w-md min-h-[80px]"
-    style="background-color: #0096FF;"
-  >
-    Find Your Growth Package
-  </button>
-</div>
-
-<!-- Modal Backdrop (Item 7: Expanded max width to max-w-6xl and increased padding) -->
-<div id="growth-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden z-50 flex items-center justify-center p-4 md:p-8 overflow-y-auto">
+<!-- Modal Backdrop -->
+<div id="growth-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 p-4 md:p-8 backdrop-blur-sm overflow-y-auto">
   
-  <!-- Main Modal Container -->
-  <div class="bg-[#16213E] text-white w-full max-w-6xl rounded-2xl p-8 md:p-12 shadow-2xl my-auto">
+  <!-- Outer Modal Card -->
+  <div class="relative w-full max-w-6xl bg-[#16213E] text-white rounded-md border border-[#0096FF]/20 shadow-2xl p-6 md:p-10 my-auto">
     
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch">
+    <!-- Close Button -->
+    <button id="close-modal" type="button" class="absolute top-6 right-6 text-gray-400 hover:text-white text-2xl font-bold cursor-pointer transition-colors z-10" aria-label="Close modal">
+      ✕
+    </button>
+
+    <!-- Main Grid Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
       
-      <!-- LEFT COLUMN (Item 9 & 10: Alignment & 30px offsets) -->
-      <div class="lg:col-span-5 flex flex-col justify-between space-y-8 pl-0 lg:pl-[30px]">
+      <!-- LEFT COLUMN -->
+      <div class="lg:col-span-5 flex flex-col justify-between space-y-6">
+        
+        <!-- Top Section: Badge, Logo, Title -->
         <div class="space-y-6">
           <!-- BEFORE YOU GO Badge -->
-  <div class="flex justify-center w-full">
-  <span class="inline-block bg-[#0f172a] border border-[#0096FF]/30 text-[#89CFF0] text-xs font-bold py-[5px] px-[5px] rounded-md uppercase tracking-wider text-center">
-    BEFORE YOU GO
-  </span>
-</div>
+          <div class="flex justify-center w-full">
+            <span class="inline-block bg-[#0f172a] border border-[#0096FF]/30 text-[#89CFF0] text-xs font-bold p-[15px] rounded-md uppercase tracking-wider text-center font-jakarta">
+              BEFORE YOU GO
+            </span>
+          </div>
 
-          <!-- Title & Description -->
-          <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-white leading-tight">
-            What would help your business grow faster?
-          </h2>
+          <!-- Logo -->
+          <div class="flex justify-start">
+            <Image src={wdpLogo} alt="Web Design Pros Logo" class="h-10 w-auto object-contain" />
+          </div>
 
-          <p class="text-zinc-300 text-sm leading-relaxed">
-            Answer a few quick questions and we&apos;ll recommend the right web design, SEO, and growth system for your South African business.
+          <!-- Main Heading -->
+          <h3 class="font-cabinet font-bold text-2xl md:text-3xl text-white leading-tight">
+            Let us help your business grow faster.
+          </h3>
+
+          <!-- Subtitle -->
+          <p class="font-jakarta text-sm text-gray-300 leading-relaxed">
+            Answer a few quick questions and let us recommend the perfect web design, SEO, and growth strategy for your South African business.
           </p>
         </div>
 
-        <div class="space-y-8">
-          <!-- Item 11: GROWTH, CONVERSION, FOLLOW-UP boxes twice as big, text dead center -->
-          <div class="grid grid-cols-3 gap-4 text-center">
-            <div class="bg-[#0f172a] border border-[#0096FF]/20 p-6 rounded-xl flex flex-col items-center justify-center min-h-[90px]">
-              <span class="block text-sm font-bold text-[#89CFF0]">01</span>
-              <span class="block text-xs font-bold text-white uppercase mt-1 tracking-wider text-center">GROWTH</span>
-            </div>
-            <div class="bg-[#0f172a] border border-[#0096FF]/20 p-6 rounded-xl flex flex-col items-center justify-center min-h-[90px]">
-              <span class="block text-sm font-bold text-[#89CFF0]">02</span>
-              <span class="block text-xs font-bold text-white uppercase mt-1 tracking-wider text-center">CONVERSION</span>
-            </div>
-            <div class="bg-[#0f172a] border border-[#0096FF]/20 p-6 rounded-xl flex flex-col items-center justify-center min-h-[90px]">
-              <span class="block text-sm font-bold text-[#89CFF0]">03</span>
-              <span class="block text-xs font-bold text-white uppercase mt-1 tracking-wider text-center">FOLLOW-UP</span>
-            </div>
+        <!-- Middle Section: 01, 02, 03 Boxes -->
+        <div class="grid grid-cols-3 gap-3 my-2">
+          <div class="bg-[#0f172a]/60 border border-[#0096FF]/20 rounded-md p-3 text-center flex flex-col justify-center items-center">
+            <span class="text-[#0096FF] font-bold text-sm block font-jakarta">01</span>
+            <span class="font-jakarta font-bold text-xs tracking-wider text-white uppercase mt-1">GROWTH</span>
           </div>
-
-          <!-- Item 12: Dropped 30px (mt-[30px]) -->
-          <div class="bg-[#0f172a] border border-[#0096FF]/20 p-5 rounded-xl flex items-center gap-4 mt-[30px]">
-            <div class="bg-[#0096FF]/20 text-[#89CFF0] p-3 rounded-lg flex-shrink-0 text-xl">
-              🚀
-            </div>
-            <div>
-              <h4 class="text-xs font-bold text-white">Get a practical next step</h4>
-              <p class="text-xs text-zinc-400 mt-1">No generic pitch — a tailored growth recommendation based on your answers.</p>
-            </div>
+          <div class="bg-[#0f172a]/60 border border-[#0096FF]/20 rounded-md p-3 text-center flex flex-col justify-center items-center">
+            <span class="text-[#0096FF] font-bold text-sm block font-jakarta">02</span>
+            <span class="font-jakarta font-bold text-xs tracking-wider text-white uppercase mt-1">CONVERSION</span>
+          </div>
+          <div class="bg-[#0f172a]/60 border border-[#0096FF]/20 rounded-md p-3 text-center flex flex-col justify-center items-center">
+            <span class="text-[#0096FF] font-bold text-sm block font-jakarta">03</span>
+            <span class="font-jakarta font-bold text-xs tracking-wider text-white uppercase mt-1">FOLLOW-UP</span>
           </div>
         </div>
+
+        <!-- Bottom Feature Card -->
+        <div class="bg-[#0f172a]/80 border border-[#0096FF]/20 rounded-md p-5 space-y-2">
+          <h4 class="font-jakarta font-bold text-sm text-white">Get a clear direction</h4>
+          <p class="font-jakarta text-xs text-gray-300 leading-relaxed">
+            No assumptions. Just a recommendation tailored to your business.
+          </p>
+        </div>
+
       </div>
 
-      <!-- RIGHT COLUMN: FLOATING FORM CARD (Item 8, 10: 30px padding around edges) -->
-      <div class="lg:col-span-7 bg-[#0f172a] border border-[#0096FF]/30 p-[30px] rounded-2xl relative shadow-xl flex flex-col justify-between">
+      <!-- RIGHT COLUMN -->
+      <div class="lg:col-span-7 bg-[#0f172a]/40 border border-[#0096FF]/20 rounded-md p-6 md:p-8 flex flex-col justify-between space-y-6">
         
-        <!-- Close Button -->
-        <button 
-          id="close-growth-modal" 
-          type="button"
-          class="absolute top-6 right-6 bg-[#16213E] hover:bg-[#0096FF]/20 text-zinc-300 hover:text-white w-9 h-9 rounded-full border border-[#0096FF]/30 transition cursor-pointer flex items-center justify-center z-20"
-        >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
-
+        <!-- Header & Segmented Progress Bar -->
         <div>
-          <!-- Item 1: Center align the words GROWTH CHECK -->
-          <div class="mb-3 text-center">
-            <span class="text-xs font-bold text-[#89CFF0] tracking-wider uppercase block">GROWTH CHECK</span>
+          <div class="flex justify-between items-center mb-2">
+            <span id="step-label" class="font-jakarta text-xs font-bold text-gray-300 uppercase tracking-wider">STEP 1 OF 2</span>
+            <span class="font-jakarta font-bold text-xs text-[#0096FF] tracking-wider uppercase">GROWTH CHECK</span>
           </div>
           
-          <!-- Progress Bar -->
-          <p id="step-indicator" class="text-[10px] font-bold text-zinc-400 tracking-wider mb-2 uppercase text-center">STEP 1 OF 2</p>
-          <div class="w-full bg-[#16213E] h-2 overflow-hidden rounded-full border border-[#0096FF]/20">
-            <div id="progress-bar" class="bg-[#0096FF] h-full w-1/2 transition-all duration-300"></div>
+          <!-- Segmented Progress Bar -->
+          <div class="flex items-center gap-2 w-full my-3">
+            <div id="bar-1" class="h-2 flex-1 bg-[#0096FF] rounded-sm transition-colors duration-300"></div>
+            <div id="bar-2" class="h-2 flex-1 bg-[#8eb6d2] rounded-sm transition-colors duration-300"></div>
           </div>
-
-          <form id="growth-check-form" name="growth-calculator" method="POST" data-netlify="true">
-            <input type="hidden" name="form-name" value="growth-calculator" />
-            
-            <!-- STEP 1 -->
-            <div id="modal-step-1">
-              
-              <!-- Item 2: Dropped 30px lower (mt-[30px]), 25% larger boxes, dead-center contents, rounded-2xl like wdp-7.png -->
-              <div class="grid grid-cols-3 gap-4 mt-[30px]">
-                <div class="border-2 border-[#0096FF] bg-[#0096FF]/15 text-white p-6 text-center rounded-2xl flex flex-col items-center justify-center gap-2 cursor-pointer min-h-[110px]">
-                  <span class="text-2xl block text-center">🎯</span>
-                  <span class="block text-xs font-bold tracking-wider uppercase text-center w-full">NEED</span>
-                </div>
-                <div class="border border-zinc-800 bg-[#16213E] text-zinc-400 p-6 text-center rounded-2xl flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-[#0096FF]/40 min-h-[110px]">
-                  <span class="text-2xl block text-center">📈</span>
-                  <span class="block text-xs font-bold tracking-wider uppercase text-center w-full">GOAL</span>
-                </div>
-                <div class="border border-zinc-800 bg-[#16213E] text-zinc-400 p-6 text-center rounded-2xl flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-[#0096FF]/40 min-h-[110px]">
-                  <span class="text-2xl block text-center">🛡️</span>
-                  <span class="block text-xs font-bold tracking-wider uppercase text-center w-full">PLAN</span>
-                </div>
-              </div>
-
-              <!-- Item 3: Dropped 30px lower (mt-[30px]) -->
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6 mt-[30px]">
-                <div>
-                  <label class="block text-xs text-zinc-200 font-medium mb-2">What are you trying to improve?</label>
-                  <!-- Item 4: 3x taller select box, non-pill wdp-7 style (py-5, rounded-2xl) -->
-                  <select 
-                    name="improvement_area"
-                    required 
-                    class="w-full bg-[#16213E] border border-[#0096FF]/40 py-5 px-5 text-sm text-white rounded-2xl focus:border-[#0096FF] focus:outline-none cursor-pointer appearance-none"
-                  >
-                    <option value="" disabled selected>Select...</option>
-                    <option value="website-traffic">Website traffic</option>
-                    <option value="lead-generation">Lead generation</option>
-                    <option value="online-sales">Online sales</option>
-                    <option value="brand-credibility">Brand credibility</option>
-                    <option value="google-rankings">Google rankings</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label class="block text-xs text-zinc-200 font-medium mb-2">What is your goal?</label>
-                  <select 
-                    name="goal"
-                    required 
-                    class="w-full bg-[#16213E] border border-[#0096FF]/40 py-5 px-5 text-sm text-white rounded-2xl focus:border-[#0096FF] focus:outline-none cursor-pointer appearance-none"
-                  >
-                    <option value="" disabled selected>Select...</option>
-                    <option value="more-enquiries">More enquiries</option>
-                    <option value="conversion-rate">Higher conversion rate</option>
-                    <option value="faster-website">Faster website</option>
-                    <option value="seo-visibility">Better SEO visibility</option>
-                    <option value="full-redesign">Full redesign</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label class="block text-xs text-zinc-200 font-medium mb-2">What is your timeline?</label>
-                  <select 
-                    name="timeline"
-                    required 
-                    class="w-full bg-[#16213E] border border-[#0096FF]/40 py-5 px-5 text-sm text-white rounded-2xl focus:border-[#0096FF] focus:outline-none cursor-pointer appearance-none"
-                  >
-                    <option value="" disabled selected>Select...</option>
-                    <option value="asap">ASAP (2–4 weeks)</option>
-                    <option value="1-2-months">1–2 months</option>
-                    <option value="3-plus-months">3+ months</option>
-                    <option value="exploring">Just exploring</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label class="block text-xs text-zinc-200 font-medium mb-2">What is your budget?</label>
-                  <select 
-                    name="budget"
-                    required 
-                    class="w-full bg-[#16213E] border border-[#0096FF]/40 py-5 px-5 text-sm text-white rounded-2xl focus:border-[#0096FF] focus:outline-none cursor-pointer appearance-none"
-                  >
-                    <option value="" disabled selected>Select...</option>
-                    <option value="under-10k">Under R10,000</option>
-                    <option value="10k-25k">R10,000 – R25,000</option>
-                    <option value="25k-60k">R25,000 – R60,000</option>
-                    <option value="60k-plus">R60,000+</option>
-                  </select>
-                </div>
-              </div>
-
-              <!-- Item 5: Continue button narrower (w-2/3 mx-auto) and dropped 30px (mt-[30px]) -->
-              <div class="mt-[30px] flex justify-center">
-                <button 
-                  type="button" 
-                  id="goto-step-2" 
-                  class="w-2/3 bg-[#0096FF] hover:bg-[#89CFF0] text-white hover:text-[#16213E] font-bold py-4 text-sm transition flex items-center justify-center gap-2 rounded-xl cursor-pointer shadow-lg"
-                >
-                  <span>Continue</span>
-                  <span>→</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- STEP 2 -->
-            <div id="modal-step-2" class="space-y-5 hidden mt-[30px]">
-              <h3 class="text-xl font-bold text-white mb-4">Where should we send your plan?</h3>
-
-              <div class="space-y-4">
-                <div>
-                  <label class="block text-xs text-zinc-200 font-medium mb-2">Your name</label>
-                  <input 
-                    type="text" 
-                    name="full_name"
-                    placeholder="Full name" 
-                    required 
-                    class="w-full bg-[#16213E] border border-[#0096FF]/40 py-5 px-5 text-sm text-white placeholder-zinc-500 rounded-2xl focus:border-[#0096FF] focus:outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label class="block text-xs text-zinc-200 font-medium mb-2">Email address*</label>
-                  <input 
-                    type="email" 
-                    name="email"
-                    placeholder="you@company.co.za" 
-                    required 
-                    class="w-full bg-[#16213E] border border-[#0096FF]/40 py-5 px-5 text-sm text-white placeholder-zinc-500 rounded-2xl focus:border-[#0096FF] focus:outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label class="block text-xs text-zinc-200 font-medium mb-2">Phone number*</label>
-                  <input 
-                    type="tel" 
-                    name="phone"
-                    placeholder="+27 82 000 0000" 
-                    required 
-                    class="w-full bg-[#16213E] border border-[#0096FF]/40 py-5 px-5 text-sm text-white placeholder-zinc-500 rounded-2xl focus:border-[#0096FF] focus:outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label class="block text-xs text-zinc-200 font-medium mb-2">Business name</label>
-                  <input 
-                    type="text" 
-                    name="business_name"
-                    placeholder="Company or brand" 
-                    class="w-full bg-[#16213E] border border-[#0096FF]/40 py-5 px-5 text-sm text-white placeholder-zinc-500 rounded-2xl focus:border-[#0096FF] focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              <div class="flex gap-3 pt-3">
-                <button 
-                  type="button" 
-                  id="back-to-step-1" 
-                  class="w-1/3 bg-[#16213E] border border-[#0096FF]/40 text-[#89CFF0] font-semibold py-4 text-xs transition hover:bg-[#0096FF]/20 rounded-xl cursor-pointer"
-                >
-                  ← Back
-                </button>
-
-                <button 
-                  type="submit" 
-                  class="w-2/3 bg-[#0096FF] hover:bg-[#89CFF0] text-white hover:text-[#16213E] font-bold py-4 text-xs transition rounded-xl flex items-center justify-center gap-2 cursor-pointer shadow-lg"
-                >
-                  <span>Get my growth plan</span>
-                </button>
-              </div>
-            </div>
-
-          </form>
         </div>
 
-        <!-- Item 6: Footer note dropped 30px lower (mt-[30px]) -->
-        <p class="text-[11px] text-zinc-400 text-center mt-[30px] flex items-center justify-center gap-1">
-          <span>✨</span> Better details help us recommend the right growth system.
-        </p>
+        <!-- STEP 1 VIEW -->
+        <div id="step-1-content" class="space-y-6">
+          
+          <!-- Top Interactive Tabs -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <button type="button" data-tab="need" class="tab-btn bg-[#0f172a] border border-[#0096FF]/30 rounded-md p-4 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-[#0096FF]">
+              <span class="text-[#0096FF] text-xl mb-1">🎯</span>
+              <span class="font-jakarta font-bold text-xs text-white uppercase">NEED</span>
+            </button>
+            <button type="button" data-tab="goal" class="tab-btn bg-[#0f172a] border border-[#0096FF]/30 rounded-md p-4 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-[#0096FF]">
+              <span class="text-[#0096FF] text-xl mb-1">📈</span>
+              <span class="font-jakarta font-bold text-xs text-white uppercase">GOAL</span>
+            </button>
+            <button type="button" data-tab="plan" class="tab-btn bg-[#0f172a] border border-[#0096FF]/30 rounded-md p-4 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-[#0096FF]">
+              <span class="text-[#0096FF] text-xl mb-1">🛡️</span>
+              <span class="font-jakarta font-bold text-xs text-white uppercase">PLAN</span>
+            </button>
+            <button type="button" data-tab="budget" class="tab-btn bg-[#0f172a] border border-[#0096FF]/30 rounded-md p-4 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-[#0096FF]">
+              <span class="text-[#0096FF] text-xl mb-1">💰</span>
+              <span class="font-jakarta font-bold text-xs text-white uppercase">BUDGET</span>
+            </button>
+          </div>
+
+          <!-- Dropdown Inputs Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <!-- Need Input -->
+            <div class="space-y-2">
+              <label for="select-need" class="block font-jakarta text-xs text-gray-300">What do you want to improve?</label>
+              <select id="select-need" data-target="need" class="growth-select w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-md py-3 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all cursor-pointer">
+                <option value="" disabled selected>Select...</option>
+                <option value="leads">Lead Generation</option>
+                <option value="sales">Online Sales</option>
+                <option value="brand">Brand Visibility</option>
+              </select>
+            </div>
+
+            <!-- Goal Input -->
+            <div class="space-y-2">
+              <label for="select-goal" class="block font-jakarta text-xs text-gray-300">What is your goal?</label>
+              <select id="select-goal" data-target="goal" class="growth-select w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-md py-3 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all cursor-pointer">
+                <option value="" disabled selected>Select...</option>
+                <option value="2x">Double Monthly Revenue</option>
+                <option value="automation">Automate Inquiries</option>
+                <option value="launch">Launch New Product</option>
+              </select>
+            </div>
+
+            <!-- Plan Input -->
+            <div class="space-y-2">
+              <label for="select-plan" class="block font-jakarta text-xs text-gray-300">What is your time frame?</label>
+              <select id="select-plan" data-target="plan" class="growth-select w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-md py-3 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all cursor-pointer">
+                <option value="" disabled selected>Select...</option>
+                <option value="asap">Immediate (ASAP)</option>
+                <option value="1month">Within 1 Month</option>
+                <option value="3months">1–3 Months</option>
+              </select>
+            </div>
+
+            <!-- Budget Input -->
+            <div class="space-y-2">
+              <label for="select-budget" class="block font-jakarta text-xs text-gray-300">What is your budget?</label>
+              <select id="select-budget" data-target="budget" class="growth-select w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-md py-3 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all cursor-pointer">
+                <option value="" disabled selected>Select...</option>
+                <option value="starter">R10,000 – R25,000</option>
+                <option value="growth">R25,000 – R50,000</option>
+                <option value="custom">R50,000+</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Continue Button -->
+          <div class="pt-2">
+            <button id="btn-continue" type="button" class="w-full bg-[#0096FF] hover:bg-[#89CFF0] hover:text-[#16213E] text-white font-jakarta font-bold py-4 px-6 rounded-md transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-lg">
+              <span>Continue</span>
+              <span>→</span>
+            </button>
+          </div>
+
+          <p class="font-jakarta text-xs text-gray-400 text-center">
+            Better information allows us to recommend the best growth platform.
+          </p>
+        </div>
+
+        <!-- STEP 2 VIEW (CONTACT FORM) -->
+        <div id="step-2-content" class="space-y-5 hidden">
+          <h3 class="font-cabinet font-bold text-xl text-white">
+            Where should we send your plan?
+          </h3>
+
+          <form id="growth-form" class="space-y-4">
+            <div class="space-y-1">
+              <label for="full-name" class="block font-jakarta text-xs text-gray-300">Your name *</label>
+              <input type="text" id="full-name" required placeholder="Full name" class="w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-md py-3 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all" />
+            </div>
+
+            <div class="space-y-1">
+              <label for="email-address" class="block font-jakarta text-xs text-gray-300">Email address *</label>
+              <input type="email" id="email-address" required placeholder="you@company.co.za" class="w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-md py-3 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all" />
+            </div>
+
+            <div class="space-y-1">
+              <label for="phone-number" class="block font-jakarta text-xs text-gray-300">Phone number *</label>
+              <input type="tel" id="phone-number" required placeholder="you@company.co.za" class="w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-md py-3 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all" />
+            </div>
+
+            <div class="space-y-1">
+              <label for="business-name" class="block font-jakarta text-xs text-gray-300">Business name</label>
+              <input type="text" id="business-name" placeholder="Name of your company or business" class="w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-md py-3 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all" />
+            </div>
+
+            <div class="pt-2">
+              <button type="submit" class="w-full bg-[#0096FF] hover:bg-[#89CFF0] hover:text-[#16213E] text-white font-jakarta font-bold py-4 px-6 rounded-md transition-all duration-200 cursor-pointer text-center shadow-lg">
+                Get my growth plan
+              </button>
+            </div>
+          </form>
+
+          <p class="font-jakarta text-xs text-gray-400 text-center">
+            Better information allows us to recommend the best growth platform.
+          </p>
+        </div>
 
       </div>
 
@@ -278,37 +217,104 @@
   </div>
 </div>
 
-<script is:inline>
-  const openBtn = document.getElementById('open-growth-modal');
-  const closeBtn = document.getElementById('close-growth-modal');
-  const modal = document.getElementById('growth-modal');
-  
-  const step1 = document.getElementById('modal-step-1');
-  const step2 = document.getElementById('modal-step-2');
-  const nextBtn = document.getElementById('goto-step-2');
-  const backBtn = document.getElementById('back-to-step-1');
-  
-  const progressBar = document.getElementById('progress-bar');
-  const stepIndicator = document.getElementById('step-indicator');
+<style>
+  /* 🔤 Heading Font: Cabinet Grotesk */
+  @font-face {
+    font-family: 'Cabinet Grotesk';
+    src: url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@700&display=swap');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
 
-  openBtn?.addEventListener('click', () => modal?.classList.remove('hidden'));
-  closeBtn?.addEventListener('click', () => modal?.classList.add('hidden'));
+  /* 🔤 Body Font: Plus Jakarta Sans */
+  @font-face {
+    font-family: 'Plus Jakarta Sans';
+    src: url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+    font-weight: 400 700;
+    font-style: normal;
+    font-display: swap;
+  }
 
-  nextBtn?.addEventListener('click', () => {
-    step1?.classList.add('hidden');
-    step2?.classList.remove('hidden');
-    progressBar?.classList.replace('w-1/2', 'w-full');
-    if (stepIndicator) stepIndicator.textContent = 'STEP 2 OF 2';
-  });
+  .font-cabinet {
+    font-family: 'Cabinet Grotesk', sans-serif;
+  }
 
-  backBtn?.addEventListener('click', () => {
-    step2?.classList.add('hidden');
-    step1?.classList.remove('hidden');
-    progressBar?.classList.replace('w-full', 'w-1/2');
-    if (stepIndicator) stepIndicator.textContent = 'STEP 1 OF 2';
-  });
+  .font-jakarta {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
 
-  modal?.addEventListener('click', (e) => {
-    if (e.target === modal) modal.classList.add('hidden');
+  /* Active selection state background override */
+  .bg-selected {
+    background-color: #7089c2 !important;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('growth-modal');
+    const closeBtn = document.getElementById('close-modal');
+    const openBtn = document.getElementById('open-growth-modal');
+    const btnContinue = document.getElementById('btn-continue');
+    
+    const step1Content = document.getElementById('step-1-content');
+    const step2Content = document.getElementById('step-2-content');
+    const stepLabel = document.getElementById('step-label');
+    const bar2 = document.getElementById('bar-2');
+
+    const tabs = document.querySelectorAll('.tab-btn');
+    const selects = document.querySelectorAll('.growth-select');
+
+    // Toggle Modal Visibility
+    if (openBtn) {
+      openBtn.addEventListener('click', () => modal?.classList.remove('hidden'));
+    }
+    closeBtn?.addEventListener('click', () => modal?.classList.add('hidden'));
+
+    // Synchronize Top Tabs & Dropdown Selects
+    function highlightPair(key) {
+      tabs.forEach(tab => {
+        if (tab.getAttribute('data-tab') === key) {
+          tab.classList.add('bg-selected');
+        }
+      });
+
+      selects.forEach(select => {
+        if (select.getAttribute('data-target') === key) {
+          select.classList.add('bg-selected');
+          select.focus();
+        }
+      });
+    }
+
+    // Tab Clicks
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const key = tab.getAttribute('data-tab');
+        if (key) highlightPair(key);
+      });
+    });
+
+    // Select Focus/Change Events
+    selects.forEach(select => {
+      select.addEventListener('focus', () => {
+        select.style.borderColor = '#0096ff';
+      });
+
+      select.addEventListener('change', () => {
+        const targetKey = select.getAttribute('data-target');
+        if (targetKey) highlightPair(targetKey);
+      });
+    });
+
+    // Advance to Step 2
+    btnContinue?.addEventListener('click', () => {
+      step1Content?.classList.add('hidden');
+      step2Content?.classList.remove('hidden');
+      if (stepLabel) stepLabel.textContent = 'STEP 2 OF 2';
+      if (bar2) {
+        bar2.style.backgroundColor = '#0096FF';
+      }
+    });
   });
 </script>
