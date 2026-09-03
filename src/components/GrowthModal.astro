@@ -4,6 +4,17 @@ import { Image } from 'astro:assets';
 import wdpLogo from '../assets/wdp-transparent-logo.avif';
 ---
 
+<!-- Embedded Trigger Button -->
+<div class="w-full flex justify-center items-center my-12 px-4">
+  <button 
+    id="open-growth-modal" 
+    type="button"
+    class="font-jakarta font-bold text-white text-xl p-[30px] transition-all duration-200 shadow-xl hover:bg-[#89CFF0] hover:text-[#16213E] cursor-pointer text-center inline-flex items-center justify-center rounded-xl bg-[#0096FF]"
+  >
+    Find Your Growth Package
+  </button>
+</div>
+
 <!-- Modal Backdrop -->
 <div id="growth-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 p-4 md:p-8 backdrop-blur-sm overflow-y-auto">
   
