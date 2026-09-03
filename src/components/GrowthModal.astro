@@ -173,7 +173,7 @@ import wdpLogo from '../assets/wdp-transparent-logo.avif';
 
           <!-- Continue Button (Rectangular Box Shape) -->
           <div class="pt-4">
-            <button id="btn-continue" type="button" class="w-full bg-[#0096FF] hover:bg-[#89CFF0] hover:text-[#16213E] text-white font-jakarta font-bold text-lg py-5 px-8 rounded-xl transition-all duration-200 cursor-pointer flex items-center justify-center gap-3 shadow-lg">
+            <button id="btn-continue" type="button" class="w-full bg-[#0096FF] hover:bg-[#89CFF0] hover:text-[#16213E] text-white font-jakarta font-bold text-lg py-5 px-8 !rounded-xl transition-all duration-200 cursor-pointer flex items-center justify-center gap-3 shadow-lg">
               <span>Continue</span>
               <span>→</span>
             </button>
@@ -262,6 +262,17 @@ import wdpLogo from '../assets/wdp-transparent-logo.avif';
   .bg-selected svg {
     color: #ffffff !important;
   }
+
+  /* Force rectangular shape with rounded corners for both step buttons */
+#btn-continue,
+#growth-form button[type="submit"] {
+  border-radius: 0.75rem !important; /* Matches rounded-xl */
+}
+
+#open-growth-modal {
+  border-radius: 0.75rem !important;
+  padding: 30px !important;
+}
 </style>
 
 <script>
