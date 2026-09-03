@@ -4,7 +4,6 @@ import { Image } from 'astro:assets';
 import wdpLogo from '../assets/wdp-transparent-logo.avif';
 ---
 
-<!-- Trigger Button Section -->
 <div class="w-full flex justify-center items-center my-16 px-4">
   <button 
     id="open-growth-modal" 
@@ -15,114 +14,101 @@ import wdpLogo from '../assets/wdp-transparent-logo.avif';
   </button>
 </div>
 
-<!-- Modal Backdrop -->
-<div id="growth-modal" class="fixed inset-0 z-[9999] hidden min-h-screen w-screen flex items-center justify-center bg-black/80 p-4 sm:p-6 md:p-8 backdrop-blur-md overflow-y-auto">
+<div id="growth-modal" class="fixed inset-0 z-[9999] hidden min-h-screen w-screen flex items-center justify-center bg-black/80 p-4 sm:p-6 md:p-10 backdrop-blur-md overflow-y-auto">
   
-  <!-- Outer Modal Card -->
-  <div class="relative w-full max-w-5xl bg-[#16213E] text-white rounded-2xl border border-[#0096FF]/30 shadow-2xl p-6 sm:p-8 md:p-10 my-auto">
+  <div class="relative w-full max-w-[95vw] lg:max-w-[85vw] xl:max-w-[1400px] min-h-[70vh] bg-[#16213E] text-white rounded-2xl border border-[#0096FF]/30 shadow-2xl p-8 md:p-12 lg:p-16 my-auto flex flex-col justify-between">
     
-    <!-- Close Button -->
-    <button id="close-modal" type="button" class="absolute top-5 right-5 text-gray-400 hover:text-white text-2xl font-bold cursor-pointer transition-colors z-20 p-2" aria-label="Close modal">
+    <button id="close-modal" type="button" class="absolute top-6 right-6 text-gray-400 hover:text-white text-3xl font-bold cursor-pointer transition-colors z-20 p-2" aria-label="Close modal">
       ✕
     </button>
 
-    <!-- Main Grid Layout -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-stretch h-full my-auto">
       
-      <!-- LEFT COLUMN -->
-      <div class="lg:col-span-5 flex flex-col justify-between space-y-6">
+      <div class="lg:col-span-5 flex flex-col justify-between space-y-8">
         
-        <!-- Header & Logo -->
-        <div class="space-y-5">
+        <div class="space-y-6">
           <div class="flex justify-start">
-            <span class="inline-block bg-[#0f172a] border border-[#0096FF]/30 text-[#89CFF0] text-xs font-bold px-4 py-2 rounded-md uppercase tracking-wider font-jakarta">
+            <span class="inline-block bg-[#0f172a] border border-[#0096FF]/30 text-[#89CFF0] text-sm font-bold px-5 py-2.5 rounded-md uppercase tracking-wider font-jakarta">
               BEFORE YOU GO
             </span>
           </div>
 
           <div class="flex justify-start">
-            <Image src={wdpLogo} alt="Web Design Pros Logo" class="h-9 w-auto object-contain" />
+            <Image src={wdpLogo} alt="Web Design Pros Logo" class="h-12 w-auto object-contain" />
           </div>
 
-          <h3 class="font-cabinet font-bold text-2xl md:text-3xl text-white leading-tight">
+          <h3 class="font-cabinet font-bold text-3xl md:text-4xl xl:text-5xl text-white leading-tight">
             Let us help your business grow faster.
           </h3>
 
-          <p class="font-jakarta text-sm text-gray-300 leading-relaxed">
+          <p class="font-jakarta text-base text-gray-300 leading-relaxed">
             Answer a few quick questions and let us recommend the perfect web design, SEO, and growth strategy for your South African business.
           </p>
         </div>
 
-        <!-- 01, 02, 03 Indicator Boxes -->
-        <div class="grid grid-cols-3 gap-3 py-2">
-          <div class="bg-[#0f172a]/80 border border-[#0096FF]/30 rounded-lg p-3 text-center flex flex-col justify-center items-center">
-            <span class="text-[#0096FF] font-bold text-sm font-jakarta">01</span>
-            <span class="font-jakarta font-bold text-[10px] tracking-wider text-white uppercase mt-1">GROWTH</span>
+        <div class="grid grid-cols-3 gap-4 py-3">
+          <div class="bg-[#0f172a]/80 border border-[#0096FF]/30 rounded-xl p-4 text-center flex flex-col justify-center items-center">
+            <span class="text-[#0096FF] font-bold text-lg font-jakarta">01</span>
+            <span class="font-jakarta font-bold text-xs tracking-wider text-white uppercase mt-1">GROWTH</span>
           </div>
-          <div class="bg-[#0f172a]/80 border border-[#0096FF]/30 rounded-lg p-3 text-center flex flex-col justify-center items-center">
-            <span class="text-[#0096FF] font-bold text-sm font-jakarta">02</span>
-            <span class="font-jakarta font-bold text-[10px] tracking-wider text-white uppercase mt-1">CONVERSION</span>
+          <div class="bg-[#0f172a]/80 border border-[#0096FF]/30 rounded-xl p-4 text-center flex flex-col justify-center items-center">
+            <span class="text-[#0096FF] font-bold text-lg font-jakarta">02</span>
+            <span class="font-jakarta font-bold text-xs tracking-wider text-white uppercase mt-1">CONVERSION</span>
           </div>
-          <div class="bg-[#0f172a]/80 border border-[#0096FF]/30 rounded-lg p-3 text-center flex flex-col justify-center items-center">
-            <span class="text-[#0096FF] font-bold text-sm font-jakarta">03</span>
-            <span class="font-jakarta font-bold text-[10px] tracking-wider text-white uppercase mt-1">FOLLOW-UP</span>
+          <div class="bg-[#0f172a]/80 border border-[#0096FF]/30 rounded-xl p-4 text-center flex flex-col justify-center items-center">
+            <span class="text-[#0096FF] font-bold text-lg font-jakarta">03</span>
+            <span class="font-jakarta font-bold text-xs tracking-wider text-white uppercase mt-1">FOLLOW-UP</span>
           </div>
         </div>
 
-        <!-- Feature Card -->
-        <div class="bg-[#0f172a]/80 border border-[#0096FF]/30 rounded-xl p-5 space-y-1">
-          <h4 class="font-jakarta font-bold text-sm text-white">Get a clear direction</h4>
-          <p class="font-jakarta text-xs text-gray-300 leading-relaxed">
+        <div class="bg-[#0f172a]/80 border border-[#0096FF]/30 rounded-xl p-6 space-y-2">
+          <h4 class="font-jakarta font-bold text-base text-white">Get a clear direction</h4>
+          <p class="font-jakarta text-sm text-gray-300 leading-relaxed">
             No assumptions. Just a recommendation tailored to your business.
           </p>
         </div>
 
       </div>
 
-      <!-- RIGHT COLUMN -->
-      <div class="lg:col-span-7 bg-[#0f172a]/60 border border-[#0096FF]/30 rounded-2xl p-6 sm:p-8 flex flex-col justify-between space-y-6">
+      <div class="lg:col-span-7 bg-[#0f172a]/60 border border-[#0096FF]/30 rounded-2xl p-8 md:p-12 flex flex-col justify-between space-y-8">
         
-        <!-- Header & Progress Bar -->
-        <div class="space-y-3">
+        <div class="space-y-4">
           <div class="flex justify-between items-center">
-            <span id="step-label" class="font-jakarta text-xs font-bold text-gray-300 uppercase tracking-wider">STEP 1 OF 2</span>
-            <span class="font-jakarta font-bold text-xs text-[#0096FF] tracking-wider uppercase">GROWTH CHECK</span>
+            <span id="step-label" class="font-jakarta text-sm font-bold text-gray-300 uppercase tracking-wider">STEP 1 OF 2</span>
+            <span class="font-jakarta font-bold text-sm text-[#0096FF] tracking-wider uppercase">GROWTH CHECK</span>
           </div>
           
-          <div class="flex items-center gap-2 w-full">
-            <div id="bar-1" class="h-2 flex-1 bg-[#0096FF] rounded-full transition-all duration-300"></div>
-            <div id="bar-2" class="h-2 flex-1 bg-slate-700 rounded-full transition-all duration-300"></div>
+          <div class="flex items-center gap-3 w-full">
+            <div id="bar-1" class="h-3 flex-1 bg-[#0096FF] rounded-full transition-all duration-300"></div>
+            <div id="bar-2" class="h-3 flex-1 bg-slate-700 rounded-full transition-all duration-300"></div>
           </div>
         </div>
 
-        <!-- STEP 1 VIEW -->
-        <div id="step-1-content" class="space-y-6">
+        <div id="step-1-content" class="space-y-8">
           
-          <!-- Category Tabs -->
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <button type="button" data-tab="need" class="tab-btn bg-[#0f172a] border border-[#0096FF]/30 rounded-xl p-3 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-[#0096FF]">
-              <span class="text-xl mb-1">🎯</span>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <button type="button" data-tab="need" class="tab-btn bg-[#0f172a] border border-[#0096FF]/30 rounded-xl p-4 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-[#0096FF]">
+              <span class="text-2xl mb-2">🎯</span>
               <span class="font-jakarta font-bold text-xs text-white uppercase">NEED</span>
             </button>
-            <button type="button" data-tab="goal" class="tab-btn bg-[#0f172a] border border-[#0096FF]/30 rounded-xl p-3 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-[#0096FF]">
-              <span class="text-xl mb-1">📈</span>
+            <button type="button" data-tab="goal" class="tab-btn bg-[#0f172a] border border-[#0096FF]/30 rounded-xl p-4 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-[#0096FF]">
+              <span class="text-2xl mb-2">📈</span>
               <span class="font-jakarta font-bold text-xs text-white uppercase">GOAL</span>
             </button>
-            <button type="button" data-tab="plan" class="tab-btn bg-[#0f172a] border border-[#0096FF]/30 rounded-xl p-3 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-[#0096FF]">
-              <span class="text-xl mb-1">🛡️</span>
+            <button type="button" data-tab="plan" class="tab-btn bg-[#0f172a] border border-[#0096FF]/30 rounded-xl p-4 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-[#0096FF]">
+              <span class="text-2xl mb-2">🛡️</span>
               <span class="font-jakarta font-bold text-xs text-white uppercase">PLAN</span>
             </button>
-            <button type="button" data-tab="budget" class="tab-btn bg-[#0f172a] border border-[#0096FF]/30 rounded-xl p-3 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-[#0096FF]">
-              <span class="text-xl mb-1">💰</span>
+            <button type="button" data-tab="budget" class="tab-btn bg-[#0f172a] border border-[#0096FF]/30 rounded-xl p-4 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-[#0096FF]">
+              <span class="text-2xl mb-2">💰</span>
               <span class="font-jakarta font-bold text-xs text-white uppercase">BUDGET</span>
             </button>
           </div>
 
-          <!-- Select Inputs Grid -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div class="space-y-2">
-              <label for="select-need" class="block font-jakarta text-xs text-gray-300">What do you want to improve?</label>
-              <select id="select-need" data-target="need" class="growth-select w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-3 px-3 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all cursor-pointer">
+              <label for="select-need" class="block font-jakarta text-xs md:text-sm text-gray-300">What do you want to improve?</label>
+              <select id="select-need" data-target="need" class="growth-select w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-4 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all cursor-pointer">
                 <option value="" disabled selected>Select...</option>
                 <option value="leads">Lead Generation</option>
                 <option value="sales">Online Sales</option>
@@ -131,8 +117,8 @@ import wdpLogo from '../assets/wdp-transparent-logo.avif';
             </div>
 
             <div class="space-y-2">
-              <label for="select-goal" class="block font-jakarta text-xs text-gray-300">What is your goal?</label>
-              <select id="select-goal" data-target="goal" class="growth-select w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-3 px-3 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all cursor-pointer">
+              <label for="select-goal" class="block font-jakarta text-xs md:text-sm text-gray-300">What is your goal?</label>
+              <select id="select-goal" data-target="goal" class="growth-select w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-4 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all cursor-pointer">
                 <option value="" disabled selected>Select...</option>
                 <option value="2x">Double Monthly Revenue</option>
                 <option value="automation">Automate Inquiries</option>
@@ -141,8 +127,8 @@ import wdpLogo from '../assets/wdp-transparent-logo.avif';
             </div>
 
             <div class="space-y-2">
-              <label for="select-plan" class="block font-jakarta text-xs text-gray-300">What is your time frame?</label>
-              <select id="select-plan" data-target="plan" class="growth-select w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-3 px-3 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all cursor-pointer">
+              <label for="select-plan" class="block font-jakarta text-xs md:text-sm text-gray-300">What is your time frame?</label>
+              <select id="select-plan" data-target="plan" class="growth-select w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-4 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all cursor-pointer">
                 <option value="" disabled selected>Select...</option>
                 <option value="asap">Immediate (ASAP)</option>
                 <option value="1month">Within 1 Month</option>
@@ -151,8 +137,8 @@ import wdpLogo from '../assets/wdp-transparent-logo.avif';
             </div>
 
             <div class="space-y-2">
-              <label for="select-budget" class="block font-jakarta text-xs text-gray-300">What is your budget?</label>
-              <select id="select-budget" data-target="budget" class="growth-select w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-3 px-3 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all cursor-pointer">
+              <label for="select-budget" class="block font-jakarta text-xs md:text-sm text-gray-300">What is your budget?</label>
+              <select id="select-budget" data-target="budget" class="growth-select w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-4 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all cursor-pointer">
                 <option value="" disabled selected>Select...</option>
                 <option value="starter">R10,000 – R25,000</option>
                 <option value="growth">R25,000 – R50,000</option>
@@ -161,54 +147,52 @@ import wdpLogo from '../assets/wdp-transparent-logo.avif';
             </div>
           </div>
 
-          <!-- Continue Button -->
-          <div class="pt-2">
-            <button id="btn-continue" type="button" class="w-full bg-[#0096FF] hover:bg-[#89CFF0] hover:text-[#16213E] text-white font-jakarta font-bold py-4 px-6 rounded-xl transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 shadow-lg">
+          <div class="pt-4">
+            <button id="btn-continue" type="button" class="w-full bg-[#0096FF] hover:bg-[#89CFF0] hover:text-[#16213E] text-white font-jakarta font-bold text-lg py-5 px-8 rounded-xl transition-all duration-200 cursor-pointer flex items-center justify-center gap-3 shadow-lg">
               <span>Continue</span>
               <span>→</span>
             </button>
           </div>
 
-          <p class="font-jakarta text-xs text-gray-400 text-center">
+          <p class="font-jakarta text-xs md:text-sm text-gray-400 text-center">
             Better information allows us to recommend the best growth platform.
           </p>
         </div>
 
-        <!-- STEP 2 VIEW -->
-        <div id="step-2-content" class="space-y-5 hidden">
-          <h3 class="font-cabinet font-bold text-xl text-white">
+        <div id="step-2-content" class="space-y-6 hidden">
+          <h3 class="font-cabinet font-bold text-2xl text-white">
             Where should we send your plan?
           </h3>
 
-          <form id="growth-form" class="space-y-4">
-            <div class="space-y-1">
-              <label for="full-name" class="block font-jakarta text-xs text-gray-300">Your name *</label>
-              <input type="text" id="full-name" required placeholder="Full name" class="w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-3 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all" />
+          <form id="growth-form" class="space-y-5">
+            <div class="space-y-2">
+              <label for="full-name" class="block font-jakarta text-xs md:text-sm text-gray-300">Your name *</label>
+              <input type="text" id="full-name" required placeholder="Full name" class="w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-4 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all" />
             </div>
 
-            <div class="space-y-1">
-              <label for="email-address" class="block font-jakarta text-xs text-gray-300">Email address *</label>
-              <input type="email" id="email-address" required placeholder="you@company.co.za" class="w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-3 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all" />
+            <div class="space-y-2">
+              <label for="email-address" class="block font-jakarta text-xs md:text-sm text-gray-300">Email address *</label>
+              <input type="email" id="email-address" required placeholder="you@company.co.za" class="w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-4 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all" />
             </div>
 
-            <div class="space-y-1">
-              <label for="phone-number" class="block font-jakarta text-xs text-gray-300">Phone number *</label>
-              <input type="tel" id="phone-number" required placeholder="Phone number" class="w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-3 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all" />
+            <div class="space-y-2">
+              <label for="phone-number" class="block font-jakarta text-xs md:text-sm text-gray-300">Phone number *</label>
+              <input type="tel" id="phone-number" required placeholder="Phone number" class="w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-4 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all" />
             </div>
 
-            <div class="space-y-1">
-              <label for="business-name" class="block font-jakarta text-xs text-gray-300">Business name</label>
-              <input type="text" id="business-name" placeholder="Name of your company or business" class="w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-3 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all" />
+            <div class="space-y-2">
+              <label for="business-name" class="block font-jakarta text-xs md:text-sm text-gray-300">Business name</label>
+              <input type="text" id="business-name" placeholder="Name of your company or business" class="w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-lg py-4 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all" />
             </div>
 
-            <div class="pt-2">
-              <button type="submit" class="w-full bg-[#0096FF] hover:bg-[#89CFF0] hover:text-[#16213E] text-white font-jakarta font-bold py-4 px-6 rounded-xl transition-all duration-200 cursor-pointer text-center shadow-lg">
+            <div class="pt-4">
+              <button type="submit" class="w-full bg-[#0096FF] hover:bg-[#89CFF0] hover:text-[#16213E] text-white font-jakarta font-bold text-lg py-5 px-8 rounded-xl transition-all duration-200 cursor-pointer text-center shadow-lg">
                 Get my growth plan
               </button>
             </div>
           </form>
 
-          <p class="font-jakarta text-xs text-gray-400 text-center">
+          <p class="font-jakarta text-xs md:text-sm text-gray-400 text-center">
             Better information allows us to recommend the best growth platform.
           </p>
         </div>
