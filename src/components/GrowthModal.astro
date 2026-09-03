@@ -18,7 +18,7 @@ import wdpLogo from '../assets/wdp-transparent-logo.avif';
 <!-- Modal Backdrop -->
 <div id="growth-modal" class="fixed inset-0 z-[9999] hidden min-h-screen w-screen flex items-center justify-center bg-black/80 p-4 sm:p-6 md:p-10 backdrop-blur-md overflow-y-auto">
   
-  <!-- Outer Modal Card (Restored to wdp-6 Size) -->
+  <!-- Outer Modal Card -->
   <div class="relative w-full max-w-[95vw] lg:max-w-[85vw] xl:max-w-[1400px] min-h-[70vh] bg-[#16213E] text-white rounded-2xl border border-[#0096FF]/30 shadow-2xl p-8 md:p-12 lg:p-16 my-auto flex flex-col justify-between">
     
     <!-- Close Button -->
@@ -26,8 +26,8 @@ import wdpLogo from '../assets/wdp-transparent-logo.avif';
       ✕
     </button>
 
-    <!-- Main Grid Layout -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-stretch h-full my-auto">
+    <!-- Main Grid Layout (Changed items-stretch to items-start) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start h-full my-auto">
       
       <!-- LEFT COLUMN -->
       <div class="lg:col-span-5 flex flex-col justify-between space-y-8">
@@ -40,9 +40,9 @@ import wdpLogo from '../assets/wdp-transparent-logo.avif';
             </span>
           </div>
 
-          <!-- Logo bumped up by 20px (h-20 md:h-24) -->
+          <!-- Logo increased height by 60px (h-[140px] md:h-[156px]) -->
           <div class="flex justify-start">
-            <Image src={wdpLogo} alt="Web Design Pros Logo" class="h-20 md:h-24 w-auto object-contain" />
+            <Image src={wdpLogo} alt="Web Design Pros Logo" class="h-[140px] md:h-[156px] w-auto object-contain" />
           </div>
 
           <h3 class="font-cabinet font-bold text-3xl md:text-4xl xl:text-5xl text-white leading-tight">
@@ -80,8 +80,8 @@ import wdpLogo from '../assets/wdp-transparent-logo.avif';
 
       </div>
 
-      <!-- RIGHT COLUMN (Shifted 50px down using mt-[50px]) -->
-      <div class="lg:col-span-7 mt-[50px] bg-[#0f172a]/60 border border-[#0096FF]/30 rounded-2xl p-8 md:p-12 flex flex-col justify-between space-y-8">
+      <!-- RIGHT COLUMN (Shifted down using mt-[50px] on items-start grid) -->
+      <div class="lg:col-span-7 lg:mt-[50px] bg-[#0f172a]/60 border border-[#0096FF]/30 rounded-2xl p-8 md:p-12 flex flex-col justify-between space-y-8">
         
         <!-- Header & Rectangular Progress Bar -->
         <div class="space-y-4">
@@ -273,14 +273,12 @@ import wdpLogo from '../assets/wdp-transparent-logo.avif';
     color: #ffffff !important;
   }
 
-  /* Force rectangular shape with 8px rounded corners on all three modal buttons */
   #btn-continue,
   #growth-form button[type="submit"],
   #open-growth-modal {
     border-radius: 8px !important;
   }
 
-  /* Specific padding for the Trigger Button */
   #open-growth-modal {
     padding: 30px !important;
   }
