@@ -1,350 +1,1766 @@
 ---
-// GrowthModal.astro
 import { Image } from 'astro:assets';
 import wdpLogo from '../assets/wdp-transparent-logo-4.avif';
 ---
 
-<!-- Trigger Button Section -->
-<div class="w-full flex justify-center items-center my-16 px-4">
-  <button 
-    id="open-growth-modal" 
+<!-- =========================================================
+     GROWTH MODAL TRIGGER
+     ========================================================= -->
+
+<div class="growth-trigger">
+  <button
+    id="open-growth-modal"
     type="button"
-    class="bg-[#0096FF] hover:bg-[#89CFF0] hover:text-[#16213E] text-white font-jakarta font-bold text-lg md:text-xl p-[30px] rounded-xl shadow-xl transition-all duration-200 cursor-pointer inline-flex items-center justify-center border-none text-center"
+    class="growth-trigger-button"
   >
     Find Your Growth Package
   </button>
 </div>
 
-<!-- Modal Backdrop -->
-<div id="growth-modal" class="fixed inset-0 z-[9999] hidden min-h-screen w-screen flex items-center justify-center bg-black/80 p-4 sm:p-6 md:p-10 backdrop-blur-md overflow-y-auto">
-  
-  <!-- Outer Modal Card -->
-  <div class="relative w-full max-w-[95vw] lg:max-w-[85vw] xl:max-w-[1400px] min-h-[70vh] bg-[#16213E] text-white rounded-2xl border border-[#0096FF]/30 shadow-2xl p-8 md:p-12 lg:p-16 my-auto flex flex-col justify-between">
-    
-    <!-- Close Button -->
-    <button id="close-modal" type="button" class="absolute top-6 right-6 text-gray-400 hover:text-white text-3xl font-bold cursor-pointer transition-colors z-20 p-2" aria-label="Close modal">
+
+<!-- =========================================================
+     MODAL
+     ========================================================= -->
+
+<div
+  id="growth-modal"
+  class="growth-modal"
+  aria-hidden="true"
+>
+
+  <!-- OUTER MODAL CARD -->
+  <div class="growth-modal-card">
+
+    <!-- =====================================================
+         CLOSE BUTTON
+         ===================================================== -->
+
+    <button
+      id="close-modal"
+      type="button"
+      class="growth-close"
+      aria-label="Close modal"
+    >
       ✕
     </button>
 
-    <!-- Main Grid Layout (Changed items-stretch to items-start) -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start h-full my-auto">
-      
-      <!-- LEFT COLUMN -->
-      <div class="lg:col-span-5 flex flex-col justify-between space-y-8">
-        
-        <!-- Header & Logo -->
-        <div class="space-y-6">
-          <div class="flex justify-start">
-            <span class="inline-block bg-[#0f172a] border border-[#0096FF]/30 text-[#89CFF0] text-sm font-bold px-5 py-2.5 rounded-xl uppercase tracking-wider font-jakarta">
-              BEFORE YOU GO
-            </span>
-          </div>
 
-          <!-- Logo increased height by 60px (h-[140px] md:h-[156px]) -->
-          <div class="flex justify-start">
-            <Image src={wdpLogo} alt="Web Design Pros Logo" class="h-[140px] md:h-[156px] w-auto object-contain" />
-          </div>
+    <!-- =====================================================
+         MAIN TWO-COLUMN LAYOUT
+         ===================================================== -->
 
-          <h3 class="font-cabinet font-bold text-3xl md:text-4xl xl:text-5xl text-white leading-tight">
-            Let us help your business grow faster.
-          </h3>
+    <div class="growth-layout">
 
-          <p class="font-jakarta text-base text-gray-300 leading-relaxed">
-            Answer a few quick questions and let us recommend the perfect web design, SEO, and growth strategy for your South African business.
-          </p>
+
+      <!-- ===================================================
+           LEFT COLUMN
+           =================================================== -->
+
+      <section class="growth-left">
+
+        <!-- BEFORE YOU GO -->
+        <div class="growth-before">
+          BEFORE YOU GO
         </div>
 
-        <!-- 01, 02, 03 Indicator Boxes -->
-        <div class="grid grid-cols-3 gap-4 py-3">
-          <div class="bg-[#0f172a]/80 border border-[#0096FF]/30 rounded-xl p-4 text-center flex flex-col justify-center items-center">
-            <span class="text-[#0096FF] font-bold text-lg font-jakarta">01</span>
-            <span class="font-jakarta font-bold text-xs tracking-wider text-white uppercase mt-1">GROWTH</span>
-          </div>
-          <div class="bg-[#0f172a]/80 border border-[#0096FF]/30 rounded-xl p-4 text-center flex flex-col justify-center items-center">
-            <span class="text-[#0096FF] font-bold text-lg font-jakarta">02</span>
-            <span class="font-jakarta font-bold text-xs tracking-wider text-white uppercase mt-1">CONVERSION</span>
-          </div>
-          <div class="bg-[#0f172a]/80 border border-[#0096FF]/30 rounded-xl p-4 text-center flex flex-col justify-center items-center">
-            <span class="text-[#0096FF] font-bold text-lg font-jakarta">03</span>
-            <span class="font-jakarta font-bold text-xs tracking-wider text-white uppercase mt-1">FOLLOW-UP</span>
-          </div>
+
+        <!-- LOGO -->
+        <div class="growth-logo">
+          <Image
+            src={wdpLogo}
+            alt="Web Design Pros Logo"
+          />
         </div>
 
-        <!-- Feature Card -->
-        <div class="bg-[#0f172a]/80 border border-[#0096FF]/30 rounded-xl p-6 space-y-2">
-          <h4 class="font-jakarta font-bold text-base text-white">Get a clear direction</h4>
-          <p class="font-jakarta text-sm text-gray-300 leading-relaxed">
+
+        <!-- HEADLINE -->
+        <h3 class="growth-headline">
+          Let us help your business grow faster.
+        </h3>
+
+
+        <!-- INTRO -->
+        <p class="growth-intro">
+          Answer a few quick questions and let us recommend the perfect
+          web design, SEO, and growth strategy for your South African business.
+        </p>
+
+
+        <!-- =================================================
+             01 / 02 / 03
+             ================================================= -->
+
+        <div class="growth-indicators">
+
+          <div class="growth-indicator">
+            <span class="indicator-number">01</span>
+            <span class="indicator-label">GROWTH</span>
+          </div>
+
+          <div class="growth-indicator">
+            <span class="indicator-number">02</span>
+            <span class="indicator-label">CONVERSION</span>
+          </div>
+
+          <div class="growth-indicator">
+            <span class="indicator-number">03</span>
+            <span class="indicator-label">FOLLOW-UP</span>
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             FEATURE CARD
+             ================================================= -->
+
+        <div class="growth-feature">
+
+          <h4>
+            Get a clear direction
+          </h4>
+
+          <p>
             No assumptions. Just a recommendation tailored to your business.
           </p>
+
         </div>
 
-      </div>
+      </section>
 
-      <!-- RIGHT COLUMN (Shifted down using mt-[50px] on items-start grid) -->
-      <div class="lg:col-span-7 lg:mt-[50px] bg-[#0f172a]/60 border border-[#0096FF]/30 rounded-2xl p-8 md:p-12 flex flex-col justify-between space-y-8">
-        
-        <!-- Header & Rectangular Progress Bar -->
-        <div class="space-y-4">
-          <div class="flex justify-between items-center">
-            <span id="step-label" class="font-jakarta text-sm font-bold text-gray-300 uppercase tracking-wider">STEP 1 OF 2</span>
-            <span class="font-jakarta font-bold text-sm text-[#0096FF] tracking-wider uppercase">GROWTH CHECK</span>
-          </div>
-          
-          <div class="flex items-center gap-3 w-full">
-            <div id="bar-1" class="h-3 flex-1 bg-[#0096FF] rounded-sm transition-all duration-300"></div>
-            <div id="bar-2" class="h-3 flex-1 bg-slate-700 rounded-sm transition-all duration-300"></div>
-          </div>
+
+
+      <!-- ===================================================
+           RIGHT COLUMN
+           =================================================== -->
+
+      <section class="growth-right-column">
+
+        <!-- GROWTH CHECK TITLE -->
+        <div class="growth-check-title">
+          GROWTH CHECK
         </div>
 
-        <!-- STEP 1 VIEW -->
-        <div id="step-1-content" class="space-y-8">
-          
-          <!-- Category Tabs -->
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <button type="button" data-tab="need" class="tab-btn bg-[#0f172a] border border-[#0096FF]/30 rounded-xl p-5 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-[#0096FF] gap-3">
-              <svg class="w-6 h-6 text-[#0096FF]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="9" />
-                <circle cx="12" cy="12" r="5" />
-                <circle cx="12" cy="12" r="1" />
-              </svg>
-              <span class="font-jakarta font-bold text-xs text-white uppercase">NEED</span>
-            </button>
-            <button type="button" data-tab="goal" class="tab-btn bg-[#0f172a] border border-[#0096FF]/30 rounded-xl p-5 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-[#0096FF] gap-3">
-              <svg class="w-6 h-6 text-[#0096FF]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-              </svg>
-              <span class="font-jakarta font-bold text-xs text-white uppercase">GOAL</span>
-            </button>
-            <button type="button" data-tab="plan" class="tab-btn bg-[#0f172a] border border-[#0096FF]/30 rounded-xl p-5 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-[#0096FF] gap-3">
-              <svg class="w-6 h-6 text-[#0096FF]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-              </svg>
-              <span class="font-jakarta font-bold text-xs text-white uppercase">PLAN</span>
-            </button>
-            <button type="button" data-tab="budget" class="tab-btn bg-[#0f172a] border border-[#0096FF]/30 rounded-xl p-5 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-[#0096FF] gap-3">
-              <svg class="w-6 h-6 text-[#0096FF]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V6m0 12v-2m0 0c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span class="font-jakarta font-bold text-xs text-white uppercase">BUDGET</span>
-            </button>
+
+        <!-- INNER PANEL -->
+        <div class="growth-panel">
+
+          <!-- =================================================
+               PANEL HEADER
+               ================================================= -->
+
+          <div class="growth-panel-header">
+
+            <div class="growth-panel-header-row">
+              <span id="step-label">
+                STEP 1 OF 2
+              </span>
+            </div>
+
+
+            <!-- PROGRESS -->
+            <div class="growth-progress">
+
+              <div
+                id="bar-1"
+                class="progress-bar progress-active"
+              ></div>
+
+              <div
+                id="bar-2"
+                class="progress-bar progress-inactive"
+              ></div>
+
+            </div>
+
           </div>
 
-          <!-- Select Inputs Grid -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div class="space-y-2">
-              <label for="select-need" class="block font-jakarta text-xs md:text-sm text-gray-300">What do you want to improve?</label>
-              <select id="select-need" data-target="need" class="growth-select w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-xl py-4 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all cursor-pointer">
-                <option value="" disabled selected>Select...</option>
-                <option value="leads">Lead Generation</option>
-                <option value="sales">Online Sales</option>
-                <option value="brand">Brand Visibility</option>
-              </select>
-            </div>
 
-            <div class="space-y-2">
-              <label for="select-goal" class="block font-jakarta text-xs md:text-sm text-gray-300">What is your goal?</label>
-              <select id="select-goal" data-target="goal" class="growth-select w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-xl py-4 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all cursor-pointer">
-                <option value="" disabled selected>Select...</option>
-                <option value="2x">Double Monthly Revenue</option>
-                <option value="automation">Automate Inquiries</option>
-                <option value="launch">Launch New Product</option>
-              </select>
-            </div>
 
-            <div class="space-y-2">
-              <label for="select-plan" class="block font-jakarta text-xs md:text-sm text-gray-300">What is your time frame?</label>
-              <select id="select-plan" data-target="plan" class="growth-select w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-xl py-4 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all cursor-pointer">
-                <option value="" disabled selected>Select...</option>
-                <option value="asap">Immediate (ASAP)</option>
-                <option value="1month">Within 1 Month</option>
-                <option value="3months">1–3 Months</option>
-              </select>
-            </div>
+          <!-- =================================================
+               STEP 1
+               ================================================= -->
 
-            <div class="space-y-2">
-              <label for="select-budget" class="block font-jakarta text-xs md:text-sm text-gray-300">What is your budget?</label>
-              <select id="select-budget" data-target="budget" class="growth-select w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-xl py-4 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all cursor-pointer">
-                <option value="" disabled selected>Select...</option>
-                <option value="starter">R10,000 – R25,000</option>
-                <option value="growth">R25,000 – R50,000</option>
-                <option value="custom">R50,000+</option>
-              </select>
-            </div>
-          </div>
+          <div
+            id="step-1-content"
+            class="growth-step-one"
+          >
 
-          <!-- Continue Button -->
-          <div class="pt-4">
-            <button 
-              id="btn-continue" 
-              type="button" 
-              style="border-radius: 8px !important;"
-              class="w-full bg-[#0096FF] hover:bg-[#89CFF0] hover:text-[#16213E] text-white font-jakarta font-bold text-lg py-5 px-8 transition-all duration-200 cursor-pointer flex items-center justify-center gap-3 shadow-lg"
-            >
-              <span>Continue</span>
-              <span>→</span>
-            </button>
-          </div>
+            <!-- CATEGORY TABS -->
+            <div class="growth-tabs">
 
-          <p class="font-jakarta text-xs md:text-sm text-gray-400 text-center">
-            Better information allows us to recommend the best growth platform.
-          </p>
-        </div>
-
-        <!-- STEP 2 VIEW -->
-        <div id="step-2-content" class="space-y-6 hidden">
-          <h3 class="font-cabinet font-bold text-2xl text-white">
-            Where should we send your plan?
-          </h3>
-
-          <form id="growth-form" class="space-y-5">
-            <div class="space-y-2">
-              <label for="full-name" class="block font-jakarta text-xs md:text-sm text-gray-300">Your name *</label>
-              <input type="text" id="full-name" required placeholder="Full name" class="w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-xl py-4 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all" />
-            </div>
-
-            <div class="space-y-2">
-              <label for="email-address" class="block font-jakarta text-xs md:text-sm text-gray-300">Email address *</label>
-              <input type="email" id="email-address" required placeholder="you@company.co.za" class="w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-xl py-4 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all" />
-            </div>
-
-            <div class="space-y-2">
-              <label for="phone-number" class="block font-jakarta text-xs md:text-sm text-gray-300">Phone number *</label>
-              <input type="tel" id="phone-number" required placeholder="Phone number" class="w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-xl py-4 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all" />
-            </div>
-
-            <div class="space-y-2">
-              <label for="business-name" class="block font-jakarta text-xs md:text-sm text-gray-300">Business name</label>
-              <input type="text" id="business-name" placeholder="Name of your company or business" class="w-full bg-[#0f172a] border border-[#0096FF]/30 text-white rounded-xl py-4 px-4 font-jakarta text-sm focus:outline-none focus:border-[#0096FF] transition-all" />
-            </div>
-
-            <div class="pt-4">
-              <button 
-                type="submit" 
-                style="border-radius: 8px !important;"
-                class="w-full bg-[#0096FF] hover:bg-[#89CFF0] hover:text-[#16213E] text-white font-jakarta font-bold text-lg py-5 px-8 transition-all duration-200 cursor-pointer text-center shadow-lg"
+              <button
+                type="button"
+                data-tab="need"
+                class="tab-btn growth-tab bg-selected"
               >
-                Get my growth plan
-              </button>
-            </div>
-          </form>
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="12" cy="12" r="9" />
+                  <circle cx="12" cy="12" r="5" />
+                  <circle cx="12" cy="12" r="1" />
+                </svg>
 
-          <p class="font-jakarta text-xs md:text-sm text-gray-400 text-center">
-            Better information allows us to recommend the best growth platform.
-          </p>
+                <span>NEED</span>
+              </button>
+
+
+              <button
+                type="button"
+                data-tab="goal"
+                class="tab-btn growth-tab"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                  />
+                </svg>
+
+                <span>GOAL</span>
+              </button>
+
+
+              <button
+                type="button"
+                data-tab="plan"
+                class="tab-btn growth-tab"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                  />
+                </svg>
+
+                <span>PLAN</span>
+              </button>
+
+
+              <button
+                type="button"
+                data-tab="budget"
+                class="tab-btn growth-tab"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2"
+                  />
+                  <path
+                    d="M12 8V6m0 12v-2m0 0c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+
+                <span>BUDGET</span>
+              </button>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 SELECT GRID
+                 ================================================= -->
+
+            <div class="growth-select-grid">
+
+              <!-- NEED -->
+              <div class="growth-field">
+                <label for="select-need">
+                  What do you want to improve?
+                </label>
+
+                <select
+                  id="select-need"
+                  data-target="need"
+                  class="growth-select"
+                >
+                  <option value="" disabled selected>
+                    Select...
+                  </option>
+
+                  <option value="leads">
+                    Lead Generation
+                  </option>
+
+                  <option value="sales">
+                    Online Sales
+                  </option>
+
+                  <option value="brand">
+                    Brand Visibility
+                  </option>
+                </select>
+              </div>
+
+
+              <!-- GOAL -->
+              <div class="growth-field">
+                <label for="select-goal">
+                  What is your goal?
+                </label>
+
+                <select
+                  id="select-goal"
+                  data-target="goal"
+                  class="growth-select"
+                >
+                  <option value="" disabled selected>
+                    Select...
+                  </option>
+
+                  <option value="2x">
+                    Double Monthly Revenue
+                  </option>
+
+                  <option value="automation">
+                    Automate Inquiries
+                  </option>
+
+                  <option value="launch">
+                    Launch New Product
+                  </option>
+                </select>
+              </div>
+
+
+              <!-- TIMEFRAME -->
+              <div class="growth-field">
+                <label for="select-plan">
+                  What is your time frame?
+                </label>
+
+                <select
+                  id="select-plan"
+                  data-target="plan"
+                  class="growth-select"
+                >
+                  <option value="" disabled selected>
+                    Select...
+                  </option>
+
+                  <option value="asap">
+                    Immediate (ASAP)
+                  </option>
+
+                  <option value="1month">
+                    Within 1 Month
+                  </option>
+
+                  <option value="3months">
+                    1–3 Months
+                  </option>
+                </select>
+              </div>
+
+
+              <!-- BUDGET -->
+              <div class="growth-field">
+                <label for="select-budget">
+                  What is your budget?
+                </label>
+
+                <select
+                  id="select-budget"
+                  data-target="budget"
+                  class="growth-select"
+                >
+                  <option value="" disabled selected>
+                    Select...
+                  </option>
+
+                  <option value="starter">
+                    R10,000 – R25,000
+                  </option>
+
+                  <option value="growth">
+                    R25,000 – R50,000
+                  </option>
+
+                  <option value="custom">
+                    R50,000+
+                  </option>
+                </select>
+              </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 CONTINUE
+                 ================================================= -->
+
+            <div class="growth-action">
+
+              <button
+                id="btn-continue"
+                type="button"
+                class="growth-submit"
+              >
+                <span>Continue</span>
+                <span class="growth-arrow">→</span>
+              </button>
+
+            </div>
+
+
+            <p class="growth-panel-note">
+              Better information allows us to recommend the best growth platform.
+            </p>
+
+          </div>
+
+
+
+          <!-- =================================================
+               STEP 2
+               ================================================= -->
+
+          <div
+            id="step-2-content"
+            class="growth-step-two hidden"
+          >
+
+            <h3>
+              Where should we send your plan?
+            </h3>
+
+
+            <form
+              id="growth-form"
+              class="growth-form"
+            >
+
+              <!-- NAME -->
+              <div class="growth-form-field">
+                <label for="full-name">
+                  Your name *
+                </label>
+
+                <input
+                  type="text"
+                  id="full-name"
+                  required
+                  placeholder="Full name"
+                />
+              </div>
+
+
+              <!-- EMAIL -->
+              <div class="growth-form-field">
+                <label for="email-address">
+                  Email address *
+                </label>
+
+                <input
+                  type="email"
+                  id="email-address"
+                  required
+                  placeholder="you@company.co.za"
+                />
+              </div>
+
+
+              <!-- PHONE -->
+              <div class="growth-form-field">
+                <label for="phone-number">
+                  Phone number *
+                </label>
+
+                <input
+                  type="tel"
+                  id="phone-number"
+                  required
+                  placeholder="Phone number"
+                />
+              </div>
+
+
+              <!-- BUSINESS -->
+              <div class="growth-form-field">
+                <label for="business-name">
+                  Business name
+                </label>
+
+                <input
+                  type="text"
+                  id="business-name"
+                  placeholder="Name of your company or business"
+                />
+              </div>
+
+
+              <!-- SUBMIT -->
+              <div class="growth-action">
+                <button
+                  type="submit"
+                  class="growth-submit"
+                >
+                  Get my growth plan
+                </button>
+              </div>
+
+            </form>
+
+
+            <p class="growth-panel-note">
+              Better information allows us to recommend the best growth platform.
+            </p>
+
+          </div>
+
         </div>
 
-      </div>
+      </section>
 
     </div>
+
   </div>
+
 </div>
 
+
+
+<!-- =========================================================
+     GROWTH MODAL CSS
+     ========================================================= -->
+
 <style is:global>
+
+  /* =========================================================
+     COLOURS
+     ========================================================= */
+
+  :root {
+    --growth-blue: #0096FF;
+    --growth-light-blue: #89CFF0;
+    --growth-outer: #273A65;
+    --growth-panel: #15213C;
+    --growth-dark: #0F172A;
+    --growth-white: #FFFFFF;
+    --growth-muted: #D1D5DB;
+  }
+
+
+  /* =========================================================
+     TRIGGER
+     ========================================================= */
+
+  .growth-trigger {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem 1rem;
+  }
+
+  .growth-trigger-button {
+    border: none;
+    border-radius: 8px !important;
+    background: var(--growth-blue);
+    color: white;
+    padding: 30px 38px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 1.125rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 12px 30px rgba(0,0,0,.25);
+  }
+
+  .growth-trigger-button:hover {
+    background: var(--growth-light-blue);
+    color: #16213E;
+  }
+
+
+  /* =========================================================
+     MODAL BACKDROP
+     ========================================================= */
+
+  .growth-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: none;
+
+    width: 100vw;
+    height: 100vh;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 24px;
+
+    background: rgba(0,0,0,.82);
+    backdrop-filter: blur(10px);
+
+    overflow-y: auto;
+  }
+
+
+  /* =========================================================
+     OUTER CARD
+
+     This is deliberately controlled independently of Tailwind.
+     ========================================================= */
+
+  .growth-modal-card {
+    position: relative;
+
+    width: min(96vw, 2000px);
+    min-height: min(91vh, 1050px);
+    max-height: calc(100vh - 48px);
+
+    padding: 40px;
+
+    background: var(--growth-outer);
+
+    color: white;
+
+    border-radius: 30px;
+    border: 1px solid rgba(0,150,255,.18);
+
+    box-shadow:
+      0 30px 80px rgba(0,0,0,.45);
+
+    overflow: hidden;
+  }
+
+
+  /* =========================================================
+     CLOSE
+     ========================================================= */
+
+  .growth-close {
+    position: absolute;
+    top: 28px;
+    right: 28px;
+
+    width: 44px;
+    height: 44px;
+
+    border: none;
+    background: transparent;
+
+    color: rgba(255,255,255,.65);
+
+    font-size: 32px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    z-index: 50;
+
+    transition: color .2s ease;
+  }
+
+  .growth-close:hover {
+    color: white;
+  }
+
+
+  /* =========================================================
+     MAIN GRID
+
+     Canva ratio:
+     LEFT ≈ 48%
+     RIGHT ≈ 52%
+     SMALL GAP
+     ========================================================= */
+
+  .growth-layout {
+    width: 100%;
+    height: 100%;
+
+    display: grid;
+
+    grid-template-columns: minmax(0, 48%) minmax(0, 52%);
+
+    column-gap: 28px;
+  }
+
+
+  /* =========================================================
+     LEFT COLUMN
+     ========================================================= */
+
+  .growth-left {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    height: 100%;
+
+    padding: 0;
+  }
+
+
+  /* BEFORE YOU GO */
+
+  .growth-before {
+    width: 278px;
+    height: 72px;
+
+    margin: -8px auto 22px auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--growth-dark);
+
+    border-radius: 12px;
+
+    color: white;
+
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+
+    letter-spacing: .01em;
+  }
+
+
+  /* LOGO */
+
+  .growth-logo {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    margin-bottom: 48px;
+
+    padding-left: 0;
+  }
+
+  .growth-logo img {
+    width: auto;
+    height: 76px;
+
+    object-fit: contain;
+  }
+
+
+  /* HEADLINE */
+
+  .growth-headline {
+    margin: 0 0 28px 0;
+
+    max-width: 720px;
+
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: clamp(3rem, 3.4vw, 4.15rem);
+    font-weight: 700;
+
+    line-height: 1.02;
+
+    color: white;
+  }
+
+
+  /* INTRO */
+
+  .growth-intro {
+    margin: 0;
+
+    max-width: 735px;
+
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 17px;
+    line-height: 1.55;
+
+    color: rgba(255,255,255,.82);
+  }
+
+
+  /* =========================================================
+     INDICATORS
+
+     Pushed down deliberately to reproduce Canva spacing.
+     ========================================================= */
+
+  .growth-indicators {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 16px;
+
+    margin-top: 68px;
+  }
+
+
+  .growth-indicator {
+    min-height: 108px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(15,23,42,.82);
+
+    border: 1px solid rgba(0,150,255,.12);
+
+    border-radius: 17px;
+
+    text-align: center;
+  }
+
+
+  .indicator-number {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 25px;
+    font-weight: 700;
+
+    line-height: 1;
+
+    color: var(--growth-blue);
+  }
+
+
+  .indicator-label {
+    display: block;
+
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+
+    letter-spacing: .01em;
+
+    color: white;
+  }
+
+
+  /* =========================================================
+     FEATURE CARD
+     ========================================================= */
+
+  .growth-feature {
+    margin-top: auto;
+
+    min-height: 152px;
+
+    padding: 30px 42px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    background: rgba(15,23,42,.82);
+
+    border-radius: 17px;
+  }
+
+
+  .growth-feature h4 {
+    margin: 0 0 20px 0;
+
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+
+    color: white;
+  }
+
+
+  .growth-feature p {
+    margin: 0;
+
+    max-width: 500px;
+
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.45;
+
+    color: rgba(255,255,255,.75);
+  }
+
+
+  /* =========================================================
+     RIGHT COLUMN
+     ========================================================= */
+
+  .growth-right-column {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    height: 100%;
+  }
+
+
+  /* GROWTH CHECK */
+
+  .growth-check-title {
+    height: 58px;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+
+    padding-top: 0;
+
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 25px;
+    font-weight: 700;
+
+    letter-spacing: .02em;
+
+    color: var(--growth-blue);
+  }
+
+
+  /* =========================================================
+     INNER RIGHT PANEL
+     ========================================================= */
+
+  .growth-panel {
+    flex: 1;
+
+    min-height: 0;
+
+    padding: 38px 36px 30px 36px;
+
+    display: flex;
+    flex-direction: column;
+
+    background: var(--growth-panel);
+
+    border-radius: 18px;
+
+    overflow: hidden;
+  }
+
+
+  /* =========================================================
+     PANEL HEADER
+     ========================================================= */
+
+  .growth-panel-header {
+    flex-shrink: 0;
+  }
+
+
+  .growth-panel-header-row {
+    display: flex;
+    align-items: center;
+
+    height: 26px;
+  }
+
+
+  .growth-panel-header-row span {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+
+    letter-spacing: .02em;
+
+    color: white;
+  }
+
+
+  /* =========================================================
+     PROGRESS
+     ========================================================= */
+
+  .growth-progress {
+    display: flex;
+    gap: 4px;
+
+    width: 100%;
+
+    margin-top: 11px;
+  }
+
+
+  .progress-bar {
+    height: 12px;
+    flex: 1;
+
+    border-radius: 6px;
+
+    transition: background .3s ease;
+  }
+
+
+  .progress-active {
+    background: var(--growth-blue);
+  }
+
+
+  .progress-inactive {
+    background: #8EB7D5;
+  }
+
+
+  /* =========================================================
+     STEP 1
+
+     The important spacing adjustment.
+     ========================================================= */
+
+  .growth-step-one {
+    display: flex;
+    flex-direction: column;
+
+    flex: 1;
+
+    min-height: 0;
+
+    padding-top: 66px;
+  }
+
+
+  /* =========================================================
+     TABS
+     ========================================================= */
+
+  .growth-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 20px;
+
+    flex-shrink: 0;
+  }
+
+
+  .growth-tab {
+    height: 118px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    padding: 18px;
+
+    border: none;
+    border-radius: 18px;
+
+    background: #293F70;
+
+    color: white;
+
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+      background .2s ease,
+      transform .2s ease;
+  }
+
+
+  .growth-tab:hover {
+    transform: translateY(-1px);
+  }
+
+
+  .growth-tab svg {
+    width: 28px;
+    height: 28px;
+
+    color: var(--growth-blue);
+  }
+
+
+  .growth-tab.bg-selected {
+    background: #7089C2 !important;
+  }
+
+
+  .growth-tab.bg-selected svg {
+    color: white !important;
+  }
+
+
+  /* =========================================================
+     SELECT GRID
+     ========================================================= */
+
+  .growth-select-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    column-gap: 36px;
+    row-gap: 32px;
+
+    margin-top: 58px;
+  }
+
+
+  .growth-field {
+    min-width: 0;
+  }
+
+
+  .growth-field label {
+    display: block;
+
+    margin-bottom: 14px;
+
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+
+    line-height: 1.3;
+
+    color: rgba(255,255,255,.82);
+  }
+
+
+  /* =========================================================
+     SELECTS
+     ========================================================= */
+
+  .growth-select {
+    width: 100%;
+    height: 58px;
+
+    padding: 0 52px 0 22px;
+
+    border: none;
+    border-radius: 15px;
+
+    appearance: none;
+
+    background-color: #293F70;
+
+    background-image:
+      linear-gradient(45deg, transparent 50%, white 50%),
+      linear-gradient(135deg, white 50%, transparent 50%);
+
+    background-position:
+      calc(100% - 25px) 24px,
+      calc(100% - 17px) 24px;
+
+    background-size:
+      9px 9px,
+      9px 9px;
+
+    background-repeat: no-repeat;
+
+    color: white;
+
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    outline: none;
+  }
+
+
+  .growth-select:focus {
+    box-shadow: 0 0 0 2px rgba(0,150,255,.45);
+  }
+
+
+  /* =========================================================
+     ACTION BUTTON
+     ========================================================= */
+
+  .growth-action {
+    margin-top: auto;
+
+    padding-top: 50px;
+  }
+
+
+  .growth-submit {
+    width: 100%;
+    height: 74px;
+
+    border: none;
+    border-radius: 14px !important;
+
+    background: var(--growth-blue);
+
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 28px;
+
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 23px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: all .2s ease;
+
+    box-shadow: 0 8px 20px rgba(0,0,0,.18);
+  }
+
+
+  .growth-submit:hover {
+    background: var(--growth-light-blue);
+    color: #16213E;
+  }
+
+
+  .growth-arrow {
+    font-size: 38px;
+    font-weight: 400;
+    line-height: 1;
+  }
+
+
+  /* =========================================================
+     PANEL FOOTNOTE
+     ========================================================= */
+
+  .growth-panel-note {
+    flex-shrink: 0;
+
+    margin: 18px 0 0 0;
+
+    text-align: center;
+
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+
+    line-height: 1.4;
+
+    color: white;
+  }
+
+
+  /* =========================================================
+     STEP 2
+     ========================================================= */
+
+  .growth-step-two {
+    flex: 1;
+
+    min-height: 0;
+
+    padding-top: 36px;
+  }
+
+
+  .growth-step-two h3 {
+    margin: 0 0 26px 0;
+
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+
+    line-height: 1.15;
+
+    color: white;
+  }
+
+
+  .growth-form {
+    display: flex;
+    flex-direction: column;
+
+    gap: 18px;
+  }
+
+
+  .growth-form-field label {
+    display: block;
+
+    margin-bottom: 9px;
+
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 15px;
+
+    color: rgba(255,255,255,.82);
+  }
+
+
+  .growth-form-field input {
+    width: 100%;
+    height: 55px;
+
+    box-sizing: border-box;
+
+    padding: 0 18px;
+
+    border: 1px solid rgba(0,150,255,.28);
+    border-radius: 12px;
+
+    background: #0F172A;
+
+    color: white;
+
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 15px;
+
+    outline: none;
+  }
+
+
+  .growth-form-field input:focus {
+    border-color: var(--growth-blue);
+  }
+
+
+  .growth-form-field input::placeholder {
+    color: rgba(255,255,255,.55);
+  }
+
+
+  .growth-step-two .growth-action {
+    padding-top: 4px;
+  }
+
+
+  .growth-step-two .growth-submit {
+    height: 60px;
+
+    font-size: 18px;
+  }
+
+
+  /* =========================================================
+     UTILITY
+     ========================================================= */
+
+  .growth-modal.hidden {
+    display: none;
+  }
+
+
+  .growth-modal.flex {
+    display: flex;
+  }
+
+
+  .growth-step-two.hidden,
+  .growth-step-one.hidden {
+    display: none;
+  }
+
+
+  /* =========================================================
+     FONT DEFINITIONS
+     ========================================================= */
+
   @font-face {
     font-family: 'Cabinet Grotesk';
-    src: url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@700&display=swap');
+
+    src:
+      url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@700&display=swap');
+
     font-weight: 700;
     font-style: normal;
     font-display: swap;
   }
 
+
   @font-face {
     font-family: 'Plus Jakarta Sans';
-    src: url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+    src:
+      url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
     font-weight: 400 700;
     font-style: normal;
     font-display: swap;
   }
 
-  .font-cabinet {
-    font-family: 'Cabinet Grotesk', sans-serif;
+
+  /* =========================================================
+     TABLET
+     ========================================================= */
+
+  @media (max-width: 1200px) {
+
+    .growth-modal {
+      padding: 18px;
+    }
+
+    .growth-modal-card {
+      width: 96vw;
+
+      padding: 30px;
+
+      min-height: auto;
+      max-height: calc(100vh - 36px);
+
+      overflow-y: auto;
+    }
+
+    .growth-layout {
+      grid-template-columns: 1fr;
+      row-gap: 45px;
+    }
+
+    .growth-left {
+      height: auto;
+    }
+
+    .growth-feature {
+      margin-top: 45px;
+    }
+
+    .growth-right-column {
+      height: auto;
+    }
+
+    .growth-panel {
+      min-height: 700px;
+    }
+
+    .growth-check-title {
+      height: auto;
+      margin-bottom: 18px;
+    }
+
   }
 
-  .font-jakarta {
-    font-family: 'Plus Jakarta Sans', sans-serif;
+
+  /* =========================================================
+     MOBILE
+     ========================================================= */
+
+  @media (max-width: 700px) {
+
+    .growth-modal {
+      padding: 10px;
+      align-items: flex-start;
+    }
+
+    .growth-modal-card {
+      width: 100%;
+
+      padding: 24px 18px;
+
+      border-radius: 22px;
+
+      max-height: calc(100vh - 20px);
+    }
+
+    .growth-before {
+      width: 210px;
+      height: 54px;
+
+      margin-bottom: 24px;
+
+      font-size: 16px;
+    }
+
+    .growth-logo {
+      margin-bottom: 32px;
+    }
+
+    .growth-logo img {
+      height: 60px;
+    }
+
+    .growth-headline {
+      font-size: 2.45rem;
+
+      line-height: 1.04;
+
+      margin-bottom: 20px;
+    }
+
+    .growth-intro {
+      font-size: 15px;
+    }
+
+    .growth-indicators {
+      gap: 8px;
+
+      margin-top: 38px;
+    }
+
+    .growth-indicator {
+      min-height: 84px;
+    }
+
+    .indicator-number {
+      font-size: 20px;
+    }
+
+    .indicator-label {
+      font-size: 11px;
+    }
+
+    .growth-feature {
+      min-height: auto;
+
+      padding: 24px;
+
+      margin-top: 28px;
+    }
+
+    .growth-feature h4 {
+      margin-bottom: 12px;
+    }
+
+    .growth-check-title {
+      font-size: 21px;
+    }
+
+    .growth-panel {
+      padding: 24px 18px;
+      min-height: auto;
+    }
+
+    .growth-step-one {
+      padding-top: 35px;
+    }
+
+    .growth-tabs {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .growth-tab {
+      height: 100px;
+      border-radius: 14px;
+
+      font-size: 14px;
+    }
+
+    .growth-select-grid {
+      grid-template-columns: 1fr;
+
+      row-gap: 24px;
+
+      margin-top: 38px;
+    }
+
+    .growth-action {
+      padding-top: 35px;
+    }
+
+    .growth-submit {
+      height: 62px;
+      font-size: 18px;
+    }
+
+    .growth-close {
+      top: 12px;
+      right: 12px;
+    }
+
   }
 
-  .bg-selected {
-    background-color: #0096FF !important;
-    border-color: #89CFF0 !important;
-  }
-
-  .bg-selected svg {
-    color: #ffffff !important;
-  }
-
-  #btn-continue,
-  #growth-form button[type="submit"],
-  #open-growth-modal {
-    border-radius: 8px !important;
-  }
-
-  #open-growth-modal {
-    padding: 30px !important;
-  }
 </style>
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById('growth-modal');
-    const closeBtn = document.getElementById('close-modal');
-    const openBtn = document.getElementById('open-growth-modal');
-    const btnContinue = document.getElementById('btn-continue');
-    
-    const step1Content = document.getElementById('step-1-content');
-    const step2Content = document.getElementById('step-2-content');
-    const stepLabel = document.getElementById('step-label');
-    const bar2 = document.getElementById('bar-2');
 
-    const tabs = document.querySelectorAll('.tab-btn');
-    const selects = document.querySelectorAll('.growth-select');
+
+<!-- =========================================================
+     JAVASCRIPT
+     ========================================================= -->
+
+<script>
+
+  document.addEventListener('DOMContentLoaded', () => {
+
+    const modal =
+      document.getElementById('growth-modal');
+
+    const closeBtn =
+      document.getElementById('close-modal');
+
+    const openBtn =
+      document.getElementById('open-growth-modal');
+
+    const btnContinue =
+      document.getElementById('btn-continue');
+
+    const step1Content =
+      document.getElementById('step-1-content');
+
+    const step2Content =
+      document.getElementById('step-2-content');
+
+    const stepLabel =
+      document.getElementById('step-label');
+
+    const bar2 =
+      document.getElementById('bar-2');
+
+    const tabs =
+      document.querySelectorAll('.tab-btn');
+
+    const selects =
+      document.querySelectorAll('.growth-select');
+
+
+    /* =======================================================
+       OPEN
+       ======================================================= */
 
     if (openBtn && modal) {
+
       openBtn.addEventListener('click', () => {
+
         modal.classList.remove('hidden');
         modal.classList.add('flex');
+
+        modal.setAttribute('aria-hidden', 'false');
+
+        document.body.style.overflow = 'hidden';
+
       });
+
     }
+
+
+    /* =======================================================
+       CLOSE
+       ======================================================= */
 
     if (closeBtn && modal) {
+
       closeBtn.addEventListener('click', () => {
+
         modal.classList.add('hidden');
         modal.classList.remove('flex');
+
+        modal.setAttribute('aria-hidden', 'true');
+
+        document.body.style.overflow = '';
+
       });
+
     }
+
+
+    /* =======================================================
+       HIGHLIGHT TAB
+       ======================================================= */
 
     function highlightPair(key) {
+
       tabs.forEach(tab => {
+
         if (tab.getAttribute('data-tab') === key) {
+
           tab.classList.add('bg-selected');
+
         } else {
+
           tab.classList.remove('bg-selected');
+
         }
+
       });
+
     }
 
+
+    /* =======================================================
+       TAB CLICK
+       ======================================================= */
+
     tabs.forEach(tab => {
+
       tab.addEventListener('click', () => {
-        const key = tab.getAttribute('data-tab');
-        if (key) highlightPair(key);
+
+        const key =
+          tab.getAttribute('data-tab');
+
+        if (key) {
+
+          highlightPair(key);
+
+        }
+
       });
+
     });
+
+
+    /* =======================================================
+       SELECT CHANGE
+       ======================================================= */
 
     selects.forEach(select => {
+
       select.addEventListener('change', () => {
-        const targetKey = select.getAttribute('data-target');
-        if (targetKey) highlightPair(targetKey);
+
+        const targetKey =
+          select.getAttribute('data-target');
+
+        if (targetKey) {
+
+          highlightPair(targetKey);
+
+        }
+
       });
+
     });
 
+
+    /* =======================================================
+       CONTINUE
+       ======================================================= */
+
     btnContinue?.addEventListener('click', () => {
+
       step1Content?.classList.add('hidden');
+
       step2Content?.classList.remove('hidden');
-      if (stepLabel) stepLabel.textContent = 'STEP 2 OF 2';
-      if (bar2) {
-        bar2.classList.remove('bg-slate-700');
-        bar2.classList.add('bg-[#0096FF]');
+
+      if (stepLabel) {
+
+        stepLabel.textContent =
+          'STEP 2 OF 2';
+
       }
+
+      if (bar2) {
+
+        bar2.classList.remove('progress-inactive');
+
+        bar2.classList.add('progress-active');
+
+      }
+
     });
+
   });
+
 </script>
