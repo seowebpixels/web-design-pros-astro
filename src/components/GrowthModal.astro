@@ -945,22 +945,22 @@ import wdpLogo from '../assets/wdp-transparent-logo-4.avif';
      ========================================================= */
 
   .growth-panel {
-    flex: 1;
+  flex: 1;
 
-    min-height: 0;
+  min-height: 0;
 
-    padding: 38px 36px 30px 36px;
+  padding: 38px 36px 30px 36px;
 
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-    background: var(--growth-panel);
+  background: var(--growth-panel);
 
-    border-radius: 18px;
+  border-radius: 18px;
 
-    overflow: hidden;
-  }
-
+  overflow-y: auto;
+  overflow-x: hidden;
+}
 
   /* =========================================================
      PANEL HEADER
@@ -1031,16 +1031,13 @@ import wdpLogo from '../assets/wdp-transparent-logo-4.avif';
      ========================================================= */
 
   .growth-step-one {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-    flex: 1;
+  padding-top: 66px;
 
-    min-height: 0;
-
-    padding-top: 66px;
-  }
-
+  flex-shrink: 0;
+}
 
   /* =========================================================
      TABS
@@ -1198,10 +1195,10 @@ import wdpLogo from '../assets/wdp-transparent-logo-4.avif';
      ========================================================= */
 
   .growth-action {
-    margin-top: auto;
+  margin-top: 0;
 
-    padding-top: 50px;
-  }
+  padding-top: 50px;
+}
 
 
   .growth-submit {
