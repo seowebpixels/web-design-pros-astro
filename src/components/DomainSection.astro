@@ -1,145 +1,368 @@
 ---
-// src/components/DomainSection.astro
-
-// Featured Domain Packages (Top row: Big Cards, Bottom row: Small Cards)
-const mainDomains = [
+/* 1. Primary Featured Domains (Top Row) */
+const primaryDomains = [
   {
     tld: '.co.za',
-    badge: 'SOUTH AFRICAN ENTITY',
-    badgeColor: 'bg-gray-200/20 text-gray-200 border-gray-400/30',
+    category: 'SOUTH AFRICAN ENTITY',
     oldPrice: 'R95',
     price: 'R75',
-    dealBadge: 'GREAT DEAL',
+    period: '/year',
+    badge: 'GREAT DEAL'
   },
   {
     tld: '.com',
-    badge: 'GLOBAL CHOICE',
-    badgeColor: 'bg-gray-200/20 text-gray-200 border-gray-400/30',
+    category: 'GLOBAL CHOICE',
     oldPrice: 'R280',
     price: 'R200',
-    dealBadge: 'GREAT DEAL',
+    period: '/year',
+    badge: 'GREAT DEAL'
   }
 ];
 
-const subDomains = [
-  { tld: '.org.za', subtitle: 'SOUTH AFRICAN ORGANISATIONS', price: 'R95' },
-  { tld: '.org', subtitle: 'ORGANISATIONS', price: 'R200' },
-  { tld: '.net', subtitle: 'ORGANISATIONS', price: 'R200' },
-  { tld: '.shop', subtitle: 'ONLINE SHOPS', price: 'R250' },
-  { tld: '.online', subtitle: 'DIGITAL BRANDS', price: 'R100' },
-  { tld: '.site', subtitle: 'DIGITAL BRANDS', price: 'R105' }
+/* 2. Secondary Domains (Bottom Row) */
+const secondaryDomains = [
+  { tld: '.org.za', category: 'SOUTH AFRICAN ORGANISATIONS', price: 'R95/yr' },
+  { tld: '.org', category: 'ORGANISATIONS', price: 'R200/yr' },
+  { tld: '.net', category: 'ORGANISATIONS', price: 'R200/yr' },
+  { tld: '.shop', category: 'ONLINE SHOPS', price: 'R250/yr' },
+  { tld: '.online', category: 'DIGITAL BRANDS', price: 'R100/yr' },
+  { tld: '.site', category: 'DIGITAL BRANDS', price: 'R105/yr' }
 ];
 ---
 
-<section class="w-full py-16 md:py-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto font-jakarta">
-  
-  <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
-    <div class="space-y-2">
-      <span class="text-xs md:text-sm font-bold tracking-widest text-[#0096FF] uppercase">
-        SOUTH AFRICAN DOMAIN NAMES 🇿🇦
-      </span>
-      <h2 class="text-2xl md:text-3xl font-extrabold text-white">
-        Register a .CO.ZA Domain
-      </h2>
-      <p class="text-gray-300 text-sm md:text-base max-w-xl">
-        Use .co.za to show your South African connection, or compare popular global extensions.
-      </p>
+<section class="domain-section">
+  <div class="container">
+    
+    <!-- Header Block -->
+    <div class="domain-header">
+      <div class="header-text">
+        <span class="sub-heading">SOUTH AFRICAN DOMAIN NAMES</span>
+        <h2 class="section-title">Register a .CO.ZA Domain</h2>
+        <p class="description">Use .co.za to show your South African connection, or compare popular global extensions.</p>
+      </div>
+      <a href="/domains" class="btn-primary">Search domains</a>
     </div>
 
-    <a 
-      href="/domains" 
-      class="inline-flex items-center justify-center bg-[#0096FF] hover:bg-[#89CFF0] hover:text-[#16213E] text-white font-bold text-base md:text-lg py-3.5 px-8 rounded-2xl shadow-lg transition-all duration-200 active:scale-95"
-    >
-      Search domains
-    </a>
-  </div>
-
-  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 text-sm text-gray-300">
-    <div class="flex items-center gap-2 flex-wrap">
-      <span>CO.ZA domains start from</span>
-      <span class="line-through text-gray-400">R95</span>
-      <span class="text-white font-bold text-base">R 75.00</span>
-      <span class="bg-[#0096FF] text-white text-xs font-bold px-2.5 py-1 rounded-full uppercase">
-        GREAT DEAL
-      </span>
-      <span>/ first year</span>
-    </div>
-
-    <div class="flex items-center gap-2 text-xs md:text-sm text-gray-300 self-end sm:self-auto">
-      <span>Sort by: <strong>Alphabetical / Cheapest first</strong></span>
-      <div class="w-7 h-7 rounded-full bg-[#0096FF] text-white flex items-center justify-center">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-        </svg>
+    <!-- Sub-header Deal Bar -->
+    <div class="deal-bar">
+      <div class="deal-info">
+        <span>CO.ZA domains start from</span>
+        <span class="old-price">R95</span>
+        <span class="highlight-price">R 75.00</span>
+        <span class="deal-badge">GREAT DEAL</span>
+        <span class="period">/ first year</span>
+      </div>
+      <div class="sort-info">
+        <span>Sort by: <strong>Alphabetical / Cheapest first</strong></span>
+        <span class="sort-icon">▼</span>
       </div>
     </div>
-  </div>
 
-  <div class="space-y-6">
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {mainDomains.map((domain) => (
-        <a 
-          href={`/domains?tld=${domain.tld}`} 
-          class="group relative block bg-[#16213E]/60 backdrop-blur-md border border-[#0096FF]/30 hover:border-[#0096FF] rounded-3xl p-6 md:p-8 transition-all duration-300 hover:shadow-2xl hover:shadow-[#0096FF]/20 hover:-translate-y-1"
-        >
-          <div class="flex flex-col space-y-4">
-            <span class={`self-start text-xs font-semibold px-3 py-1 rounded-full border ${domain.badgeColor}`}>
-              {domain.badge}
-            </span>
-            <h3 class="text-4xl md:text-5xl font-black text-white group-hover:text-[#0096FF] transition-colors">
-              {domain.tld}
-            </h3>
-            <div class="flex items-center gap-2 text-gray-300 pt-2">
-              <span>From</span>
-              <span class="line-through text-gray-400">{domain.oldPrice}</span>
-              <span class="text-white font-bold text-xl">{domain.price}</span>
-              <span class="bg-[#0096FF] text-white text-xs font-bold px-2.5 py-0.5 rounded-full">
-                {domain.dealBadge}
-              </span>
-              <span class="text-xs text-gray-400">/year</span>
-            </div>
+    <!-- Top Grid: 2 Large Cards -->
+    <div class="primary-grid">
+      {primaryDomains.map((item) => (
+        <a href={`/domains?tld=${item.tld}`} class="glass-card primary-card">
+          <span class="category-tag">{item.category}</span>
+          <h3 class="tld-title">{item.tld}</h3>
+          <div class="pricing-row">
+            <span class="label">From</span>
+            <span class="old-price">{item.oldPrice}</span>
+            <span class="price">{item.price}</span>
+            <span class="deal-badge">{item.badge}</span>
+            <span class="period">{item.period}</span>
           </div>
         </a>
       ))}
     </div>
 
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-      {subDomains.map((domain) => (
-        <a 
-          href={`/domains?tld=${domain.tld}`} 
-          class="group block bg-[#16213E]/50 backdrop-blur-md border border-[#0096FF]/20 hover:border-[#0096FF] rounded-2xl p-4 text-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
-        >
-          <h4 class="text-2xl font-bold text-white group-hover:text-[#0096FF] transition-colors">
-            {domain.tld}
-          </h4>
-          <span class="text-[10px] text-gray-400 font-semibold block mt-1 tracking-wider uppercase min-h-[28px]">
-            {domain.subtitle}
-          </span>
-          <span class="text-base font-bold text-white block mt-2">
-            {domain.price} <span class="text-xs font-normal text-gray-400">/yr</span>
-          </span>
+    <!-- Bottom Grid: 6 Smaller Cards -->
+    <div class="secondary-grid">
+      {secondaryDomains.map((item) => (
+        <a href={`/domains?tld=${item.tld}`} class="glass-card secondary-card">
+          <h4 class="tld-title-sm">{item.tld}</h4>
+          <span class="sub-category">{item.category}</span>
+          <div class="price-sm">{item.price}</div>
         </a>
       ))}
     </div>
 
+    <!-- Bottom Action Area -->
+    <div class="actions-wrapper">
+      <a href="/domains" class="btn-action">Check a domain</a>
+      <button type="button" id="show-more-btn" class="btn-action">Show more</button>
+    </div>
+
   </div>
-
-  <div class="mt-10 space-y-4">
-    <a 
-      href="/domains" 
-      class="block w-full sm:w-auto text-center bg-[#0096FF] hover:bg-[#89CFF0] hover:text-[#16213E] text-white font-bold text-base md:text-lg py-4 px-8 rounded-2xl shadow-md transition-all duration-200"
-    >
-      Check a domain
-    </a>
-
-    <button 
-      type="button" 
-      id="show-more-domains-btn" 
-      class="w-full bg-[#0096FF] hover:bg-[#89CFF0] hover:text-[#16213E] text-white font-bold text-base md:text-lg py-4 px-8 rounded-2xl shadow-md transition-all duration-200 cursor-pointer text-center"
-    >
-      Show more
-    </button>
-  </div>
-
 </section>
+
+<style>
+  /* Base Container Layout */
+  .domain-section {
+    padding: 5rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: inherit;
+  }
+
+  .container {
+    width: 100%;
+  }
+
+  /* Header Section */
+  .domain-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    .domain-header {
+      flex-direction: row;
+      align-items: flex-end;
+    }
+  }
+
+  .sub-heading {
+    color: #89CFF0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .section-title {
+    font-size: 2.25rem;
+    color: #ffffff;
+    margin: 0 0 0.5rem 0;
+    font-weight: 800;
+  }
+
+  .description {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+  }
+
+  /* Sub-header Deal Bar */
+  .deal-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .deal-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .old-price {
+    text-decoration: line-through;
+    opacity: 0.6;
+  }
+
+  .highlight-price {
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  .deal-badge {
+    background: #0096FF;
+    color: #ffffff;
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+
+  .sort-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .sort-icon {
+    width: 24px;
+    height: 24px;
+    background: #0096FF;
+    color: #ffffff;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+  }
+
+  /* Glassmorphic Cards (Exact styles from Pricing.astro) */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 7px !important; /* Strict 7px radius */
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  }
+
+  .glass-card:hover {
+    border-color: #0096FF;
+    box-shadow: 0 0 15px rgba(0, 150, 255, 0.3);
+    transform: translateY(-2px);
+  }
+
+  /* Primary Grid (Top 2 Cards) */
+  .primary-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .primary-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .primary-card {
+    padding: 2rem;
+  }
+
+  .category-tag {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.3rem 0.75rem;
+    border-radius: 7px;
+    align-self: flex-start;
+    margin-bottom: 1rem;
+    letter-spacing: 0.5px;
+  }
+
+  .tld-title {
+    font-size: 2.75rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 1rem 0;
+  }
+
+  .pricing-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    flex-wrap: wrap;
+  }
+
+  .pricing-row .price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  /* Secondary Grid (Bottom 6 Cards) */
+  .secondary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    .secondary-grid {
+      grid-template-columns: repeat(6, 1fr);
+    }
+  }
+
+  .secondary-card {
+    padding: 1.25rem 0.85rem;
+    text-align: center;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .tld-title-sm {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 0.25rem 0;
+  }
+
+  .sub-category {
+    font-size: 0.65rem;
+    color: #89CFF0;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.75rem;
+    min-height: 24px;
+    display: flex;
+    align-items: center;
+  }
+
+  .price-sm {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0096FF;
+  }
+
+  /* Buttons & Action Styling */
+  .btn-primary {
+    background: #0096FF;
+    color: #ffffff;
+    padding: 0.85rem 1.75rem;
+    border-radius: 7px !important;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: background 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .btn-primary:hover {
+    background: #89CFF0;
+    color: #16213E;
+  }
+
+  .actions-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .btn-action {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: #0096FF;
+    color: #ffffff;
+    padding: 1rem;
+    border-radius: 7px !important;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .btn-action:hover {
+    background: #89CFF0;
+    color: #16213E;
+  }
+</style>
