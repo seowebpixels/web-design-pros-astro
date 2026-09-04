@@ -4,280 +4,823 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="Domain Registration & Pricing | WebDesignPros">
-  <main class="min-h-screen bg-slate-950 text-white py-12 px-4 sm:px-6 lg:px-8 space-y-24">
-    
-    <!-- 1. HERO SEARCH SECTION -->
-    <section class="max-w-4xl mx-auto text-center space-y-6 pt-8">
-      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight">
-        Register Your Domain Name Today
-      </h1>
-      <p class="text-xl text-cyan-400 font-medium">
-        From as low as R75 / year <span class="text-slate-400 font-normal">(Hurry, limited-time offer!)</span>
-      </p>
-
-      <form id="domain-search-form" class="mt-8 flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto">
-        <input 
-          type="text" 
-          id="domain-input"
-          placeholder="Search for your domain name..." 
-          class="flex-1 px-5 py-4 rounded-xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 glassmorphism"
-          required
-        />
-        <button 
-          type="submit" 
-          class="px-8 py-4 rounded-xl bg-cyan-600 hover:bg-cyan-500 font-bold text-white transition-all shadow-lg shadow-cyan-900/40"
-        >
-          Search Domain
-        </button>
-      </form>
-    </section>
-
-    <!-- 2. DYNAMIC SEARCH RESULT DISPLAY (Hidden by default) -->
-    <section id="result-container" class="max-w-2xl mx-auto hidden">
-      <div class="p-6 rounded-2xl bg-slate-900/90 border border-cyan-500/30 glassmorphism flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div>
-          <span class="text-xs uppercase font-bold tracking-wider text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded-full border border-emerald-500/30">Available</span>
-          <h3 id="result-domain-name" class="text-2xl font-bold mt-2 text-white">example.co.za</h3>
-          <p class="text-sm text-slate-400">Renews at R85.00/yr</p>
-        </div>
-        
-        <div class="text-right flex flex-col items-end gap-2 w-full sm:w-auto">
-          <div class="text-2xl font-black text-white">R75.00 <span class="text-xs text-slate-400 font-normal">/ 1st Yr</span></div>
-          <button id="buy-now-btn" class="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 font-semibold text-white transition-all">
-            Buy Now &rarr;
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- 3. DOMAIN REGISTRATION PRICES SECTION -->
-    <section class="max-w-6xl mx-auto space-y-8">
-      <div>
-        <h2 class="text-3xl font-bold text-white">Domain Registration Prices</h2>
-        <p class="text-slate-400 mt-2">
-          At Web Design Pros, we provide clear, competitive pricing on popular South African and global domain extensions.
+  <main id="domains-page-container">
+    <div class="domains-content-wrapper">
+      
+      <!-- 1. HERO SEARCH SECTION -->
+      <section class="domains-hero-section">
+        <h1 class="hero-title">
+          Register Your Domain Name Today
+        </h1>
+        <p class="hero-subtitle">
+          From as low as R75 / year <span class="hero-subtext">(Hurry, limited-time offer!)</span>
         </p>
-      </div>
 
-      <!-- Table Controls & Filters -->
-      <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 glassmorphism space-y-6">
-        
-        <!-- Category Filter Pills -->
-        <div class="flex flex-wrap gap-2">
-          <button class="px-4 py-2 rounded-lg bg-cyan-600 text-white font-semibold text-sm">All Domains</button>
-          <button class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-sm transition-colors">Popular</button>
-          <button class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-sm transition-colors">New</button>
-          <button class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-sm transition-colors">Hot</button>
-          <button class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-sm transition-colors">Sale</button>
-        </div>
-
-        <!-- Search Table Input -->
-        <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+        <form id="domain-search-form" class="hero-search-form">
           <input 
             type="text" 
-            placeholder="Search domain extensions..." 
-            class="w-full sm:w-72 px-4 py-2 rounded-lg bg-slate-950/80 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+            id="domain-input"
+            placeholder="Search for your domain name..." 
+            class="search-input"
+            required
           />
-          <div class="text-xs text-slate-400 self-end sm:self-center">
-            Showing 1 to 4 entries
+          <button 
+            type="submit" 
+            class="search-button"
+          >
+            Search Domain
+          </button>
+        </form>
+      </section>
+
+      <!-- 2. DYNAMIC SEARCH RESULT DISPLAY (Hidden by default) -->
+      <section id="result-container" class="search-result-card hidden">
+        <div class="result-inner">
+          <div>
+            <span class="badge-available">Available</span>
+            <h3 id="result-domain-name" class="result-domain-title">example.co.za</h3>
+            <p class="result-domain-sub">Renews at R85.00/yr</p>
+          </div>
+          
+          <div class="result-action-block">
+            <div class="result-price">R75.00 <span class="price-unit">/ 1st Yr</span></div>
+            <button id="buy-now-btn" class="buy-button">
+              Buy Now &rarr;
+            </button>
           </div>
         </div>
+      </section>
 
-        <!-- Pricing Table -->
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
-            <thead>
-              <tr class="border-b border-slate-800 text-xs font-semibold uppercase tracking-wider text-slate-400">
-                <th class="py-3 px-4">Domain Extension</th>
-                <th class="py-3 px-4">Category</th>
-                <th class="py-3 px-4">Register</th>
-                <th class="py-3 px-4">Renew</th>
-                <th class="py-3 px-4">Transfer</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-800/60 text-sm">
-              <tr class="hover:bg-slate-800/30 transition-colors">
-                <td class="py-4 px-4 font-bold text-white flex items-center gap-2">
-                  .co.za <span class="px-2 py-0.5 text-[10px] uppercase font-extrabold bg-red-950/80 text-red-400 border border-red-500/30 rounded-md">Hot</span>
-                </td>
-                <td class="py-4 px-4 text-slate-400">Popular</td>
-                <td class="py-4 px-4 font-bold text-cyan-400">R75</td>
-                <td class="py-4 px-4 text-slate-300">R85</td>
-                <td class="py-4 px-4 text-slate-300">R85</td>
-              </tr>
-              <tr class="hover:bg-slate-800/30 transition-colors">
-                <td class="py-4 px-4 font-bold text-white flex items-center gap-2">
-                  .com <span class="px-2 py-0.5 text-[10px] uppercase font-extrabold bg-red-950/80 text-red-400 border border-red-500/30 rounded-md">Hot</span>
-                </td>
-                <td class="py-4 px-4 text-slate-400">Popular</td>
-                <td class="py-4 px-4 font-bold text-cyan-400">R200</td>
-                <td class="py-4 px-4 text-slate-300">R230</td>
-                <td class="py-4 px-4 text-slate-300">R215</td>
-              </tr>
-              <tr class="hover:bg-slate-800/30 transition-colors">
-                <td class="py-4 px-4 font-bold text-white flex items-center gap-2">
-                  .org.za <span class="px-2 py-0.5 text-[10px] uppercase font-extrabold bg-emerald-950/80 text-emerald-400 border border-emerald-500/30 rounded-md">Sale</span>
-                </td>
-                <td class="py-4 px-4 text-slate-400">Popular</td>
-                <td class="py-4 px-4 font-bold text-cyan-400">R95</td>
-                <td class="py-4 px-4 text-slate-300">R110</td>
-                <td class="py-4 px-4 text-slate-300">R110</td>
-              </tr>
-              <tr class="hover:bg-slate-800/30 transition-colors">
-                <td class="py-4 px-4 font-bold text-white flex items-center gap-2">
-                  .net <span class="px-2 py-0.5 text-[10px] uppercase font-extrabold bg-red-950/80 text-red-400 border border-red-500/30 rounded-md">Hot</span>
-                </td>
-                <td class="py-4 px-4 text-slate-400">Popular</td>
-                <td class="py-4 px-4 font-bold text-cyan-400">R200</td>
-                <td class="py-4 px-4 text-slate-300">R284</td>
-                <td class="py-4 px-4 text-slate-300">R284</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <p class="text-xs text-slate-500 text-right">All prices in ZAR. VAT included.</p>
-    </section>
-
-    <!-- 4. HOW IT WORKS & INFORMATION SECTION -->
-    <section class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-      
-      <!-- Left Column: Process Steps & Banner -->
-      <div class="lg:col-span-5 space-y-8">
+      <!-- 3. DOMAIN REGISTRATION PRICES SECTION -->
+      <section class="domains-section space-y-6">
         <div>
-          <h2 class="text-3xl font-bold text-white mb-6">How It Works</h2>
-          <ol class="space-y-4 text-sm text-slate-300">
-            <li class="p-4 rounded-xl bg-slate-900/50 border border-slate-800">
-              <strong class="text-cyan-400 block text-base mb-1">1) Search Your Domain</strong>
-              Enter your ideal name in our search tool to verify instant availability.
-            </li>
-            <li class="p-4 rounded-xl bg-slate-900/50 border border-slate-800">
-              <strong class="text-cyan-400 block text-base mb-1">2) Select Your Extension</strong>
-              Lock in your domain extension before someone else claims your brand.
-            </li>
-            <li class="p-4 rounded-xl bg-slate-900/50 border border-slate-800">
-              <strong class="text-cyan-400 block text-base mb-1">3) Complete Checkout</strong>
-              Pay securely via Instant EFT or card with clear, upfront pricing.
-            </li>
-            <li class="p-4 rounded-xl bg-slate-900/50 border border-slate-800">
-              <strong class="text-cyan-400 block text-base mb-1">4) Launch & Manage</strong>
-              Connect your domain to hosting or email within your management dashboard.
-            </li>
-          </ol>
-        </div>
-
-        <!-- Promo Callout Banner -->
-        <div class="p-6 rounded-2xl bg-gradient-to-br from-cyan-950/80 to-slate-900 border border-cyan-500/40 glassmorphism space-y-4">
-          <h3 class="text-xl font-bold text-white">Transparent Renewals for .CO.ZA</h3>
-          <p class="text-xs text-slate-300 leading-relaxed">
-            While some registrars lure you with low upfront costs only to charge excessive renewal fees later, we maintain honest, affordable pricing year after year.
+          <h2 class="section-heading">Domain Registration Prices</h2>
+          <p class="section-subheading">
+            At Web Design Pros, we provide clear, competitive pricing on popular South African and global domain extensions.
           </p>
-          <ul class="text-xs text-cyan-300 space-y-1.5 font-medium">
-            <li>✔ Low initial registration rates</li>
-            <li>✔ Predictable annual renewal pricing</li>
-            <li>✔ Zero hidden administration fees</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Right Column: Search Tips Guide -->
-      <div class="lg:col-span-7 p-8 rounded-2xl bg-slate-900/50 border border-slate-800 glassmorphism space-y-6">
-        <h3 class="text-2xl font-bold text-white">Finding the Perfect Domain in South Africa</h3>
-        <p class="text-sm text-slate-300 leading-relaxed">
-          Choosing the right domain extension is a critical first step for building your online presence. South Africa’s digital landscape offers several strong TLD options depending on your market focus:
-        </p>
-
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs font-semibold text-cyan-400">
-          <div class="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800 text-center">.co.za</div>
-          <div class="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800 text-center">.org.za</div>
-          <div class="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800 text-center">.net.za</div>
-          <div class="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800 text-center">.com</div>
-          <div class="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800 text-center">.africa</div>
-          <div class="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800 text-center">.shop</div>
         </div>
 
-        <div class="space-y-3 pt-2">
-          <h4 class="font-bold text-white text-base">Key Factors to Consider:</h4>
-          <ul class="list-disc list-inside text-sm text-slate-300 space-y-2">
-            <li><strong>Local SEO Advantage:</strong> A `.co.za` domain boosts search rankings within South African query results.</li>
-            <li><strong>Brand Match & Length:</strong> Keep your name concise, clear, and easy to communicate verbally.</li>
-            <li><strong>Extension Purpose:</strong> Match the TLD to your industry (e.g., `.shop` for e-commerce, `.org.za` for non-profits).</li>
-          </ul>
+        <!-- Table Controls & Filters -->
+        <div class="glass-card table-card-wrapper">
+          
+          <!-- Category Filter Pills -->
+          <div class="filter-pills-row">
+            <button class="pill-btn pill-active">All Domains</button>
+            <button class="pill-btn">Popular</button>
+            <button class="pill-btn">New</button>
+            <button class="pill-btn">Hot</button>
+            <button class="pill-btn">Sale</button>
+          </div>
+
+          <!-- Search Table Input -->
+          <div class="table-controls-row">
+            <input 
+              type="text" 
+              placeholder="Search domain extensions..." 
+              class="table-search-input"
+            />
+            <div class="table-entries-count">
+              Showing 1 to 4 entries
+            </div>
+          </div>
+
+          <!-- Pricing Table -->
+          <div class="table-scroll-container">
+            <table class="domain-pricing-table">
+              <thead>
+                <tr>
+                  <th>Domain Extension</th>
+                  <th>Category</th>
+                  <th>Register</th>
+                  <th>Renew</th>
+                  <th>Transfer</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="font-bold text-white flex-cell">
+                    .co.za <span class="badge-hot">Hot</span>
+                  </td>
+                  <td>Popular</td>
+                  <td class="price-highlight">R75</td>
+                  <td>R85</td>
+                  <td>R85</td>
+                </tr>
+                <tr>
+                  <td class="font-bold text-white flex-cell">
+                    .com <span class="badge-hot">Hot</span>
+                  </td>
+                  <td>Popular</td>
+                  <td class="price-highlight">R200</td>
+                  <td>R230</td>
+                  <td>R215</td>
+                </tr>
+                <tr>
+                  <td class="font-bold text-white flex-cell">
+                    .org.za <span class="badge-sale">Sale</span>
+                  </td>
+                  <td>Popular</td>
+                  <td class="price-highlight">R95</td>
+                  <td>R110</td>
+                  <td>R110</td>
+                </tr>
+                <tr>
+                  <td class="font-bold text-white flex-cell">
+                    .net <span class="badge-hot">Hot</span>
+                  </td>
+                  <td>Popular</td>
+                  <td class="price-highlight">R200</td>
+                  <td>R284</td>
+                  <td>R284</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+        <p class="vat-notice">All prices in ZAR. VAT included.</p>
+      </section>
 
-    </section>
-
-    <!-- 5. POPULAR EXTENSIONS GUIDE -->
-    <section class="max-w-6xl mx-auto space-y-8">
-      <h2 class="text-3xl font-bold text-white">Popular Extensions Overview</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- 4. HOW IT WORKS & INFORMATION SECTION -->
+      <section class="domains-two-col-grid">
         
-        <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800 flex gap-4 items-start">
-          <span class="text-cyan-400 font-extrabold text-xl">.co.za</span>
+        <!-- Left Column: Steps -->
+        <div class="space-y-8">
           <div>
-            <h3 class="font-bold text-white text-sm">South African Standard</h3>
-            <p class="text-xs text-slate-400 mt-1">The primary choice for local businesses targeting South African audiences.</p>
+            <h2 class="section-heading mb-6">How It Works</h2>
+            <ol class="steps-list">
+              <li class="step-card">
+                <strong class="step-title">1) Search Your Domain</strong>
+                Enter your ideal name in our search tool to verify instant availability.
+              </li>
+              <li class="step-card">
+                <strong class="step-title">2) Select Your Extension</strong>
+                Lock in your domain extension before someone else claims your brand.
+              </li>
+              <li class="step-card">
+                <strong class="step-title">3) Complete Checkout</strong>
+                Pay securely via Instant EFT or card with clear, upfront pricing.
+              </li>
+              <li class="step-card">
+                <strong class="step-title">4) Launch & Manage</strong>
+                Connect your domain to hosting or email within your management dashboard.
+              </li>
+            </ol>
+          </div>
+
+          <!-- Banner -->
+          <div class="callout-banner">
+            <h3 class="callout-title">Transparent Renewals for .CO.ZA</h3>
+            <p class="callout-desc">
+              While some registrars lure you with low upfront costs only to charge excessive renewal fees later, we maintain honest, affordable pricing year after year.
+            </p>
+            <ul class="callout-bullets">
+              <li>✔ Low initial registration rates</li>
+              <li>✔ Predictable annual renewal pricing</li>
+              <li>✔ Zero hidden administration fees</li>
+            </ul>
           </div>
         </div>
 
-        <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800 flex gap-4 items-start">
-          <span class="text-cyan-400 font-extrabold text-xl">.com</span>
-          <div>
-            <h3 class="font-bold text-white text-sm">Global Recognition</h3>
-            <p class="text-xs text-slate-400 mt-1">The international gold standard for commercial and cross-border brands.</p>
+        <!-- Right Column: Info Guide -->
+        <div class="glass-card info-guide-card">
+          <h3 class="guide-title">Finding the Perfect Domain in South Africa</h3>
+          <p class="guide-desc">
+            Choosing the right domain extension is a critical first step for building your online presence. South Africa’s digital landscape offers several strong TLD options depending on your market focus:
+          </p>
+
+          <div class="tld-pills-grid">
+            <div class="tld-pill">.co.za</div>
+            <div class="tld-pill">.org.za</div>
+            <div class="tld-pill">.net.za</div>
+            <div class="tld-pill">.com</div>
+            <div class="tld-pill">.africa</div>
+            <div class="tld-pill">.shop</div>
+          </div>
+
+          <div class="space-y-3 pt-2">
+            <h4 class="guide-subhead">Key Factors to Consider:</h4>
+            <ul class="guide-bullets">
+              <li><strong>Local SEO Advantage:</strong> A <code>.co.za</code> domain boosts search rankings within South African query results.</li>
+              <li><strong>Brand Match & Length:</strong> Keep your name concise, clear, and easy to communicate verbally.</li>
+              <li><strong>Extension Purpose:</strong> Match the TLD to your industry (e.g., <code>.shop</code> for e-commerce, <code>.org.za</code> for non-profits).</li>
+            </ul>
           </div>
         </div>
 
-        <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800 flex gap-4 items-start">
-          <span class="text-cyan-400 font-extrabold text-xl">.africa</span>
-          <div>
-            <h3 class="font-bold text-white text-sm">Pan-African Reach</h3>
-            <p class="text-xs text-slate-400 mt-1">Ideal for expanding operations across multiple African regions.</p>
+      </section>
+
+      <!-- 5. POPULAR EXTENSIONS GUIDE -->
+      <section class="domains-section space-y-6">
+        <h2 class="section-heading">Popular Extensions Overview</h2>
+        <div class="extensions-grid">
+          
+          <div class="extension-card">
+            <span class="extension-tag">.co.za</span>
+            <div>
+              <h3 class="extension-title">South African Standard</h3>
+              <p class="extension-desc">The primary choice for local businesses targeting South African audiences.</p>
+            </div>
+          </div>
+
+          <div class="extension-card">
+            <span class="extension-tag">.com</span>
+            <div>
+              <h3 class="extension-title">Global Recognition</h3>
+              <p class="extension-desc">The international gold standard for commercial and cross-border brands.</p>
+            </div>
+          </div>
+
+          <div class="extension-card">
+            <span class="extension-tag">.africa</span>
+            <div>
+              <h3 class="extension-title">Pan-African Reach</h3>
+              <p class="extension-desc">Ideal for expanding operations across multiple African regions.</p>
+            </div>
+          </div>
+
+          <div class="extension-card">
+            <span class="extension-tag">.shop</span>
+            <div>
+              <h3 class="extension-title">E-Commerce Ready</h3>
+              <p class="extension-desc">A modern, descriptive extension built specifically for online stores.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 6. CALL TO ACTION & FAQ -->
+      <section class="domains-narrow-wrapper">
+        
+        <div class="glass-card cta-card">
+          <h2 class="cta-title">Secure Your Brand Name Today</h2>
+          <p class="cta-desc">
+            Don't wait until someone else registers your domain. Check availability and activate yours immediately.
+          </p>
+          <a href="#domain-search-form" class="cta-button">
+            Search Domains Now
+          </a>
+        </div>
+
+        <div class="faq-container">
+          <h2 class="faq-title">Frequently Asked Questions</h2>
+          <div class="space-y-4">
+            <div class="faq-card">
+              <h3 class="faq-question">How quickly is my domain activated?</h3>
+              <p class="faq-answer">Domain registrations are processed promptly following payment verification, with most .co.za domains going live within 24 hours.</p>
+            </div>
+            <div class="faq-card">
+              <h3 class="faq-question">Do I retain full ownership of my domain?</h3>
+              <p class="faq-answer">Yes, you maintain 100% ownership and control over your domain name and DNS configuration at all times.</p>
+            </div>
           </div>
         </div>
 
-        <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800 flex gap-4 items-start">
-          <span class="text-cyan-400 font-extrabold text-xl">.shop</span>
-          <div>
-            <h3 class="font-bold text-white text-sm">E-Commerce Ready</h3>
-            <p class="text-xs text-slate-400 mt-1">A modern, descriptive extension built specifically for online stores.</p>
-          </div>
-        </div>
+      </section>
 
-      </div>
-    </section>
-
-    <!-- 6. CALL TO ACTION & FAQ -->
-    <section class="max-w-4xl mx-auto space-y-16">
-      
-      <!-- Call to Action Banner -->
-      <div class="p-8 rounded-2xl bg-slate-900/90 border border-cyan-500/30 glassmorphism text-center space-y-4">
-        <h2 class="text-3xl font-extrabold text-white">Secure Your Brand Name Today</h2>
-        <p class="text-slate-400 text-sm max-w-lg mx-auto">
-          Don't wait until someone else registers your domain. Check availability and activate yours immediately.
-        </p>
-        <a href="#domain-search-form" class="inline-block px-8 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 font-bold text-white transition-all">
-          Search Domains Now
-        </a>
-      </div>
-
-      <!-- FAQ Accordion Container -->
-      <div class="space-y-6">
-        <h2 class="text-2xl font-bold text-center text-white">Frequently Asked Questions</h2>
-        <div class="space-y-4">
-          <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800">
-            <h3 class="font-semibold text-white">How quickly is my domain activated?</h3>
-            <p class="text-sm text-slate-400 mt-2">Domain registrations are processed promptly following payment verification, with most `.co.za` domains going live within 24 hours.</p>
-          </div>
-          <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800">
-            <h3 class="font-semibold text-white">Do I retain full ownership of my domain?</h3>
-            <p class="text-sm text-slate-400 mt-2">Yes, you maintain 100% ownership and control over your domain name and DNS configuration at all times.</p>
-          </div>
-        </div>
-      </div>
-
-    </section>
-
+    </div>
   </main>
 </Layout>
+
+<style>
+  /* Dedicated Page Layout Styles — bypasses Tailwind utility spacing interference */
+  #domains-page-container {
+    width: 100%;
+    min-height: 100vh;
+    background-color: #020617; /* bg-slate-950 */
+    color: #ffffff;
+    padding-top: 130px; /* Explicit offset to clear fixed navigation header */
+    padding-bottom: 80px;
+    padding-left: 20px;
+    padding-right: 20px;
+    box-sizing: border-box;
+  }
+
+  .domains-content-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+  }
+
+  /* 1. Hero Section */
+  .domains-hero-section {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .hero-title {
+    font-size: 2.75rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: #ffffff;
+    margin-bottom: 16px;
+  }
+
+  .hero-subtitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #22d3ee; /* cyan-400 */
+  }
+
+  .hero-subtext {
+    color: #94a3b8; /* slate-400 */
+    font-weight: 400;
+  }
+
+  .hero-search-form {
+    margin-top: 32px;
+    display: flex;
+    gap: 12px;
+    max-width: 650px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  @media (max-width: 640px) {
+    .hero-search-form {
+      flex-direction: column;
+    }
+    .hero-title {
+      font-size: 2rem;
+    }
+  }
+
+  .search-input {
+    flex: 1;
+    padding: 16px 20px;
+    border-radius: 12px;
+    background-color: #0f172a;
+    border: 1px solid #334155;
+    color: #ffffff;
+    font-size: 1rem;
+    outline: none;
+  }
+
+  .search-input:focus {
+    border-color: #06b6d4;
+  }
+
+  .search-button {
+    padding: 16px 32px;
+    border-radius: 12px;
+    background-color: #0891b2;
+    color: #ffffff;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s ease;
+  }
+
+  .search-button:hover {
+    background-color: #06b6d4;
+  }
+
+  /* 2. Result Card */
+  .search-result-card {
+    max-width: 650px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .result-inner {
+    padding: 24px;
+    border-radius: 16px;
+    background-color: #0f172a;
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .badge-available {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #34d399;
+    background-color: rgba(6, 78, 59, 0.6);
+    padding: 4px 10px;
+    border-radius: 9999px;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+
+  .result-domain-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-top: 8px;
+    color: #ffffff;
+  }
+
+  .result-domain-sub {
+    font-size: 0.875rem;
+    color: #94a3b8;
+  }
+
+  .result-action-block {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
+
+  .result-price {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #ffffff;
+  }
+
+  .price-unit {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 400;
+  }
+
+  .buy-button {
+    padding: 10px 24px;
+    border-radius: 8px;
+    background-color: #059669;
+    color: #ffffff;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+  }
+
+  /* Shared Glass Cards */
+  .glass-card {
+    background-color: rgba(15, 23, 42, 0.8);
+    border: 1px solid #1e293b;
+    border-radius: 16px;
+  }
+
+  /* 3. Pricing Table Section */
+  .section-heading {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .section-subheading {
+    color: #94a3b8;
+    margin-top: 8px;
+  }
+
+  .table-card-wrapper {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .filter-pills-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .pill-btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    background-color: #1e293b;
+    color: #cbd5e1;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+  }
+
+  .pill-active {
+    background-color: #0891b2;
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+  .table-controls-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .table-search-input {
+    width: 280px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background-color: #020617;
+    border: 1px solid #334155;
+    font-size: 0.875rem;
+    color: #ffffff;
+  }
+
+  .table-entries-count {
+    font-size: 0.75rem;
+    color: #94a3b8;
+  }
+
+  .table-scroll-container {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .domain-pricing-table {
+    width: 100%;
+    min-width: 600px;
+    border-collapse: collapse;
+    text-align: left;
+  }
+
+  .domain-pricing-table th {
+    padding: 12px 16px;
+    border-bottom: 1px solid #1e293b;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #94a3b8;
+    font-weight: 600;
+  }
+
+  .domain-pricing-table td {
+    padding: 16px;
+    border-bottom: 1px solid rgba(30, 41, 59, 0.6);
+    font-size: 0.875rem;
+    color: #cbd5e1;
+  }
+
+  .flex-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .badge-hot {
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 800;
+    background-color: #450a0a;
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .badge-sale {
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 800;
+    background-color: #064e3b;
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .price-highlight {
+    font-weight: 700;
+    color: #22d3ee;
+  }
+
+  .vat-notice {
+    font-size: 0.75rem;
+    color: #64748b;
+    text-align: right;
+  }
+
+  /* 4. Two-Column Grid */
+  .domains-two-col-grid {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  @media (max-width: 1024px) {
+    .domains-two-col-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .step-card {
+    padding: 16px;
+    border-radius: 12px;
+    background-color: #0f172a;
+    border: 1px solid #1e293b;
+    font-size: 0.875rem;
+    color: #cbd5e1;
+  }
+
+  .step-title {
+    display: block;
+    color: #22d3ee;
+    font-size: 1rem;
+    margin-bottom: 4px;
+  }
+
+  .callout-banner {
+    padding: 24px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #083344 0%, #0f172a 100%);
+    border: 1px solid rgba(6, 182, 212, 0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .callout-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .callout-desc {
+    font-size: 0.75rem;
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  .callout-bullets {
+    font-size: 0.75rem;
+    color: #67e8f9;
+    font-weight: 500;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .info-guide-card {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .guide-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .guide-desc {
+    font-size: 0.875rem;
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  .tld-pills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .tld-pill {
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #020617;
+    border: 1px solid #1e293b;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #22d3ee;
+  }
+
+  .guide-subhead {
+    font-weight: 700;
+    color: #ffffff;
+    font-size: 1rem;
+  }
+
+  .guide-bullets {
+    list-style: disc inside;
+    font-size: 0.875rem;
+    color: #cbd5e1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* 5. Popular Extensions Grid */
+  .extensions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  @media (max-width: 768px) {
+    .extensions-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .extension-card {
+    padding: 20px;
+    border-radius: 12px;
+    background-color: #0f172a;
+    border: 1px solid #1e293b;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .extension-tag {
+    color: #22d3ee;
+    font-weight: 800;
+    font-size: 1.25rem;
+  }
+
+  .extension-title {
+    font-weight: 700;
+    color: #ffffff;
+    font-size: 0.875rem;
+  }
+
+  .extension-desc {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-top: 4px;
+  }
+
+  /* 6. CTA & FAQ Narrow Wrapper */
+  .domains-narrow-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+  }
+
+  .cta-card {
+    padding: 32px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    border: 1px solid rgba(6, 182, 212, 0.3);
+  }
+
+  .cta-title {
+    font-size: 1.875rem;
+    font-weight: 800;
+    color: #ffffff;
+  }
+
+  .cta-desc {
+    color: #94a3b8;
+    font-size: 0.875rem;
+    max-width: 500px;
+  }
+
+  .cta-button {
+    padding: 12px 32px;
+    border-radius: 12px;
+    background-color: #0891b2;
+    color: #ffffff;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+  }
+
+  .cta-button:hover {
+    background-color: #06b6d4;
+  }
+
+  .faq-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .faq-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    color: #ffffff;
+  }
+
+  .faq-card {
+    padding: 20px;
+    border-radius: 12px;
+    background-color: #0f172a;
+    border: 1px solid #1e293b;
+  }
+
+  .faq-question {
+    font-weight: 600;
+    color: #ffffff;
+  }
+
+  .faq-answer {
+    font-size: 0.875rem;
+    color: #94a3b8;
+    margin-top: 8px;
+  }
+</style>
