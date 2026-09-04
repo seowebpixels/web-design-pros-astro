@@ -1,0 +1,169 @@
+---
+// src/pages/domains.astro
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Register a Domain | WebDesignPros">
+  <main class="min-h-screen bg-slate-950 text-white py-12 px-4 sm:px-6 lg:px-8 space-y-20">
+    
+    <!-- 1. HERO SEARCH SECTION -->
+    <section class="max-w-4xl mx-auto text-center space-y-6">
+      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight">
+        Register Your Domain Name Today
+      </h1>
+      <p class="text-xl text-cyan-400 font-medium">
+        From as low as R75 / year <span class="text-slate-400 font-normal">(Hurry, limited-time offer!)</span>
+      </p>
+
+      <!-- Search Input Box -->
+      <form id="domain-search-form" class="mt-8 flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto">
+        <input 
+          type="text" 
+          id="domain-input"
+          placeholder="Search for your domain name..." 
+          class="flex-1 px-5 py-4 rounded-xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 glassmorphism"
+          required
+        />
+        <button 
+          type="submit" 
+          class="px-8 py-4 rounded-xl bg-cyan-600 hover:bg-cyan-500 font-bold text-white transition-all shadow-lg shadow-cyan-900/40"
+        >
+          Search Domain
+        </button>
+      </form>
+    </section>
+
+    <!-- 2. SEARCH RESULT DISPLAY (Hidden by default) -->
+    <section id="result-container" class="max-w-2xl mx-auto hidden">
+      <div class="p-6 rounded-2xl bg-slate-900/90 border border-cyan-500/30 glassmorphism flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+          <span class="text-xs uppercase font-bold tracking-wider text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded-full border border-emerald-500/30">Available</span>
+          <h3 id="result-domain-name" class="text-2xl font-bold mt-2 text-white">example.co.za</h3>
+          <p class="text-sm text-slate-400">Renews at R85.00/yr</p>
+        </div>
+        
+        <div class="text-right flex flex-col items-end gap-2 w-full sm:w-auto">
+          <div class="text-2xl font-black text-white">R75.00 <span class="text-xs text-slate-400 font-normal">/ 1st Yr</span></div>
+          <button id="buy-now-btn" class="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 font-semibold text-white transition-all">
+            Buy Now &rarr;
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. POPULAR TLD SHOWCASE GRID -->
+    <section class="max-w-6xl mx-auto">
+      <h2 class="text-2xl font-bold text-center mb-8">Popular Domain Extensions</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- .co.za -->
+        <div class="p-6 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-cyan-500/50 transition-all flex flex-col justify-between">
+          <div>
+            <span class="text-xs font-semibold uppercase text-cyan-400 tracking-wider">South Africa</span>
+            <h3 class="text-3xl font-black mt-1 text-white">.co.za</h3>
+            <p class="text-xs text-slate-400 mt-2">Essential for South African businesses & local SEO presence.</p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between">
+            <span class="text-xl font-bold text-white">R75<span class="text-xs text-slate-400 font-normal">/yr</span></span>
+            <button class="px-3 py-1.5 text-xs font-semibold rounded-md bg-slate-800 hover:bg-cyan-600 transition-colors">Select</button>
+          </div>
+        </div>
+
+        <!-- .com -->
+        <div class="p-6 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-cyan-500/50 transition-all flex flex-col justify-between">
+          <div>
+            <span class="text-xs font-semibold uppercase text-cyan-400 tracking-wider">Global Standard</span>
+            <h3 class="text-3xl font-black mt-1 text-white">.com</h3>
+            <p class="text-xs text-slate-400 mt-2">The world’s most recognized extension for international reach.</p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between">
+            <span class="text-xl font-bold text-white">R200<span class="text-xs text-slate-400 font-normal">/yr</span></span>
+            <button class="px-3 py-1.5 text-xs font-semibold rounded-md bg-slate-800 hover:bg-cyan-600 transition-colors">Select</button>
+          </div>
+        </div>
+
+        <!-- .org.za -->
+        <div class="p-6 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-cyan-500/50 transition-all flex flex-col justify-between">
+          <div>
+            <span class="text-xs font-semibold uppercase text-cyan-400 tracking-wider">Non-Profit</span>
+            <h3 class="text-3xl font-black mt-1 text-white">.org.za</h3>
+            <p class="text-xs text-slate-400 mt-2">Ideal for local charities, NGOs, and community organizations.</p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between">
+            <span class="text-xl font-bold text-white">R95<span class="text-xs text-slate-400 font-normal">/yr</span></span>
+            <button class="px-3 py-1.5 text-xs font-semibold rounded-md bg-slate-800 hover:bg-cyan-600 transition-colors">Select</button>
+          </div>
+        </div>
+
+        <!-- .net -->
+        <div class="p-6 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-cyan-500/50 transition-all flex flex-col justify-between">
+          <div>
+            <span class="text-xs font-semibold uppercase text-cyan-400 tracking-wider">Technology</span>
+            <h3 class="text-3xl font-black mt-1 text-white">.net</h3>
+            <p class="text-xs text-slate-400 mt-2">Great alternative for IT, tech ventures, and digital services.</p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between">
+            <span class="text-xl font-bold text-white">R200<span class="text-xs text-slate-400 font-normal">/yr</span></span>
+            <button class="px-3 py-1.5 text-xs font-semibold rounded-md bg-slate-800 hover:bg-cyan-600 transition-colors">Select</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 4. VALUE-ADD FEATURES GRID -->
+    <section class="max-w-6xl mx-auto border-t border-slate-900 pt-16">
+      <h2 class="text-2xl font-bold text-center mb-10">Every Registration Includes</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        
+        <div class="space-y-2">
+          <div class="text-cyan-400 text-2xl font-bold">🛡️ DNS Control</div>
+          <h3 class="font-bold text-lg text-white">Full DNS Management</h3>
+          <p class="text-sm text-slate-400">Easily update A, CNAME, and MX records at no extra cost.</p>
+        </div>
+
+        <div class="space-y-2">
+          <div class="text-cyan-400 text-2xl font-bold">⏱️ Fast Setup</div>
+          <h3 class="font-bold text-lg text-white">24-Hour SLA</h3>
+          <p class="text-sm text-slate-400">Your domain is manually processed and verified within 24 hours.</p>
+        </div>
+
+        <div class="space-y-2">
+          <div class="text-cyan-400 text-2xl font-bold">💬 Local Support</div>
+          <h3 class="font-bold text-lg text-white">Dedicated Help</h3>
+          <p class="text-sm text-slate-400">Direct assistance from our local team whenever you need it.</p>
+        </div>
+
+        <div class="space-y-2">
+          <div class="text-cyan-400 text-2xl font-bold">🔒 Easy Transfer</div>
+          <h3 class="font-bold text-lg text-white">No Renewal Traps</h3>
+          <p class="text-sm text-slate-400">You retain 100% ownership and control over your domain name.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 5. FAQ SECTION -->
+    <section class="max-w-3xl mx-auto border-t border-slate-900 pt-16">
+      <h2 class="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
+      <div class="space-y-4">
+        
+        <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800">
+          <h3 class="font-semibold text-white">How long does domain activation take?</h3>
+          <p class="text-sm text-slate-400 mt-2">
+            Once payment is verified, domain activations take up to 24 hours (though they are often completed much faster during business hours).
+          </p>
+        </div>
+
+        <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800">
+          <h3 class="font-semibold text-white">What payment methods do you accept?</h3>
+          <p class="text-sm text-slate-400 mt-2">
+            We support secure online payments via Instant EFT, Debit, and Credit Card processing.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+</Layout>
