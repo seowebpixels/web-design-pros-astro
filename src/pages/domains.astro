@@ -3,11 +3,11 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="Register a Domain | WebDesignPros">
-  <main class="min-h-screen bg-slate-950 text-white py-12 px-4 sm:px-6 lg:px-8 space-y-20">
+<Layout title="Domain Registration & Pricing | WebDesignPros">
+  <main class="min-h-screen bg-slate-950 text-white py-12 px-4 sm:px-6 lg:px-8 space-y-24">
     
     <!-- 1. HERO SEARCH SECTION -->
-    <section class="max-w-4xl mx-auto text-center space-y-6">
+    <section class="max-w-4xl mx-auto text-center space-y-6 pt-8">
       <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight">
         Register Your Domain Name Today
       </h1>
@@ -15,7 +15,6 @@ import Layout from '../layouts/Layout.astro';
         From as low as R75 / year <span class="text-slate-400 font-normal">(Hurry, limited-time offer!)</span>
       </p>
 
-      <!-- Search Input Box -->
       <form id="domain-search-form" class="mt-8 flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto">
         <input 
           type="text" 
@@ -33,7 +32,7 @@ import Layout from '../layouts/Layout.astro';
       </form>
     </section>
 
-    <!-- 2. SEARCH RESULT DISPLAY (Hidden by default) -->
+    <!-- 2. DYNAMIC SEARCH RESULT DISPLAY (Hidden by default) -->
     <section id="result-container" class="max-w-2xl mx-auto hidden">
       <div class="p-6 rounded-2xl bg-slate-900/90 border border-cyan-500/30 glassmorphism flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
@@ -51,118 +50,233 @@ import Layout from '../layouts/Layout.astro';
       </div>
     </section>
 
-    <!-- 3. POPULAR TLD SHOWCASE GRID -->
-    <section class="max-w-6xl mx-auto">
-      <h2 class="text-2xl font-bold text-center mb-8">Popular Domain Extensions</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- 3. DOMAIN REGISTRATION PRICES SECTION -->
+    <section class="max-w-6xl mx-auto space-y-8">
+      <div>
+        <h2 class="text-3xl font-bold text-white">Domain Registration Prices</h2>
+        <p class="text-slate-400 mt-2">
+          At Web Design Pros, we provide clear, competitive pricing on popular South African and global domain extensions.
+        </p>
+      </div>
+
+      <!-- Table Controls & Filters -->
+      <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 glassmorphism space-y-6">
         
-        <!-- .co.za -->
-        <div class="p-6 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-cyan-500/50 transition-all flex flex-col justify-between">
-          <div>
-            <span class="text-xs font-semibold uppercase text-cyan-400 tracking-wider">South Africa</span>
-            <h3 class="text-3xl font-black mt-1 text-white">.co.za</h3>
-            <p class="text-xs text-slate-400 mt-2">Essential for South African businesses & local SEO presence.</p>
-          </div>
-          <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between">
-            <span class="text-xl font-bold text-white">R75<span class="text-xs text-slate-400 font-normal">/yr</span></span>
-            <button class="px-3 py-1.5 text-xs font-semibold rounded-md bg-slate-800 hover:bg-cyan-600 transition-colors">Select</button>
+        <!-- Category Filter Pills -->
+        <div class="flex flex-wrap gap-2">
+          <button class="px-4 py-2 rounded-lg bg-cyan-600 text-white font-semibold text-sm">All Domains</button>
+          <button class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-sm transition-colors">Popular</button>
+          <button class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-sm transition-colors">New</button>
+          <button class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-sm transition-colors">Hot</button>
+          <button class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-sm transition-colors">Sale</button>
+        </div>
+
+        <!-- Search Table Input -->
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+          <input 
+            type="text" 
+            placeholder="Search domain extensions..." 
+            class="w-full sm:w-72 px-4 py-2 rounded-lg bg-slate-950/80 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+          />
+          <div class="text-xs text-slate-400 self-end sm:self-center">
+            Showing 1 to 4 entries
           </div>
         </div>
 
-        <!-- .com -->
-        <div class="p-6 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-cyan-500/50 transition-all flex flex-col justify-between">
+        <!-- Pricing Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-800 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                <th class="py-3 px-4">Domain Extension</th>
+                <th class="py-3 px-4">Category</th>
+                <th class="py-3 px-4">Register</th>
+                <th class="py-3 px-4">Renew</th>
+                <th class="py-3 px-4">Transfer</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800/60 text-sm">
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="py-4 px-4 font-bold text-white flex items-center gap-2">
+                  .co.za <span class="px-2 py-0.5 text-[10px] uppercase font-extrabold bg-red-950/80 text-red-400 border border-red-500/30 rounded-md">Hot</span>
+                </td>
+                <td class="py-4 px-4 text-slate-400">Popular</td>
+                <td class="py-4 px-4 font-bold text-cyan-400">R75</td>
+                <td class="py-4 px-4 text-slate-300">R85</td>
+                <td class="py-4 px-4 text-slate-300">R85</td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="py-4 px-4 font-bold text-white flex items-center gap-2">
+                  .com <span class="px-2 py-0.5 text-[10px] uppercase font-extrabold bg-red-950/80 text-red-400 border border-red-500/30 rounded-md">Hot</span>
+                </td>
+                <td class="py-4 px-4 text-slate-400">Popular</td>
+                <td class="py-4 px-4 font-bold text-cyan-400">R200</td>
+                <td class="py-4 px-4 text-slate-300">R230</td>
+                <td class="py-4 px-4 text-slate-300">R215</td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="py-4 px-4 font-bold text-white flex items-center gap-2">
+                  .org.za <span class="px-2 py-0.5 text-[10px] uppercase font-extrabold bg-emerald-950/80 text-emerald-400 border border-emerald-500/30 rounded-md">Sale</span>
+                </td>
+                <td class="py-4 px-4 text-slate-400">Popular</td>
+                <td class="py-4 px-4 font-bold text-cyan-400">R95</td>
+                <td class="py-4 px-4 text-slate-300">R110</td>
+                <td class="py-4 px-4 text-slate-300">R110</td>
+              </tr>
+              <tr class="hover:bg-slate-800/30 transition-colors">
+                <td class="py-4 px-4 font-bold text-white flex items-center gap-2">
+                  .net <span class="px-2 py-0.5 text-[10px] uppercase font-extrabold bg-red-950/80 text-red-400 border border-red-500/30 rounded-md">Hot</span>
+                </td>
+                <td class="py-4 px-4 text-slate-400">Popular</td>
+                <td class="py-4 px-4 font-bold text-cyan-400">R200</td>
+                <td class="py-4 px-4 text-slate-300">R284</td>
+                <td class="py-4 px-4 text-slate-300">R284</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p class="text-xs text-slate-500 text-right">All prices in ZAR. VAT included.</p>
+    </section>
+
+    <!-- 4. HOW IT WORKS & INFORMATION SECTION -->
+    <section class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+      
+      <!-- Left Column: Process Steps & Banner -->
+      <div class="lg:col-span-5 space-y-8">
+        <div>
+          <h2 class="text-3xl font-bold text-white mb-6">How It Works</h2>
+          <ol class="space-y-4 text-sm text-slate-300">
+            <li class="p-4 rounded-xl bg-slate-900/50 border border-slate-800">
+              <strong class="text-cyan-400 block text-base mb-1">1) Search Your Domain</strong>
+              Enter your ideal name in our search tool to verify instant availability.
+            </li>
+            <li class="p-4 rounded-xl bg-slate-900/50 border border-slate-800">
+              <strong class="text-cyan-400 block text-base mb-1">2) Select Your Extension</strong>
+              Lock in your domain extension before someone else claims your brand.
+            </li>
+            <li class="p-4 rounded-xl bg-slate-900/50 border border-slate-800">
+              <strong class="text-cyan-400 block text-base mb-1">3) Complete Checkout</strong>
+              Pay securely via Instant EFT or card with clear, upfront pricing.
+            </li>
+            <li class="p-4 rounded-xl bg-slate-900/50 border border-slate-800">
+              <strong class="text-cyan-400 block text-base mb-1">4) Launch & Manage</strong>
+              Connect your domain to hosting or email within your management dashboard.
+            </li>
+          </ol>
+        </div>
+
+        <!-- Promo Callout Banner -->
+        <div class="p-6 rounded-2xl bg-gradient-to-br from-cyan-950/80 to-slate-900 border border-cyan-500/40 glassmorphism space-y-4">
+          <h3 class="text-xl font-bold text-white">Transparent Renewals for .CO.ZA</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            While some registrars lure you with low upfront costs only to charge excessive renewal fees later, we maintain honest, affordable pricing year after year.
+          </p>
+          <ul class="text-xs text-cyan-300 space-y-1.5 font-medium">
+            <li>✔ Low initial registration rates</li>
+            <li>✔ Predictable annual renewal pricing</li>
+            <li>✔ Zero hidden administration fees</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Right Column: Search Tips Guide -->
+      <div class="lg:col-span-7 p-8 rounded-2xl bg-slate-900/50 border border-slate-800 glassmorphism space-y-6">
+        <h3 class="text-2xl font-bold text-white">Finding the Perfect Domain in South Africa</h3>
+        <p class="text-sm text-slate-300 leading-relaxed">
+          Choosing the right domain extension is a critical first step for building your online presence. South Africa’s digital landscape offers several strong TLD options depending on your market focus:
+        </p>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs font-semibold text-cyan-400">
+          <div class="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800 text-center">.co.za</div>
+          <div class="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800 text-center">.org.za</div>
+          <div class="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800 text-center">.net.za</div>
+          <div class="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800 text-center">.com</div>
+          <div class="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800 text-center">.africa</div>
+          <div class="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800 text-center">.shop</div>
+        </div>
+
+        <div class="space-y-3 pt-2">
+          <h4 class="font-bold text-white text-base">Key Factors to Consider:</h4>
+          <ul class="list-disc list-inside text-sm text-slate-300 space-y-2">
+            <li><strong>Local SEO Advantage:</strong> A `.co.za` domain boosts search rankings within South African query results.</li>
+            <li><strong>Brand Match & Length:</strong> Keep your name concise, clear, and easy to communicate verbally.</li>
+            <li><strong>Extension Purpose:</strong> Match the TLD to your industry (e.g., `.shop` for e-commerce, `.org.za` for non-profits).</li>
+          </ul>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 5. POPULAR EXTENSIONS GUIDE -->
+    <section class="max-w-6xl mx-auto space-y-8">
+      <h2 class="text-3xl font-bold text-white">Popular Extensions Overview</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800 flex gap-4 items-start">
+          <span class="text-cyan-400 font-extrabold text-xl">.co.za</span>
           <div>
-            <span class="text-xs font-semibold uppercase text-cyan-400 tracking-wider">Global Standard</span>
-            <h3 class="text-3xl font-black mt-1 text-white">.com</h3>
-            <p class="text-xs text-slate-400 mt-2">The world’s most recognized extension for international reach.</p>
-          </div>
-          <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between">
-            <span class="text-xl font-bold text-white">R200<span class="text-xs text-slate-400 font-normal">/yr</span></span>
-            <button class="px-3 py-1.5 text-xs font-semibold rounded-md bg-slate-800 hover:bg-cyan-600 transition-colors">Select</button>
+            <h3 class="font-bold text-white text-sm">South African Standard</h3>
+            <p class="text-xs text-slate-400 mt-1">The primary choice for local businesses targeting South African audiences.</p>
           </div>
         </div>
 
-        <!-- .org.za -->
-        <div class="p-6 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-cyan-500/50 transition-all flex flex-col justify-between">
+        <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800 flex gap-4 items-start">
+          <span class="text-cyan-400 font-extrabold text-xl">.com</span>
           <div>
-            <span class="text-xs font-semibold uppercase text-cyan-400 tracking-wider">Non-Profit</span>
-            <h3 class="text-3xl font-black mt-1 text-white">.org.za</h3>
-            <p class="text-xs text-slate-400 mt-2">Ideal for local charities, NGOs, and community organizations.</p>
-          </div>
-          <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between">
-            <span class="text-xl font-bold text-white">R95<span class="text-xs text-slate-400 font-normal">/yr</span></span>
-            <button class="px-3 py-1.5 text-xs font-semibold rounded-md bg-slate-800 hover:bg-cyan-600 transition-colors">Select</button>
+            <h3 class="font-bold text-white text-sm">Global Recognition</h3>
+            <p class="text-xs text-slate-400 mt-1">The international gold standard for commercial and cross-border brands.</p>
           </div>
         </div>
 
-        <!-- .net -->
-        <div class="p-6 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-cyan-500/50 transition-all flex flex-col justify-between">
+        <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800 flex gap-4 items-start">
+          <span class="text-cyan-400 font-extrabold text-xl">.africa</span>
           <div>
-            <span class="text-xs font-semibold uppercase text-cyan-400 tracking-wider">Technology</span>
-            <h3 class="text-3xl font-black mt-1 text-white">.net</h3>
-            <p class="text-xs text-slate-400 mt-2">Great alternative for IT, tech ventures, and digital services.</p>
+            <h3 class="font-bold text-white text-sm">Pan-African Reach</h3>
+            <p class="text-xs text-slate-400 mt-1">Ideal for expanding operations across multiple African regions.</p>
           </div>
-          <div class="mt-6 pt-4 border-t border-slate-800 flex items-center justify-between">
-            <span class="text-xl font-bold text-white">R200<span class="text-xs text-slate-400 font-normal">/yr</span></span>
-            <button class="px-3 py-1.5 text-xs font-semibold rounded-md bg-slate-800 hover:bg-cyan-600 transition-colors">Select</button>
+        </div>
+
+        <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800 flex gap-4 items-start">
+          <span class="text-cyan-400 font-extrabold text-xl">.shop</span>
+          <div>
+            <h3 class="font-bold text-white text-sm">E-Commerce Ready</h3>
+            <p class="text-xs text-slate-400 mt-1">A modern, descriptive extension built specifically for online stores.</p>
           </div>
         </div>
 
       </div>
     </section>
 
-    <!-- 4. VALUE-ADD FEATURES GRID -->
-    <section class="max-w-6xl mx-auto border-t border-slate-900 pt-16">
-      <h2 class="text-2xl font-bold text-center mb-10">Every Registration Includes</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        
-        <div class="space-y-2">
-          <div class="text-cyan-400 text-2xl font-bold">🛡️ DNS Control</div>
-          <h3 class="font-bold text-lg text-white">Full DNS Management</h3>
-          <p class="text-sm text-slate-400">Easily update A, CNAME, and MX records at no extra cost.</p>
-        </div>
-
-        <div class="space-y-2">
-          <div class="text-cyan-400 text-2xl font-bold">⏱️ Fast Setup</div>
-          <h3 class="font-bold text-lg text-white">24-Hour SLA</h3>
-          <p class="text-sm text-slate-400">Your domain is manually processed and verified within 24 hours.</p>
-        </div>
-
-        <div class="space-y-2">
-          <div class="text-cyan-400 text-2xl font-bold">💬 Local Support</div>
-          <h3 class="font-bold text-lg text-white">Dedicated Help</h3>
-          <p class="text-sm text-slate-400">Direct assistance from our local team whenever you need it.</p>
-        </div>
-
-        <div class="space-y-2">
-          <div class="text-cyan-400 text-2xl font-bold">🔒 Easy Transfer</div>
-          <h3 class="font-bold text-lg text-white">No Renewal Traps</h3>
-          <p class="text-sm text-slate-400">You retain 100% ownership and control over your domain name.</p>
-        </div>
-
+    <!-- 6. CALL TO ACTION & FAQ -->
+    <section class="max-w-4xl mx-auto space-y-16">
+      
+      <!-- Call to Action Banner -->
+      <div class="p-8 rounded-2xl bg-slate-900/90 border border-cyan-500/30 glassmorphism text-center space-y-4">
+        <h2 class="text-3xl font-extrabold text-white">Secure Your Brand Name Today</h2>
+        <p class="text-slate-400 text-sm max-w-lg mx-auto">
+          Don't wait until someone else registers your domain. Check availability and activate yours immediately.
+        </p>
+        <a href="#domain-search-form" class="inline-block px-8 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 font-bold text-white transition-all">
+          Search Domains Now
+        </a>
       </div>
-    </section>
 
-    <!-- 5. FAQ SECTION -->
-    <section class="max-w-3xl mx-auto border-t border-slate-900 pt-16">
-      <h2 class="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
-      <div class="space-y-4">
-        
-        <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800">
-          <h3 class="font-semibold text-white">How long does domain activation take?</h3>
-          <p class="text-sm text-slate-400 mt-2">
-            Once payment is verified, domain activations take up to 24 hours (though they are often completed much faster during business hours).
-          </p>
+      <!-- FAQ Accordion Container -->
+      <div class="space-y-6">
+        <h2 class="text-2xl font-bold text-center text-white">Frequently Asked Questions</h2>
+        <div class="space-y-4">
+          <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800">
+            <h3 class="font-semibold text-white">How quickly is my domain activated?</h3>
+            <p class="text-sm text-slate-400 mt-2">Domain registrations are processed promptly following payment verification, with most `.co.za` domains going live within 24 hours.</p>
+          </div>
+          <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800">
+            <h3 class="font-semibold text-white">Do I retain full ownership of my domain?</h3>
+            <p class="text-sm text-slate-400 mt-2">Yes, you maintain 100% ownership and control over your domain name and DNS configuration at all times.</p>
+          </div>
         </div>
-
-        <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800">
-          <h3 class="font-semibold text-white">What payment methods do you accept?</h3>
-          <p class="text-sm text-slate-400 mt-2">
-            We support secure online payments via Instant EFT, Debit, and Credit Card processing.
-          </p>
-        </div>
-
       </div>
+
     </section>
 
   </main>
