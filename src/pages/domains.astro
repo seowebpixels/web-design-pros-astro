@@ -144,7 +144,7 @@ import Layout from '../layouts/Layout.astro';
       <section class="domains-two-col-grid">
         
         <!-- Left Column: Steps -->
-        <div class="space-y-8">
+        <div class="steps-column-container">
           <div>
             <h2 class="section-heading mb-6">How It Works</h2>
             <ol class="steps-list">
@@ -264,15 +264,111 @@ import Layout from '../layouts/Layout.astro';
 
         <div class="faq-container">
           <h2 class="faq-title">Frequently Asked Questions</h2>
-          <div class="space-y-4">
-            <div class="faq-card">
-              <h3 class="faq-question">How quickly is my domain activated?</h3>
-              <p class="faq-answer">Domain registrations are processed promptly following payment verification, with most .co.za domains going live within 24 hours.</p>
-            </div>
-            <div class="faq-card">
-              <h3 class="faq-question">Do I retain full ownership of my domain?</h3>
-              <p class="faq-answer">Yes, you maintain 100% ownership and control over your domain name and DNS configuration at all times.</p>
-            </div>
+          <div class="faq-accordion-wrapper">
+
+            <details class="faq-accordion-item">
+              <summary class="faq-question-btn">What is a domain name?</summary>
+              <div class="faq-answer-content">
+                <p>A domain name acts as your unique web address on the internet, allowing customers to locate your business online—such as <strong>yourbrand.co.za</strong>. Consider it your business's permanent digital location.</p>
+              </div>
+            </details>
+
+            <details class="faq-accordion-item">
+              <summary class="faq-question-btn">Why do I need a domain name?</summary>
+              <div class="faq-answer-content">
+                <p>Securing a custom domain offers multiple distinct business advantages:</p>
+                <ul>
+                  <li><strong>Build Professional Trust:</strong> Custom web and email addresses immediately establish market credibility.</li>
+                  <li><strong>Protect Your Identity:</strong> Take direct ownership of your commercial name across web searches.</li>
+                  <li><strong>Enhance Local SEO:</strong> Search engines heavily prioritize relevant, direct-match domain extensions in local queries.</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="faq-accordion-item">
+              <summary class="faq-question-btn">How much does a .co.za domain cost?</summary>
+              <div class="faq-answer-content">
+                <p>Standard annual pricing in South Africa generally ranges from R75 to R250. Through our active promotional rates, first-year registrations start at R75. Ongoing annual renewals typically range between R135 and R400 depending on TLD category adjustments.</p>
+              </div>
+            </details>
+
+            <details class="faq-accordion-item">
+              <summary class="faq-question-btn">What do you need to register a domain in SA?</summary>
+              <div class="faq-answer-content">
+                <p>To register your South African domain, prepare these basic requirements:</p>
+                <ul>
+                  <li><strong>Name Selection:</strong> Have 2–3 name variations ready in case your primary choice is unavailable.</li>
+                  <li><strong>Active Email Address:</strong> Used for automated registration updates, DNS credentials, and renewal notifications.</li>
+                  <li><strong>Accepted Payment Option:</strong> Pay securely using Credit Card, Instant EFT, or supported local checkout options like SnapScan.</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="faq-accordion-item">
+              <summary class="faq-question-btn">How do I change my domain name?</summary>
+              <div class="faq-answer-content">
+                <p>Registered domain names cannot be altered once confirmed. To update your web address, register your new preferred name, configure 301 redirects from your previous domain to preserve traffic, and update your branding materials.</p>
+              </div>
+            </details>
+
+            <details class="faq-accordion-item">
+              <summary class="faq-question-btn">Can I register a .com domain for free?</summary>
+              <div class="faq-answer-content">
+                <p>No, global <code>.com</code> extensions are administered centrally by Verisign and incur mandatory licensing costs across accredited registrars (typically USD $10–$20/yr, or roughly R200–R400). Select hosting plans may include complimentary first-year domain registrations.</p>
+              </div>
+            </details>
+
+            <details class="faq-accordion-item">
+              <summary class="faq-question-btn">Who controls .co.za domains?</summary>
+              <div class="faq-answer-content">
+                <p>The <strong>.ZA Domain Name Authority (ZADNA)</strong> serves as the statutory regulator overseeing all <code>.za</code> namespace policies. Web Design Pros partners with accredited channel registrars operating under official ZADNA standards.</p>
+              </div>
+            </details>
+
+            <details class="faq-accordion-item">
+              <summary class="faq-question-btn">What is the most used domain in South Africa?</summary>
+              <div class="faq-answer-content">
+                <p>The <code>.co.za</code> extension remains the premier and most widely trusted domain choice across South African commercial enterprises, professionals, and organizations.</p>
+              </div>
+            </details>
+
+            <details class="faq-accordion-item">
+              <summary class="faq-question-btn">How long does domain registration take?</summary>
+              <div class="faq-answer-content">
+                <p>Registrations process automatically once payment confirmation is logged in our system. While global DNS propagation can take up to 24 hours to resolve worldwide, most registrations complete much faster.</p>
+              </div>
+            </details>
+
+            <details class="faq-accordion-item">
+              <summary class="faq-question-btn">Do I need a website to buy a domain?</summary>
+              <div class="faq-answer-content">
+                <p>No. You can secure your domain ownership immediately and construct your website whenever you are ready. Your domain remains reserved under your account indefinitely. Reach out to our team whenever you require professional web design services.</p>
+              </div>
+            </details>
+
+            <details class="faq-accordion-item">
+              <summary class="faq-question-btn">Will my domain renew automatically?</summary>
+              <div class="faq-answer-content">
+                <p>You maintain full control over your billing settings:</p>
+                <ul>
+                  <li><strong>Manual Renewal:</strong> Receive scheduled email reminders prior to expiry to manually process payment.</li>
+                  <li><strong>Auto-Renew Enabled:</strong> Your domain automatically extends before expiration to ensure uninterrupted service.</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="faq-accordion-item">
+              <summary class="faq-question-btn">Should I register more than one domain?</summary>
+              <div class="faq-answer-content">
+                <p>Acquiring multiple domain variations helps safeguard your brand's market position:</p>
+                <ul>
+                  <li><strong>Cover Key TLDs:</strong> Secure primary extensions including <code>.co.za</code>, <code>.com</code>, and <code>.africa</code>.</li>
+                  <li><strong>Mitigate Typo Traffic:</strong> Route common domain misspellings directly to your core site.</li>
+                  <li><strong>Protect Brand Equity:</strong> Prevent competitors from claiming similar business addresses.</li>
+                </ul>
+              </div>
+            </details>
+
           </div>
         </div>
 
@@ -602,6 +698,12 @@ import Layout from '../layouts/Layout.astro';
     }
   }
 
+  .steps-column-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px; /* Explicit gap between steps block and the banner below it */
+  }
+
   .steps-list {
     display: flex;
     flex-direction: column;
@@ -660,6 +762,13 @@ import Layout from '../layouts/Layout.astro';
     display: flex;
     flex-direction: column;
     gap: 24px;
+    margin-top: 52px; /* Shifts right column down to align directly with step 1 box */
+  }
+
+  @media (max-width: 1024px) {
+    .info-guide-card {
+      margin-top: 0;
+    }
   }
 
   .guide-title {
@@ -806,21 +915,77 @@ import Layout from '../layouts/Layout.astro';
     color: #ffffff;
   }
 
-  .faq-card {
-    padding: 20px;
-    border-radius: 12px;
+  /* Accordion Component Styling */
+  .faq-accordion-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .faq-accordion-item {
     background-color: #0f172a;
     border: 1px solid #1e293b;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s ease;
   }
 
-  .faq-question {
+  .faq-accordion-item[open] {
+    border-color: rgba(6, 182, 212, 0.4);
+  }
+
+  .faq-question-btn {
+    padding: 18px 20px;
     font-weight: 600;
     color: #ffffff;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
   }
 
-  .faq-answer {
+  .faq-question-btn::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-question-btn::after {
+    content: '+';
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: #22d3ee;
+    transition: transform 0.2s ease;
+  }
+
+  .faq-accordion-item[open] .faq-question-btn::after {
+    content: '−';
+    transform: rotate(180deg);
+  }
+
+  .faq-answer-content {
+    padding: 0 20px 20px 20px;
     font-size: 0.875rem;
     color: #94a3b8;
+    line-height: 1.6;
+    border-top: 1px solid rgba(30, 41, 59, 0.5);
+    margin-top: 4px;
+    padding-top: 16px;
+  }
+
+  .faq-answer-content strong {
+    color: #cbd5e1;
+  }
+
+  .faq-answer-content code {
+    color: #22d3ee;
+  }
+
+  .faq-answer-content ul {
+    list-style: disc inside;
     margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
 </style>
