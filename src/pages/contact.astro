@@ -1,0 +1,522 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CTA from '../components/CTA.astro';
+
+const processStages = [
+  {
+    number: '01',
+    title: 'Understand Your Business',
+    description: 'We discuss your business, your target customer, and what the website actually needs to achieve — before any design work starts.'
+  },
+  {
+    number: '02',
+    title: 'Define the Project',
+    description: 'We establish scope, pages, functionality, and content requirements, and agree on the right solution for your budget and goals.'
+  },
+  {
+    number: '03',
+    title: 'Design & Build',
+    description: 'Your site is custom-built, optimised, and tested against real devices and connection speeds ahead of your review.'
+  },
+  {
+    number: '04',
+    title: 'Review, Approve & Launch',
+    description: 'We complete a final review together, handle production checks and domain connection, and take the site live.'
+  }
+];
+---
+
+<Layout
+  title="Contact Us | Web Design Pros"
+  description="Get in touch with Web Design Pros in Northcliff, Johannesburg. Call, email, or tell us about your project below."
+  canonical="https://webdesignpros.co.za/contact"
+>
+  <!-- 1. Process / "What Happens Next" — page opening section, only H1 -->
+  <section class="process-hero">
+    <div class="container">
+      <div class="section-header">
+        <span class="sub-heading">WHAT HAPPENS NEXT</span>
+        <h1 class="hero-title">From First Conversation<br />to Go-Live</h1>
+        <p class="section-intro">
+          A clear, straightforward process—so you always know what happens next, what we need from you and how your project moves forward.
+        </p>
+      </div>
+
+      <div class="process-timeline">
+        {processStages.map((stage) => (
+          <div class="process-stage">
+            <span class="stage-number">{stage.number}</span>
+            <div class="stage-content">
+              <h2>{stage.title}</h2>
+              <p>{stage.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Contact details / NAP + map -->
+  <section class="contact-info-section">
+    <div class="container">
+      <div class="info-layout">
+        <div class="info-panel">
+          <div class="info-block">
+            <span class="info-label">Business Address</span>
+            <address class="info-address">
+              15 Madge Avenue<br />
+              Northcliff<br />
+              Johannesburg<br />
+              2115
+            </address>
+            <span class="appointment-badge">By Appointment Only</span>
+          </div>
+
+          <div class="info-divider"></div>
+
+          <div class="info-block">
+            <span class="info-label">Contact Person</span>
+            <span class="info-value contact-person-value">Marlan Pather</span>
+          </div>
+
+          <div class="info-divider"></div>
+
+          <div class="info-block info-block-row">
+            <div>
+              <span class="info-label">Phone</span>
+              <a href="tel:0752216842" class="info-value">075 221 6842</a>
+            </div>
+            <div>
+              <span class="info-label">Email</span>
+              <a href="mailto:info@webdesignpros.co.za" class="info-value">info@webdesignpros.co.za</a>
+            </div>
+          </div>
+
+          <div class="info-divider"></div>
+
+          <div class="info-block">
+            <span class="info-label">Business Hours</span>
+            <dl class="hours-list">
+              <div class="hours-row">
+                <dt>Mon – Fri</dt>
+                <dd>08:30 – 16:00</dd>
+              </div>
+              <div class="hours-row">
+                <dt>Saturday</dt>
+                <dd>09:00 – 13:00</dd>
+              </div>
+              <div class="hours-row">
+                <dt>Sunday</dt>
+                <dd>Closed</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+
+        <div class="map-panel">
+          <div class="map-panel-header">
+            <span class="map-label">Find Us</span>
+            <a
+              href="https://www.google.com/maps?cid=15746142183424105454"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="directions-link"
+            >
+              Get Directions ↗
+            </a>
+          </div>
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3241.2293814651857!2d27.94620757508111!3d-26.142135861448487!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1e950ba3c1c6fdbf%3A0xda852fa15b6d1bee!2sWeb%20Design%20Pros!5e1!3m2!1sen!2sza!4v1788367024256!5m2!1sen!2sza"
+            width="100%"
+            height="100%"
+            style="border:0;"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin"
+            title="Web Design Pros Google Map Location">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. New closing section, leading into the form -->
+  <section class="closing-section">
+    <div class="container">
+      <div class="closing-panel">
+        <span class="sub-heading">READY WHEN YOU ARE</span>
+        <h2 class="closing-heading">Your Next Website Should Move Your Business Forward</h2>
+        <p class="closing-body">
+          Whether you're launching something new, replacing a website that no longer performs or preparing your business for its next stage of growth, the first step is a straightforward conversation.
+        </p>
+        <ul class="reassurance-list">
+          <li>Clear scope and upfront pricing</li>
+          <li>No-pressure initial conversation</li>
+          <li>A solution shaped around your business</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Contact form -->
+  <CTA />
+</Layout>
+
+<style>
+  .container {
+    width: 100%;
+  }
+
+  .section-header {
+    text-align: center;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto 3rem auto;
+  }
+
+  .sub-heading {
+    color: var(--accent-secondary, #89CFF0);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .section-intro {
+    font-size: 1rem;
+    color: rgba(230, 230, 230, 0.8);
+    line-height: 1.6;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  /* ---------- Process Hero (top, only H1) ---------- */
+
+  .process-hero {
+    padding: 5rem 2rem 4rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .hero-title {
+    /* Reset the global gradient/nowrap H1 treatment — this heading is
+       plain white and wraps to two lines by design, matching the
+       process section's original visual language. */
+    background: none;
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    -webkit-text-fill-color: initial;
+    color: #ffffff;
+    font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+    text-transform: none;
+    text-align: center;
+    white-space: normal;
+    line-height: 1.15;
+    font-weight: 800;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .process-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    margin-top: 2.75rem;
+    position: relative;
+  }
+
+  @media (min-width: 1024px) {
+    .process-timeline {
+      flex-direction: row;
+      gap: 2rem;
+    }
+
+    .process-timeline::before {
+      content: '';
+      position: absolute;
+      top: 4.25rem;
+      left: 1;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(0, 150, 255, 0) 0%, rgba(0, 150, 255, 0.35) 15%, rgba(0, 150, 255, 0.35) 85%, rgba(0, 150, 255, 0) 100%);
+    }
+  }
+
+  .process-stage {
+    flex: 1;
+    position: relative;
+  }
+
+  .stage-number {
+    display: block;
+    font-family: var(--font-heading, 'Cabinet Grotesk', sans-serif);
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1;
+    background: linear-gradient(180deg, var(--accent-primary, #0096FF) 0%, rgba(137, 207, 240, 0.25) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    margin-bottom: 1.25rem;
+  }
+
+  .stage-content h2 {
+    font-size: 1.15rem;
+    color: #ffffff;
+    margin-bottom: 0.65rem;
+    font-weight: 700;
+  }
+
+  .stage-content p {
+    font-size: 0.9rem;
+    color: rgba(230, 230, 230, 0.75);
+    line-height: 1.6;
+  }
+
+  /* ---------- Contact Info Section ---------- */
+
+  .contact-info-section {
+    padding: 1rem 2rem 4rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .info-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 900px) {
+    .info-layout {
+      grid-template-columns: minmax(320px, 1fr) 1.2fr;
+      align-items: stretch;
+    }
+  }
+
+  .info-panel {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 2.75rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  .info-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent-secondary, #89CFF0);
+    margin-bottom: 0.6rem;
+  }
+
+  .info-address {
+    font-style: normal;
+    font-size: 1.05rem;
+    color: #ffffff;
+    line-height: 1.6;
+  }
+
+  .appointment-badge {
+    display: inline-block;
+    margin-top: 1rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: rgba(230, 230, 230, 0.85);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+  }
+
+  .info-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .info-block-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+
+  .info-value {
+    display: block;
+    font-size: 1.05rem;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .info-value:hover {
+    color: var(--accent-primary, #0096FF);
+  }
+
+  .info-value:focus-visible {
+    outline: 2px solid var(--accent-primary, #0096FF);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .contact-person-value {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .hours-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 0;
+  }
+
+  .hours-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.95rem;
+    color: rgba(230, 230, 230, 0.85);
+    max-width: 260px;
+  }
+
+  .hours-row dt {
+    font-weight: 600;
+    color: #ffffff;
+  }
+
+  .hours-row dd {
+    margin: 0;
+  }
+
+  .map-panel {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .map-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 0.85rem 1.25rem;
+    background: rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .map-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent-secondary, #89CFF0);
+  }
+
+  .directions-link {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #ffffff;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 150, 255, 0.4);
+    transition: background 0.2s ease, border-color 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .directions-link:hover {
+    background: rgba(0, 150, 255, 0.15);
+    border-color: var(--accent-primary, #0096FF);
+  }
+
+  .directions-link:focus-visible {
+    outline: 2px solid var(--accent-primary, #0096FF);
+    outline-offset: 2px;
+  }
+
+  .map-panel iframe {
+    display: block;
+    width: 100%;
+    flex: 1;
+    min-height: 260px;
+  }
+
+  /* ---------- Closing Section ---------- */
+
+  .closing-section {
+    padding: 1rem 2rem 5rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .closing-panel {
+    max-width: 780px;
+    margin: 0 auto;
+    text-align: center;
+    background: linear-gradient(180deg, rgba(0, 150, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border: 1px solid rgba(137, 207, 240, 0.18);
+    border-radius: 16px;
+    padding: 3rem 2.5rem;
+  }
+
+  .closing-heading {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    color: #ffffff;
+    line-height: 1.25;
+    margin-top: 0.5rem;
+    margin-bottom: 1.25rem;
+    font-weight: 800;
+  }
+
+  .closing-body {
+    font-size: 1rem;
+    color: rgba(230, 230, 230, 0.8);
+    line-height: 1.65;
+    max-width: 600px;
+    margin: 0 auto 2rem auto;
+  }
+
+  .reassurance-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem 2rem;
+  }
+
+  .reassurance-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: rgba(230, 230, 230, 0.9);
+    font-weight: 600;
+  }
+
+  .reassurance-list li::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-primary, #0096FF);
+    flex-shrink: 0;
+  }
+</style>

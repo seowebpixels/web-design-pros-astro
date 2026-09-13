@@ -1,0 +1,271 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CTA from '../components/CTA.astro';
+
+const localNeeds = [
+  {
+    icon: '🔍',
+    title: 'B2B Buyers Research Before They Ever Call',
+    description: 'A procurement manager or operations lead evaluating a supplier typically checks the website first — capability, certifications, and service coverage need to be easy to find, not buried in a PDF brochure.'
+  },
+  {
+    icon: '🏭',
+    title: 'Capability Has to Be Obvious Fast',
+    description: "Logistics, distribution, and corporate-services businesses along this corridor are often judged on scale and reliability. The site needs to communicate operational capability clearly, not just look presentable."
+  },
+  {
+    icon: '🗺️',
+    title: 'Built to Serve a Regional Footprint',
+    description: "Many businesses here serve clients well beyond the immediate area, given the position between Johannesburg and Pretoria — the site's messaging and SEO need to reflect a regional service area, not a single-suburb one."
+  },
+  {
+    icon: '🏢',
+    title: 'Office-Park Businesses Still Need Local Findability',
+    description: 'Even with a regional client base, a physical location still matters for site visits, deliveries, and local partnerships — accurate location and contact details remain essential, not an afterthought.'
+  }
+];
+---
+
+<Layout
+  title="Web Design in Midrand | Web Design Pros"
+  description="Web design for Midrand's logistics, distribution, and corporate-services businesses — built to communicate capability to B2B buyers researching before they call."
+  canonical="https://webdesignpros.co.za/web-design-midrand"
+>
+  <section class="area-hero">
+    <div class="container">
+      <div class="section-header">
+        <span class="sub-heading">WEB DESIGN IN MIDRAND</span>
+        <h1 class="section-title">Web Design for Midrand's Logistics & Corporate Corridor</h1>
+        <p class="section-intro">
+          Midrand sits deliberately between Johannesburg and Pretoria, and its business park economy reflects that: logistics operators, distribution companies, and corporate satellite offices built around regional reach rather than a single neighbourhood's foot traffic.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="context-section">
+    <div class="container">
+      <div class="context-card">
+        <h2>A Regional Business, Not a Neighbourhood One</h2>
+        <p>
+          Businesses operating from Midrand's office and logistics parks are rarely trying to win over a walk-in customer — they're usually selling into a B2B pipeline that spans Gauteng or further, with buyers who research suppliers methodically before making contact. That changes what a website needs to prove: less about local charm, more about demonstrable capability, scale, and reliability, presented in a way a procurement process can actually use.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="needs-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="sub-heading">WHAT THIS MEANS FOR YOUR SITE</span>
+        <h2 class="section-title-h2">Built for How B2B Buyers Evaluate a Supplier</h2>
+      </div>
+      <div class="needs-grid">
+        {localNeeds.map((item) => (
+          <div class="need-card">
+            <div class="card-icon">{item.icon}</div>
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="hypothetical-section">
+    <div class="container">
+      <div class="hypothetical-card">
+        <span class="hypothetical-label">Illustrative example — not a real client case study</span>
+        <h2>How We'd Approach a Midrand Logistics or Distribution Site</h2>
+        <p>
+          A Midrand-based distribution company makes the point well: its current site is little more than a single page with a phone number, while its actual capability — fleet size, warehousing capacity, service regions, industry certifications — lives only in a sales deck. The right build here surfaces exactly that information clearly on the site itself, structured so a procurement contact can shortlist the business without needing to request a brochure first.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="local-links-section">
+    <div class="container">
+      <p>
+        See our <a href="/pricing">website packages and pricing</a>, browse <a href="/#portfolio">recent project work</a>, or view <a href="/#areas">all Gauteng areas we serve</a>.
+      </p>
+    </div>
+  </section>
+
+  <CTA />
+</Layout>
+
+<style>
+  .area-hero {
+    padding: 5rem 2rem 1rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .container {
+    width: 100%;
+  }
+
+  .section-header {
+    text-align: center;
+    width: 100%;
+    max-width: 850px;
+    margin: 0 auto 3rem auto;
+  }
+
+  .sub-heading {
+    color: var(--accent-secondary, #89CFF0);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .section-title {
+    font-size: clamp(2.25rem, 4vw, 3.25rem);
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.15;
+    white-space: normal;
+  }
+
+  .section-title-h2 {
+    font-size: 2.25rem;
+    color: #ffffff;
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+  }
+
+  .section-intro {
+    font-size: 1rem;
+    color: rgba(230, 230, 230, 0.8);
+    line-height: 1.6;
+    max-width: 750px;
+    margin: 0 auto;
+  }
+
+  .context-section,
+  .needs-section,
+  .hypothetical-section {
+    padding: 2rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .context-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 2.5rem;
+  }
+
+  .context-card h2 {
+    font-size: 1.75rem;
+    color: #ffffff;
+    margin-bottom: 1rem;
+  }
+
+  .context-card p {
+    font-size: 1rem;
+    color: rgba(230, 230, 230, 0.85);
+    line-height: 1.65;
+  }
+
+  .needs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-top: 2.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    .needs-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .need-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 2rem 1.5rem;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+
+  .need-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-primary, #0096FF);
+  }
+
+  .card-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .need-card h3 {
+    font-size: 1.15rem;
+    color: #ffffff;
+    margin-bottom: 0.75rem;
+  }
+
+  .need-card p {
+    font-size: 0.875rem;
+    color: rgba(230, 230, 230, 0.8);
+    line-height: 1.55;
+  }
+
+  .hypothetical-card {
+    background: rgba(0, 150, 255, 0.04);
+    border: 1px solid rgba(0, 150, 255, 0.2);
+    border-radius: 16px;
+    padding: 2.5rem;
+  }
+
+  .hypothetical-label {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--accent-secondary, #89CFF0);
+    background: rgba(255, 255, 255, 0.06);
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    margin-bottom: 1.25rem;
+  }
+
+  .hypothetical-card h2 {
+    font-size: 1.6rem;
+    color: #ffffff;
+    margin-bottom: 1rem;
+  }
+
+  .hypothetical-card p {
+    font-size: 0.95rem;
+    color: rgba(230, 230, 230, 0.85);
+    line-height: 1.65;
+  }
+
+  .local-links-section {
+    padding: 1rem 2rem 3rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .local-links-section p {
+    font-size: 0.9rem;
+    color: rgba(230, 230, 230, 0.7);
+  }
+
+  .local-links-section a {
+    color: var(--accent-primary, #0096FF);
+    text-decoration: underline;
+  }
+
+  .local-links-section a:hover {
+    color: var(--accent-secondary, #89CFF0);
+  }
+</style>

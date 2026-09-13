@@ -1,0 +1,271 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CTA from '../components/CTA.astro';
+
+const localNeeds = [
+  {
+    icon: '🏭',
+    title: 'An Economy Built Around a Few Large Industrial Anchors',
+    description: "The Vaal Triangle's economy has long been shaped by a small number of major industrial operations, with a wider network of smaller suppliers, contractors, and service businesses built around supporting them."
+  },
+  {
+    icon: '🗣️',
+    title: 'Word of Mouth Still Dominates — a Website Should Reinforce It',
+    description: 'Many local service and supply businesses win work through existing relationships and reputation rather than online discovery. A website in this context works best when it backs up that reputation for a new contact checking the business out, rather than trying to replace word of mouth entirely.'
+  },
+  {
+    icon: '🔧',
+    title: 'Suppliers to Industry Need to Look Established',
+    description: 'A contractor or supplier pitching to a larger industrial client benefits from a website that reflects real operating history and capability — helping reassure a buyer who is trusting them with time-sensitive or safety-relevant work.'
+  },
+  {
+    icon: '💰',
+    title: 'Keeping Costs Sensible for a Value-Conscious Market',
+    description: "Margins in this market are often tighter than in more corporate areas, so a website needs to earn its cost — practical and effective rather than built with features the business doesn't need."
+  }
+];
+---
+
+<Layout
+  title="Web Design in Vereeniging | Web Design Pros"
+  description="Web design for Vereeniging and Vaal Triangle service and supply businesses — built to reinforce reputation and credibility within an industrial-economy market."
+  canonical="https://webdesignpros.co.za/web-design-vereeniging"
+>
+  <section class="area-hero">
+    <div class="container">
+      <div class="section-header">
+        <span class="sub-heading">WEB DESIGN IN VEREENIGING</span>
+        <h1 class="section-title">Web Design for Vereeniging's Industrial-Economy Service Businesses</h1>
+        <p class="section-intro">
+          Vereeniging and the wider Vaal Triangle carry a long industrial heritage, and much of the local business economy — contractors, suppliers, and service providers — exists to support that industrial base rather than a corporate office market.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="context-section">
+    <div class="container">
+      <div class="context-card">
+        <h2>Reputation-Led, Not Discovery-Led</h2>
+        <p>
+          In an economy anchored by long-standing industrial operations, the smaller businesses supplying and servicing them tend to grow through referral and reputation rather than being found cold online. That doesn't make a website unnecessary — it changes its job. Here, the site exists to confirm what a new contact has already heard about the business, rather than to generate discovery from a stranger's search on its own.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="needs-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="sub-heading">WHAT THIS MEANS FOR YOUR SITE</span>
+        <h2 class="section-title-h2">Built to Support Trust Rather Than Chase Cold Traffic</h2>
+      </div>
+      <div class="needs-grid">
+        {localNeeds.map((item) => (
+          <div class="need-card">
+            <div class="card-icon">{item.icon}</div>
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="hypothetical-section">
+    <div class="container">
+      <div class="hypothetical-card">
+        <span class="hypothetical-label">Illustrative example — not a real client case study</span>
+        <h2>How We'd Approach a Vereeniging Industrial Supplier or Contractor</h2>
+        <p>
+          Here's a way to think about it: a Vereeniging-based contractor that has worked with the same few industrial clients for years and has never needed to market itself, but now wants a website simply so new contacts can verify the business exists and looks legitimate before a first meeting. A lean, honest site — company history, services, contact details, and enough detail to look properly established — does that job well, without needing to be built as a lead-generation engine it doesn't require.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="local-links-section">
+    <div class="container">
+      <p>
+        See our <a href="/pricing">website packages and pricing</a>, browse <a href="/#portfolio">recent project work</a>, or view <a href="/#areas">all Gauteng areas we serve</a>.
+      </p>
+    </div>
+  </section>
+
+  <CTA />
+</Layout>
+
+<style>
+  .area-hero {
+    padding: 5rem 2rem 1rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .container {
+    width: 100%;
+  }
+
+  .section-header {
+    text-align: center;
+    width: 100%;
+    max-width: 850px;
+    margin: 0 auto 3rem auto;
+  }
+
+  .sub-heading {
+    color: var(--accent-secondary, #89CFF0);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .section-title {
+    font-size: clamp(2.25rem, 4vw, 3.25rem);
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.15;
+    white-space: normal;
+  }
+
+  .section-title-h2 {
+    font-size: 2.25rem;
+    color: #ffffff;
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+  }
+
+  .section-intro {
+    font-size: 1rem;
+    color: rgba(230, 230, 230, 0.8);
+    line-height: 1.6;
+    max-width: 750px;
+    margin: 0 auto;
+  }
+
+  .context-section,
+  .needs-section,
+  .hypothetical-section {
+    padding: 2rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .context-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 2.5rem;
+  }
+
+  .context-card h2 {
+    font-size: 1.75rem;
+    color: #ffffff;
+    margin-bottom: 1rem;
+  }
+
+  .context-card p {
+    font-size: 1rem;
+    color: rgba(230, 230, 230, 0.85);
+    line-height: 1.65;
+  }
+
+  .needs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-top: 2.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    .needs-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .need-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 2rem 1.5rem;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+
+  .need-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-primary, #0096FF);
+  }
+
+  .card-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .need-card h3 {
+    font-size: 1.15rem;
+    color: #ffffff;
+    margin-bottom: 0.75rem;
+  }
+
+  .need-card p {
+    font-size: 0.875rem;
+    color: rgba(230, 230, 230, 0.8);
+    line-height: 1.55;
+  }
+
+  .hypothetical-card {
+    background: rgba(0, 150, 255, 0.04);
+    border: 1px solid rgba(0, 150, 255, 0.2);
+    border-radius: 16px;
+    padding: 2.5rem;
+  }
+
+  .hypothetical-label {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--accent-secondary, #89CFF0);
+    background: rgba(255, 255, 255, 0.06);
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    margin-bottom: 1.25rem;
+  }
+
+  .hypothetical-card h2 {
+    font-size: 1.6rem;
+    color: #ffffff;
+    margin-bottom: 1rem;
+  }
+
+  .hypothetical-card p {
+    font-size: 0.95rem;
+    color: rgba(230, 230, 230, 0.85);
+    line-height: 1.65;
+  }
+
+  .local-links-section {
+    padding: 1rem 2rem 3rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .local-links-section p {
+    font-size: 0.9rem;
+    color: rgba(230, 230, 230, 0.7);
+  }
+
+  .local-links-section a {
+    color: var(--accent-primary, #0096FF);
+    text-decoration: underline;
+  }
+
+  .local-links-section a:hover {
+    color: var(--accent-secondary, #89CFF0);
+  }
+</style>

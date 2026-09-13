@@ -1,0 +1,271 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CTA from '../components/CTA.astro';
+
+const localNeeds = [
+  {
+    icon: '🏪',
+    title: 'A Website That Finally Matches the Business',
+    description: "Many well-established Randburg practices and traders are still running on an old free-builder site, a Facebook page, or nothing at all — a real website is often simply overdue rather than a competitive upgrade."
+  },
+  {
+    icon: '📍',
+    title: 'Local Search Is the Whole Game',
+    description: 'When the customer base is genuinely local, showing up correctly for area-specific searches and having accurate, consistent business information matters more than broad brand reach.'
+  },
+  {
+    icon: '🛠️',
+    title: 'Simple to Update, Built to Last',
+    description: "Independent owners rarely have time to manage a website full-time. The build needs to be easy to keep current — new hours, new services, a closure notice — without needing a developer for every small change."
+  },
+  {
+    icon: '📱',
+    title: 'A Fast Path From Search to Enquiry',
+    description: 'A customer searching on their phone for a nearby service wants a number to call or a form to fill in within a few taps — not a slow homepage standing between them and contacting the business.'
+  }
+];
+---
+
+<Layout
+  title="Web Design in Randburg | Web Design Pros"
+  description="Custom-coded websites for Randburg's independent businesses and professional practices — built for local search and easy to keep up to date."
+  canonical="https://webdesignpros.co.za/web-design-randburg"
+>
+  <section class="area-hero">
+    <div class="container">
+      <div class="section-header">
+        <span class="sub-heading">WEB DESIGN IN RANDBURG</span>
+        <h1 class="section-title">Web Design for Randburg's Independent Businesses</h1>
+        <p class="section-intro">
+          Randburg's economy runs largely on independent, owner-operated businesses — professional practices, retailers, and service providers built around a local reputation rather than a national brand. Its website needs matter differ from a corporate district, and the right site reflects that.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="context-section">
+    <div class="container">
+      <div class="context-card">
+        <h2>Randburg's Business Character Is Mostly Independent, Not Corporate</h2>
+        <p>
+          Unlike a concentrated corporate hub, Randburg's commercial base spans long-established medical and legal practices, home-services trades, and independent retailers who built their reputation over years, often through word of mouth rather than marketing. For many of these businesses, a website isn't about outshining a competitor's polish — it's about finally having a proper, findable online presence that matches a business that's already trusted locally.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="needs-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="sub-heading">WHAT THIS MEANS FOR YOUR SITE</span>
+        <h2 class="section-title-h2">Built Around How Randburg Customers Actually Search</h2>
+      </div>
+      <div class="needs-grid">
+        {localNeeds.map((item) => (
+          <div class="need-card">
+            <div class="card-icon">{item.icon}</div>
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="hypothetical-section">
+    <div class="container">
+      <div class="hypothetical-card">
+        <span class="hypothetical-label">Illustrative example — not a real client case study</span>
+        <h2>How We'd Approach a Randburg Family Practice or Trade Business</h2>
+        <p>
+          Take an established Randburg dental practice or electrical contractor that has relied entirely on repeat customers and referrals for years, with no real website beyond a directory listing. The priority here isn't a flashy redesign — it's a clean, fast, easy-to-find site with clear services, real contact details, and simple local SEO fundamentals, so the business's existing reputation actually shows up when a new customer searches for it.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="local-links-section">
+    <div class="container">
+      <p>
+        See our <a href="/pricing">website packages and pricing</a>, browse <a href="/#portfolio">recent project work</a>, or view <a href="/#areas">all Gauteng areas we serve</a>.
+      </p>
+    </div>
+  </section>
+
+  <CTA />
+</Layout>
+
+<style>
+  .area-hero {
+    padding: 5rem 2rem 1rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .container {
+    width: 100%;
+  }
+
+  .section-header {
+    text-align: center;
+    width: 100%;
+    max-width: 850px;
+    margin: 0 auto 3rem auto;
+  }
+
+  .sub-heading {
+    color: var(--accent-secondary, #89CFF0);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .section-title {
+    font-size: clamp(2.25rem, 4vw, 3.25rem);
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.15;
+    white-space: normal;
+  }
+
+  .section-title-h2 {
+    font-size: 2.25rem;
+    color: #ffffff;
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+  }
+
+  .section-intro {
+    font-size: 1rem;
+    color: rgba(230, 230, 230, 0.8);
+    line-height: 1.6;
+    max-width: 750px;
+    margin: 0 auto;
+  }
+
+  .context-section,
+  .needs-section,
+  .hypothetical-section {
+    padding: 2rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .context-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 2.5rem;
+  }
+
+  .context-card h2 {
+    font-size: 1.75rem;
+    color: #ffffff;
+    margin-bottom: 1rem;
+  }
+
+  .context-card p {
+    font-size: 1rem;
+    color: rgba(230, 230, 230, 0.85);
+    line-height: 1.65;
+  }
+
+  .needs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-top: 2.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    .needs-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .need-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 2rem 1.5rem;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+
+  .need-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-primary, #0096FF);
+  }
+
+  .card-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .need-card h3 {
+    font-size: 1.15rem;
+    color: #ffffff;
+    margin-bottom: 0.75rem;
+  }
+
+  .need-card p {
+    font-size: 0.875rem;
+    color: rgba(230, 230, 230, 0.8);
+    line-height: 1.55;
+  }
+
+  .hypothetical-card {
+    background: rgba(0, 150, 255, 0.04);
+    border: 1px solid rgba(0, 150, 255, 0.2);
+    border-radius: 16px;
+    padding: 2.5rem;
+  }
+
+  .hypothetical-label {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--accent-secondary, #89CFF0);
+    background: rgba(255, 255, 255, 0.06);
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    margin-bottom: 1.25rem;
+  }
+
+  .hypothetical-card h2 {
+    font-size: 1.6rem;
+    color: #ffffff;
+    margin-bottom: 1rem;
+  }
+
+  .hypothetical-card p {
+    font-size: 0.95rem;
+    color: rgba(230, 230, 230, 0.85);
+    line-height: 1.65;
+  }
+
+  .local-links-section {
+    padding: 1rem 2rem 3rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .local-links-section p {
+    font-size: 0.9rem;
+    color: rgba(230, 230, 230, 0.7);
+  }
+
+  .local-links-section a {
+    color: var(--accent-primary, #0096FF);
+    text-decoration: underline;
+  }
+
+  .local-links-section a:hover {
+    color: var(--accent-secondary, #89CFF0);
+  }
+</style>

@@ -1,0 +1,271 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CTA from '../components/CTA.astro';
+
+const localNeeds = [
+  {
+    icon: '💼',
+    title: 'Corporate Credibility',
+    description: "Sandton's concentration of financial, legal, and professional services firms means a site competing here needs to read as polished and trustworthy within seconds, not just look fast in a Lighthouse report."
+  },
+  {
+    icon: '⚡',
+    title: 'Speed Under Real Load',
+    description: 'A slow-loading site undermines credibility anywhere, but the cost is higher in a dense corporate district where an old, sluggish WordPress build actively works against the professional impression the rest of the business is trying to make.'
+  },
+  {
+    icon: '📍',
+    title: 'Precise Local Search Targeting',
+    description: "Search terms like \"Sandton accountant\" or \"Sandton corporate law firm\" are more specific than generic Johannesburg-wide terms, so the site's schema and on-page structure should be built around that specificity rather than treated as an afterthought."
+  },
+  {
+    icon: '📱',
+    title: 'Mobile-First Decision Makers',
+    description: "Executives and decision-makers researching a supplier from Sandton offices or en route via the Gautrain are frequently on mobile first, not desktop."
+  }
+];
+---
+
+<Layout
+  title="Web Design in Sandton | Web Design Pros"
+  description="Custom-coded, high-performance web design for Sandton businesses — built for the corporate, financial, and professional services environment around Africa's leading business district."
+  canonical="https://webdesignpros.co.za/web-design-sandton"
+>
+  <section class="area-hero">
+    <div class="container">
+      <div class="section-header">
+        <span class="sub-heading">WEB DESIGN IN SANDTON</span>
+        <h1 class="section-title">Web Design for Sandton's Business District</h1>
+        <p class="section-intro">
+          Sandton is Johannesburg's primary financial and corporate hub — home to the Johannesburg Stock Exchange and a dense concentration of banking, legal, and professional services head offices, connected to OR Tambo and Pretoria via the Gautrain. A website built for that audience has to work harder than a generic small-business template.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="context-section">
+    <div class="container">
+      <div class="context-card">
+        <h2>Why Sandton Is a Different Web Design Problem</h2>
+        <p>
+          Sandton's business environment is unusually dense and corporate for a South African suburb. Firms here are rarely competing only on price — they're competing on how credible, current, and professional they appear to other businesses and to high-value individual clients, often before any phone call happens. A site that loads slowly, looks templated, or buries key information behind a cluttered menu works against that goal, regardless of how good the underlying service is.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="needs-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="sub-heading">WHAT THIS MEANS FOR YOUR SITE</span>
+        <h2 class="section-title-h2">Built Around Sandton's Business Environment</h2>
+      </div>
+      <div class="needs-grid">
+        {localNeeds.map((item) => (
+          <div class="need-card">
+            <div class="card-icon">{item.icon}</div>
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="hypothetical-section">
+    <div class="container">
+      <div class="hypothetical-card">
+        <span class="hypothetical-label">Illustrative example — not a real client case study</span>
+        <h2>How We'd Approach a Sandton Professional Services Site</h2>
+        <p>
+          Consider a mid-sized Sandton accounting or advisory firm currently running on an ageing WordPress template. Our starting point would be a Business Website build: a fast, custom-coded Astro site structured around the specific services the firm offers, a clear enquiry path for prospective clients, and on-page SEO built around Sandton-specific search terms rather than generic national keywords. The result is a site built to be judged in the first five seconds by the exact audience Sandton attracts — not retrofitted for speed afterward.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="local-links-section">
+    <div class="container">
+      <p>
+        See our full <a href="/pricing">pricing for Business Website builds</a>, browse <a href="/#portfolio">recent project work</a>, or head back to <a href="/#areas">all Gauteng areas we serve</a>.
+      </p>
+    </div>
+  </section>
+
+  <CTA />
+</Layout>
+
+<style>
+  .area-hero {
+    padding: 5rem 2rem 1rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .container {
+    width: 100%;
+  }
+
+  .section-header {
+    text-align: center;
+    width: 100%;
+    max-width: 850px;
+    margin: 0 auto 3rem auto;
+  }
+
+  .sub-heading {
+    color: var(--accent-secondary, #89CFF0);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .section-title {
+    font-size: clamp(2.25rem, 4vw, 3.25rem);
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.15;
+    white-space: normal;
+  }
+
+  .section-title-h2 {
+    font-size: 2.25rem;
+    color: #ffffff;
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+  }
+
+  .section-intro {
+    font-size: 1rem;
+    color: rgba(230, 230, 230, 0.8);
+    line-height: 1.6;
+    max-width: 750px;
+    margin: 0 auto;
+  }
+
+  .context-section,
+  .needs-section,
+  .hypothetical-section {
+    padding: 2rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .context-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 2.5rem;
+  }
+
+  .context-card h2 {
+    font-size: 1.75rem;
+    color: #ffffff;
+    margin-bottom: 1rem;
+  }
+
+  .context-card p {
+    font-size: 1rem;
+    color: rgba(230, 230, 230, 0.85);
+    line-height: 1.65;
+  }
+
+  .needs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-top: 2.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    .needs-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .need-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 2rem 1.5rem;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+
+  .need-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-primary, #0096FF);
+  }
+
+  .card-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .need-card h3 {
+    font-size: 1.15rem;
+    color: #ffffff;
+    margin-bottom: 0.75rem;
+  }
+
+  .need-card p {
+    font-size: 0.875rem;
+    color: rgba(230, 230, 230, 0.8);
+    line-height: 1.55;
+  }
+
+  .hypothetical-card {
+    background: rgba(0, 150, 255, 0.04);
+    border: 1px solid rgba(0, 150, 255, 0.2);
+    border-radius: 16px;
+    padding: 2.5rem;
+  }
+
+  .hypothetical-label {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--accent-secondary, #89CFF0);
+    background: rgba(255, 255, 255, 0.06);
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    margin-bottom: 1.25rem;
+  }
+
+  .hypothetical-card h2 {
+    font-size: 1.6rem;
+    color: #ffffff;
+    margin-bottom: 1rem;
+  }
+
+  .hypothetical-card p {
+    font-size: 0.95rem;
+    color: rgba(230, 230, 230, 0.85);
+    line-height: 1.65;
+  }
+
+  .local-links-section {
+    padding: 1rem 2rem 3rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .local-links-section p {
+    font-size: 0.9rem;
+    color: rgba(230, 230, 230, 0.7);
+  }
+
+  .local-links-section a {
+    color: var(--accent-primary, #0096FF);
+    text-decoration: underline;
+  }
+
+  .local-links-section a:hover {
+    color: var(--accent-secondary, #89CFF0);
+  }
+</style>

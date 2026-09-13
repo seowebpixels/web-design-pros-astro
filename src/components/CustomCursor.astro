@@ -1,0 +1,248 @@
+---
+/* CustomCursor.astro
+   Isolated, self-contained custom cursor effect. Mounted once via
+   Layout.astro so it applies consistently site-wide without being
+   scattered across individual pages.
+
+   Eligibility is re-evaluated live against:
+   - any-pointer: fine (a fine pointer is available among the device's
+     input methods, not just the primary one — covers hybrid devices
+     such as a touchscreen laptop with a mouse attached)
+   - any-hover: hover
+   - prefers-reduced-motion: reduce
+
+   The effect starts and stops cleanly as those conditions change
+   (e.g. a mouse is plugged in or unplugged mid-session), never leaving
+   duplicate listeners or animation loops behind, and always fails
+   safely back to the native cursor.
+
+   Uses plain CSS + vanilla JS with requestAnimationFrame. No dependencies.
+   Both cursor elements are pointer-events: none and the native cursor is
+   only hidden once the custom cursor has real, valid pointer coordinates
+   to draw at — never before. The animation loop only runs while the
+   cursor is actively easing toward the pointer; it stops once settled
+   and restarts on the next pointer movement.
+*/
+---
+
+<div class="wdp-cursor-ring" aria-hidden="true"></div>
+<div class="wdp-cursor-dot" aria-hidden="true"></div>
+
+<style>
+  .wdp-cursor-ring,
+  .wdp-cursor-dot {
+    position: fixed;
+    top: 0;
+    left: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0;
+    will-change: transform;
+  }
+
+  .wdp-cursor-ring {
+    width: 34px;
+    height: 34px;
+    border: 1.5px solid #89CFF0;
+    background: transparent;
+    transition: width 0.25s ease, height 0.25s ease, opacity 0.2s ease, border-color 0.2s ease;
+  }
+
+  .wdp-cursor-dot {
+    width: 8px;
+    height: 8px;
+    background: #0096FF;
+    transition: opacity 0.2s ease;
+  }
+
+  .wdp-cursor-ring.is-visible,
+  .wdp-cursor-dot.is-visible {
+    opacity: 1;
+  }
+
+  .wdp-cursor-ring.is-hovering {
+    width: 56px;
+    height: 56px;
+    border-color: #0096FF;
+  }
+
+  /* Native cursor is hidden only via this class, which JS adds only after
+     the custom cursor has a real position and only on devices where the
+     effect actually initialised. */
+  :global(html.wdp-cursor-active),
+  :global(html.wdp-cursor-active) a,
+  :global(html.wdp-cursor-active) button,
+  :global(html.wdp-cursor-active) input,
+  :global(html.wdp-cursor-active) textarea,
+  :global(html.wdp-cursor-active) select,
+  :global(html.wdp-cursor-active) [role="button"] {
+    cursor: none;
+  }
+</style>
+
+<script>
+  (function () {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+
+    try {
+      var ring = document.querySelector('.wdp-cursor-ring');
+      var dot = document.querySelector('.wdp-cursor-dot');
+      if (!ring || !dot) return;
+
+      var fineHoverQuery = window.matchMedia('(any-pointer: fine) and (any-hover: hover)');
+
+      var targetX = 0, targetY = 0, prevTargetX = 0, prevTargetY = 0;
+      var ringX = 0, ringY = 0, dotX = 0, dotY = 0;
+      var hasPosition = false;
+      var active = false;   // whether listeners are currently attached
+      var rafId = null;     // whether the animation loop is currently running
+
+      var RING_EASE = 0.16;          // restrained inertia on the ring
+      var DOT_EASE = 0.35;           // dot follows faster than the ring
+      var DOT_VELOCITY_PULL = 0.45;  // how far the dot leads toward pointer velocity
+      var SETTLE_THRESHOLD = 0.05;   // px of remaining movement below which we consider it settled
+
+      var HOVER_SELECTOR = 'a, button, input, textarea, select, [role="button"], label';
+
+      function onPointerMove(e) {
+        targetX = e.clientX;
+        targetY = e.clientY;
+
+        if (!hasPosition) {
+          // First real coordinate we've seen — snap everything here instead
+          // of easing in from an arbitrary starting point, then reveal.
+          prevTargetX = targetX;
+          prevTargetY = targetY;
+          ringX = targetX;
+          ringY = targetY;
+          dotX = targetX;
+          dotY = targetY;
+          hasPosition = true;
+          document.documentElement.classList.add('wdp-cursor-active');
+          ring.classList.add('is-visible');
+          dot.classList.add('is-visible');
+        }
+
+        // The loop stops once the cursor settles — restart it here on
+        // the next genuine pointer movement rather than running it
+        // permanently while the pointer sits still.
+        if (rafId === null) {
+          rafId = requestAnimationFrame(tick);
+        }
+      }
+
+      function onPointerOver(e) {
+        var el = e.target;
+        if (el && el.closest && el.closest(HOVER_SELECTOR)) {
+          ring.classList.add('is-hovering');
+        }
+      }
+
+      function onPointerOut(e) {
+        var el = e.target;
+        if (el && el.closest && el.closest(HOVER_SELECTOR)) {
+          ring.classList.remove('is-hovering');
+        }
+      }
+
+      function tick() {
+        var vx = targetX - prevTargetX;
+        var vy = targetY - prevTargetY;
+        prevTargetX = targetX;
+        prevTargetY = targetY;
+
+        // Ring: slow, smoothed follow.
+        ringX += (targetX - ringX) * RING_EASE;
+        ringY += (targetY - ringY) * RING_EASE;
+
+        // Dot: faster follow, pulled further in the direction of current
+        // velocity so it can visibly lead/separate from the ring during
+        // fast movement, then settle back as velocity drops toward zero.
+        var dotTargetX = targetX + vx * DOT_VELOCITY_PULL;
+        var dotTargetY = targetY + vy * DOT_VELOCITY_PULL;
+        dotX += (dotTargetX - dotX) * DOT_EASE;
+        dotY += (dotTargetY - dotY) * DOT_EASE;
+
+        ring.style.transform = 'translate(' + ringX + 'px, ' + ringY + 'px) translate(-50%, -50%)';
+        dot.style.transform = 'translate(' + dotX + 'px, ' + dotY + 'px) translate(-50%, -50%)';
+
+        var remaining = Math.abs(targetX - ringX) + Math.abs(targetY - ringY) +
+                         Math.abs(targetX - dotX) + Math.abs(targetY - dotY) +
+                         Math.abs(vx) + Math.abs(vy);
+
+        if (remaining < SETTLE_THRESHOLD) {
+          // Settled — stop the loop until the next real pointer movement.
+          rafId = null;
+          return;
+        }
+
+        rafId = requestAnimationFrame(tick);
+      }
+
+      function attachListeners() {
+        window.addEventListener('pointermove', onPointerMove, { passive: true });
+        document.addEventListener('pointerover', onPointerOver, { passive: true });
+        document.addEventListener('pointerout', onPointerOut, { passive: true });
+      }
+
+      function detachListeners() {
+        window.removeEventListener('pointermove', onPointerMove);
+        document.removeEventListener('pointerover', onPointerOver);
+        document.removeEventListener('pointerout', onPointerOut);
+      }
+
+      function start() {
+        if (active) return; // guard against duplicate listeners
+        active = true;
+        hasPosition = false;
+        attachListeners();
+        // No animation frame is requested here — the loop only starts
+        // once a real pointermove arrives, so nothing spins while the
+        // pointer is stationary or hasn't entered the viewport yet.
+      }
+
+      function stop() {
+        if (!active) return;
+        active = false;
+        detachListeners();
+        if (rafId !== null) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
+        document.documentElement.classList.remove('wdp-cursor-active');
+        ring.classList.remove('is-visible', 'is-hovering');
+        dot.classList.remove('is-visible');
+        hasPosition = false;
+      }
+
+      function isEligible() {
+        return fineHoverQuery.matches;
+      }
+
+      function evaluate() {
+        if (isEligible()) {
+          start();
+        } else {
+          stop();
+        }
+      }
+
+      function addQueryListener(query, handler) {
+        if (typeof query.addEventListener === 'function') {
+          query.addEventListener('change', handler);
+        } else if (typeof query.addListener === 'function') {
+          // Safari <14 fallback.
+          query.addListener(handler);
+        }
+      }
+
+      addQueryListener(fineHoverQuery, evaluate);
+
+      evaluate();
+    } catch (err) {
+      // Fail safely: if anything above is unsupported or throws, the
+      // native cursor is simply left alone — no listeners are attached.
+    }
+  })();
+</script>

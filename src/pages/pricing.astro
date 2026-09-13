@@ -1,0 +1,78 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Pricing from '../components/Pricing.astro';
+import DomainSection from '../components/DomainSection.astro';
+import ClosingCTA from '../components/ClosingCTA.astro';
+---
+
+<Layout
+  title="Website & Hosting Pricing | Web Design Pros"
+  description="Transparent pricing for custom Astro website builds, Website-as-a-Service plans, and high-speed hosting from Web Design Pros in Johannesburg."
+  canonical="https://webdesignpros.co.za/pricing"
+>
+  <section class="pricing-hero">
+    <div class="container">
+      <div class="section-header">
+        <span class="sub-heading">TRANSPARENT PRICING</span>
+        <h1 class="section-title">Simple, Upfront Pricing — No Hidden Costs</h1>
+        <p class="section-intro">
+          Every Web Design Pros package is custom-coded on Astro rather than a templated builder, so what you see below is what you pay — no plugin bloat, no hidden setup fees.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <Pricing />
+
+  <DomainSection />
+
+  <ClosingCTA
+    heading="Not sure which package fits your project?"
+    subtext="Tell us a bit about your business and we'll recommend the right starting point."
+    buttonLabel="Get a Custom Quote"
+    buttonHref="/contact"
+  />
+</Layout>
+
+<style>
+  .pricing-hero {
+    padding: 5rem 2rem 1rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .container {
+    width: 100%;
+  }
+
+  .section-header {
+    text-align: center;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .sub-heading {
+    color: var(--accent-secondary, #89CFF0);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .section-title {
+    font-size: clamp(2.25rem, 4vw, 3.25rem);
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.15;
+    white-space: normal; /* overrides global.css desktop nowrap rule to prevent clipping */
+  }
+
+  .section-intro {
+    font-size: 1rem;
+    color: rgba(230, 230, 230, 0.8);
+    line-height: 1.6;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+</style>

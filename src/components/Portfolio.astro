@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import facetImg from '../assets/facet.png';
 import starImg from '../assets/star.png';
 import uncutImg from '../assets/uncut.png';
+import clEventsImg from '../assets/cl-events.avif';
 
 const projects = [
   {
@@ -25,11 +26,22 @@ const projects = [
     highlight: 'High-Intent Lead Engine',
     image: uncutImg,
     url: 'https://uncutelecmech.co.za/'
+  },
+  {
+    title: 'C&L Events',
+    category: 'Events & Styling',
+    // No performance/traffic/lead metric is claimed here deliberately —
+    // none has been supplied or verified for this project. This is a
+    // methodology descriptor, not a measured result.
+    highlight: 'Custom-Coded Astro Build',
+    image: clEventsImg,
+    // Confirmed intended production URL, not yet live. Used as instructed.
+    url: 'https://candlevents.co.za'
   }
 ];
 ---
 
-<section class="portfolio-section">
+<section class="portfolio-section" id="portfolio">
   <div class="container">
     <div class="section-header">
       <span class="sub-heading">FEATURED WORK</span>
@@ -95,15 +107,23 @@ const projects = [
     color: rgba(230, 230, 230, 0.8);
   }
 
-  /* Grid layout to align 3 cards side-by-side */
+  /* Grid layout to align 4 cards side-by-side */
   .portfolio-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.75rem;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
   }
 
-  /* Responsive stack for tablets & mobile */
-  @media (max-width: 900px) {
+  /* Graceful tablet collapse: 2 columns before dropping to a single column */
+  @media (max-width: 1023px) {
+    .portfolio-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+  }
+
+  /* Responsive stack for mobile */
+  @media (max-width: 600px) {
     .portfolio-grid {
       grid-template-columns: 1fr;
     }

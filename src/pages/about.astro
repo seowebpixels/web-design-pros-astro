@@ -1,0 +1,212 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ClosingCTA from '../components/ClosingCTA.astro';
+
+const credentials = [
+  {
+    icon: '🏢',
+    title: 'Registered Company',
+    detail: 'Web Design Pros (Pty) Ltd — CIPC Registration No. 2026/282129/07'
+  },
+  {
+    icon: '✅',
+    title: 'B-BBEE Level 1 Contributor',
+    detail: 'Recognised as an Exempted Micro Enterprise under the Amended B-BBEE Codes'
+  },
+  {
+    icon: '📋',
+    title: 'SARS Tax Compliant',
+    detail: 'Registered taxpayer in good standing with the South African Revenue Service'
+  },
+  {
+    icon: '📍',
+    title: 'Based in Johannesburg',
+    detail: '15 Madge Avenue, Northcliff, Johannesburg, Gauteng'
+  }
+];
+---
+
+<Layout
+  title="About Us | Web Design Pros"
+  description="Web Design Pros is a registered, B-BBEE Level 1, custom web design agency based in Northcliff, Johannesburg, building high-performance Astro websites for South African businesses."
+  canonical="https://webdesignpros.co.za/about"
+>
+  <section class="about-hero">
+    <div class="container">
+      <div class="section-header">
+        <span class="sub-heading">ABOUT WEB DESIGN PROS</span>
+        <h1 class="section-title">A Boutique Agency Built Around Performance</h1>
+        <p class="section-intro">
+          Web Design Pros is a Johannesburg-based digital agency that builds custom-coded websites rather than relying on templated builders — engineered specifically for speed, local SEO, and conversion across Gauteng.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="approach-section">
+    <div class="container">
+      <div class="approach-grid">
+        <div class="approach-card">
+          <h2>Custom-Coded, Not Templated</h2>
+          <p>
+            We build most projects on the Astro framework rather than a templated builder, because it means fewer plugins to maintain, less bloat to slow you down, and a site that's structured around your business rather than a generic layout. Where a different approach genuinely fits a project better, we'll say so.
+          </p>
+        </div>
+        <div class="approach-card">
+          <h2>Built for Local Search</h2>
+          <p>
+            Clean HTML, structured schema data, and on-page SEO are part of every build from day one, not an add-on — aimed at helping South African businesses show up in local search results across Gauteng.
+          </p>
+        </div>
+        <div class="approach-card">
+          <h2>Transparent, Upfront Pricing</h2>
+          <p>
+            Our packages and hosting tiers are published openly rather than quoted case-by-case behind a sales call — you can see exactly what's included before you reach out.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="credentials-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="sub-heading">COMPANY CREDENTIALS</span>
+        <h2 class="section-title-h2">Registered & Compliant</h2>
+      </div>
+      <div class="credentials-grid">
+        {credentials.map((item) => (
+          <div class="credential-card">
+            <span class="credential-icon">{item.icon}</span>
+            <h3>{item.title}</h3>
+            <p>{item.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <ClosingCTA
+    heading="Want to work with us?"
+    subtext="Tell us about your project and we'll get back to you with next steps."
+    buttonLabel="Start a Conversation"
+    buttonHref="/contact"
+  />
+</Layout>
+
+<style>
+  .about-hero {
+    padding: 5rem 2rem 1rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .container {
+    width: 100%;
+  }
+
+  .section-header {
+    text-align: center;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto 3rem auto;
+  }
+
+  .sub-heading {
+    color: var(--accent-secondary, #89CFF0);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .section-title {
+    font-size: clamp(2.25rem, 4vw, 3.25rem);
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.15;
+    white-space: normal;
+  }
+
+  .section-title-h2 {
+    font-size: 2.25rem;
+    color: #ffffff;
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+  }
+
+  .section-intro {
+    font-size: 1rem;
+    color: rgba(230, 230, 230, 0.8);
+    line-height: 1.6;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .approach-section,
+  .credentials-section {
+    padding: 3rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .approach-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .approach-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 2rem 1.5rem;
+  }
+
+  .approach-card h2 {
+    font-size: 1.25rem;
+    color: #ffffff;
+    margin-bottom: 0.75rem;
+  }
+
+  .approach-card p {
+    font-size: 0.9rem;
+    color: rgba(230, 230, 230, 0.8);
+    line-height: 1.6;
+  }
+
+  .credentials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-top: 2.5rem;
+  }
+
+  .credential-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 1.75rem 1.5rem;
+    text-align: center;
+  }
+
+  .credential-icon {
+    font-size: 1.75rem;
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+
+  .credential-card h3 {
+    font-size: 1rem;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+  }
+
+  .credential-card p {
+    font-size: 0.85rem;
+    color: rgba(230, 230, 230, 0.8);
+    line-height: 1.5;
+  }
+</style>

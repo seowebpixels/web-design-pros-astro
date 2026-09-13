@@ -1,0 +1,77 @@
+---
+/* ClosingCTA.astro
+   Lightweight closing nudge for pages that shouldn't repeat the full
+   multi-step CTA form (which already lives on the Home page and /contact).
+   Reuses the same glass-card + gradient-pill-button visual language as the
+   rest of the site (see LocalValue.astro / Process.astro section-header
+   pattern and Header.astro .header-cta button treatment).
+*/
+interface Props {
+  heading: string;
+  subtext?: string;
+  buttonLabel?: string;
+  buttonHref?: string;
+}
+
+const {
+  heading,
+  subtext,
+  buttonLabel = "Get in Touch",
+  buttonHref = "/contact",
+} = Astro.props;
+---
+
+<section class="closing-cta-section">
+  <div class="closing-cta-card">
+    <h2>{heading}</h2>
+    {subtext && <p>{subtext}</p>}
+    <a href={buttonHref} class="closing-cta-button">{buttonLabel} →</a>
+  </div>
+</section>
+
+<style>
+  .closing-cta-section {
+    padding: 1rem 2rem 5rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .closing-cta-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+
+  .closing-cta-card h2 {
+    font-size: 1.85rem;
+    color: #ffffff;
+    margin-bottom: 0.75rem;
+  }
+
+  .closing-cta-card p {
+    font-size: 1rem;
+    color: rgba(230, 230, 230, 0.8);
+    max-width: 600px;
+    margin: 0 auto 1.75rem auto;
+  }
+
+  .closing-cta-button {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--accent-primary, #0096FF) 0%, #0066CC 100%);
+    color: #ffffff;
+    padding: 0.75rem 1.75rem;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .closing-cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 150, 255, 0.4);
+  }
+</style>

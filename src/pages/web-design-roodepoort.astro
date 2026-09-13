@@ -1,0 +1,271 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CTA from '../components/CTA.astro';
+
+const localNeeds = [
+  {
+    icon: '🎨',
+    title: 'Visually-Led Decisions Need a Visually-Led Site',
+    description: "Restaurants, fitness studios, salons, and family entertainment venues are chosen partly on look and feel before a customer ever walks in — a site built mostly out of text paragraphs undersells a business people are deciding on visually."
+  },
+  {
+    icon: '📅',
+    title: "Bookings and Schedules Belong Online, Not Just on a Poster",
+    description: 'Class timetables, table bookings, and appointment slots that only exist on a printed board or a WhatsApp broadcast create friction a competitor with an online booking page simply doesn\u2019t have.'
+  },
+  {
+    icon: '🛍️',
+    title: 'Leisure and Family Spending Gets Compared First',
+    description: "Where a purchase is optional rather than essential — a meal out, a family activity, a new gym — people tend to compare a few options online before choosing, so being easy to find and easy to evaluate matters more than it would for a distress purchase."
+  },
+  {
+    icon: '📶',
+    title: 'A Site That Works as Well on a Phone in a Parking Lot as at Home',
+    description: "A lot of these decisions get made on a phone, often close to the moment of visiting — directions, hours, and menus or offerings need to load fast and work cleanly on mobile, not just look good on a desktop mockup."
+  }
+];
+---
+
+<Layout
+  title="Web Design in Roodepoort | Web Design Pros"
+  description="Web design for Roodepoort's retail, hospitality, and lifestyle businesses — built around how people research and choose leisure and family spending."
+  canonical="https://webdesignpros.co.za/web-design-roodepoort"
+>
+  <section class="area-hero">
+    <div class="container">
+      <div class="section-header">
+        <span class="sub-heading">WEB DESIGN IN ROODEPOORT</span>
+        <h1 class="section-title">Web Design for Roodepoort's Retail & Lifestyle Businesses</h1>
+        <p class="section-intro">
+          Roodepoort's commercial identity leans heavily on retail, hospitality, fitness, and family-oriented leisure businesses — anchored by destinations like Clearwater Mall — where customers are making optional, comparison-driven spending decisions rather than urgent ones.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="context-section">
+    <div class="container">
+      <div class="context-card">
+        <h2>A Suburb Built Around Where People Choose to Spend Their Time</h2>
+        <p>
+          Unlike an area defined by professional services or industry, much of Roodepoort's local economy competes for discretionary spending — where to eat, where to work out, where to take the kids on a Saturday. Those are decisions people are usually willing to compare a little before making, which means a business's website carries real weight in that comparison, well before anyone picks up a phone or walks through a door.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="needs-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="sub-heading">WHAT THIS MEANS FOR YOUR SITE</span>
+        <h2 class="section-title-h2">Built for How Leisure and Retail Decisions Actually Get Made</h2>
+      </div>
+      <div class="needs-grid">
+        {localNeeds.map((item) => (
+          <div class="need-card">
+            <div class="card-icon">{item.icon}</div>
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="hypothetical-section">
+    <div class="container">
+      <div class="hypothetical-card">
+        <span class="hypothetical-label">Illustrative example — not a real client case study</span>
+        <h2>How We'd Approach a Roodepoort Hospitality or Fitness Business</h2>
+        <p>
+          Imagine a Roodepoort restaurant or boutique fitness studio relying on Instagram alone, with no proper site to show its menu, class timetable, or location clearly — a fairly typical starting point in this kind of area. The priority in a build like that is usually straightforward: a fast, visually clean site with an up-to-date schedule or menu, working directions, and a simple way to book or enquire — built so the online impression matches the quality of the actual experience.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="local-links-section">
+    <div class="container">
+      <p>
+        See our <a href="/pricing">website packages and pricing</a>, browse <a href="/#portfolio">recent project work</a>, or view <a href="/#areas">all Gauteng areas we serve</a>.
+      </p>
+    </div>
+  </section>
+
+  <CTA />
+</Layout>
+
+<style>
+  .area-hero {
+    padding: 5rem 2rem 1rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .container {
+    width: 100%;
+  }
+
+  .section-header {
+    text-align: center;
+    width: 100%;
+    max-width: 850px;
+    margin: 0 auto 3rem auto;
+  }
+
+  .sub-heading {
+    color: var(--accent-secondary, #89CFF0);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .section-title {
+    font-size: clamp(2.25rem, 4vw, 3.25rem);
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.15;
+    white-space: normal;
+  }
+
+  .section-title-h2 {
+    font-size: 2.25rem;
+    color: #ffffff;
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+  }
+
+  .section-intro {
+    font-size: 1rem;
+    color: rgba(230, 230, 230, 0.8);
+    line-height: 1.6;
+    max-width: 750px;
+    margin: 0 auto;
+  }
+
+  .context-section,
+  .needs-section,
+  .hypothetical-section {
+    padding: 2rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .context-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 2.5rem;
+  }
+
+  .context-card h2 {
+    font-size: 1.75rem;
+    color: #ffffff;
+    margin-bottom: 1rem;
+  }
+
+  .context-card p {
+    font-size: 1rem;
+    color: rgba(230, 230, 230, 0.85);
+    line-height: 1.65;
+  }
+
+  .needs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-top: 2.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    .needs-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .need-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 2rem 1.5rem;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+
+  .need-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-primary, #0096FF);
+  }
+
+  .card-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .need-card h3 {
+    font-size: 1.15rem;
+    color: #ffffff;
+    margin-bottom: 0.75rem;
+  }
+
+  .need-card p {
+    font-size: 0.875rem;
+    color: rgba(230, 230, 230, 0.8);
+    line-height: 1.55;
+  }
+
+  .hypothetical-card {
+    background: rgba(0, 150, 255, 0.04);
+    border: 1px solid rgba(0, 150, 255, 0.2);
+    border-radius: 16px;
+    padding: 2.5rem;
+  }
+
+  .hypothetical-label {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--accent-secondary, #89CFF0);
+    background: rgba(255, 255, 255, 0.06);
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    margin-bottom: 1.25rem;
+  }
+
+  .hypothetical-card h2 {
+    font-size: 1.6rem;
+    color: #ffffff;
+    margin-bottom: 1rem;
+  }
+
+  .hypothetical-card p {
+    font-size: 0.95rem;
+    color: rgba(230, 230, 230, 0.85);
+    line-height: 1.65;
+  }
+
+  .local-links-section {
+    padding: 1rem 2rem 3rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .local-links-section p {
+    font-size: 0.9rem;
+    color: rgba(230, 230, 230, 0.7);
+  }
+
+  .local-links-section a {
+    color: var(--accent-primary, #0096FF);
+    text-decoration: underline;
+  }
+
+  .local-links-section a:hover {
+    color: var(--accent-secondary, #89CFF0);
+  }
+</style>

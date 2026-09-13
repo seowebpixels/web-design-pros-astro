@@ -1,17 +1,26 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import CustomCursor from '../components/CustomCursor.astro';
 import '../styles/global.css';
 
 interface Props {
   title: string;
   description?: string;
+  canonical?: string;
 }
 
 const { 
   title, 
-  description = "Web Design Pros - Premier boutique digital agency in Randburg, Johannesburg. We engineer High-Performance Digital Assets for South African growth." 
+  description = "Web Design Pros - Premier boutique digital agency in Randburg, Johannesburg. We engineer High-Performance Digital Assets for South African growth.",
+  canonical
 } = Astro.props;
+
+// Optional per-page canonical URL. Falls back to the current path resolved
+// against the production domain (the same hardcoded domain already used
+// throughout the JSON-LD schema below) so every page gets a sane default
+// even if it doesn't pass one explicitly.
+const canonicalURL = canonical ?? `https://webdesignpros.co.za${Astro.url.pathname}`;
 
 const schemaData = {
   "@context": "https://schema.org",
@@ -86,12 +95,14 @@ const schemaData = {
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalURL} />
     <title>{title}</title>
 
     <!-- Global JSON-LD Schema -->
     <script type="application/ld+json" is:inline set:html={JSON.stringify(schemaData)} />
   </head>
   <body>
+    <CustomCursor />
     <Header />
     <main>
       <slot />

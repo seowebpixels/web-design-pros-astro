@@ -10,11 +10,11 @@ const services = [
   },
   {
     title: "Website Maintenance",
-    description: "Keep your digital assets running at peak performance with proactive security patches, plugin updates, and regular health checks. We handle the technical heavy lifting and database optimization so your site remains fast, secure, and always online."
+    description: "Keep your website running at peak performance with proactive monitoring, security updates, and regular health checks — tailored to your platform, from custom-built sites to WordPress and other CMS-driven builds. We handle the technical maintenance so your site stays fast, secure, and reliably online."
   },
   {
     title: "Web Hosting",
-    description: "Experience lightning-fast load times and 99.9% uptime with our secure, high-tech hosting infrastructure tailored for modern web applications. Our local server environments provide the speed and reliability your business needs to scale with confidence."
+    description: "Experience fast load times with our secure, high-performance hosting infrastructure tailored for modern web applications. Our local server environments are built for speed and reliability, so your business can scale with confidence."
   },
   {
     title: "SEO Optimization",
@@ -37,7 +37,13 @@ const services = [
     </a>
 
     <!-- Centered Mobile Hamburger Toggle -->
-    <button class="mobile-toggle" id="menuToggle" aria-label="Toggle Navigation Menu">
+    <button
+      class="mobile-toggle"
+      id="menuToggle"
+      aria-label="Toggle Navigation Menu"
+      aria-expanded="false"
+      aria-controls="navMenu"
+    >
       <span class="bar"></span>
       <span class="bar"></span>
       <span class="bar"></span>
@@ -52,11 +58,17 @@ const services = [
 
         <!-- Services Dropdown Item -->
         <li class="nav-item dropdown-item">
-          <button class="dropdown-toggle" aria-haspopup="true">
+          <button
+            class="dropdown-toggle"
+            id="servicesDropdownToggle"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-controls="servicesDropdownPanel"
+          >
             Services <span class="arrow">▼</span>
           </button>
           
-          <div class="dropdown-panel">
+          <div class="dropdown-panel" id="servicesDropdownPanel">
             <div class="dropdown-content">
               {services.map((service) => (
                 <div class="service-card">
@@ -75,11 +87,15 @@ const services = [
         <li class="nav-item">
           <a href="/about" class="nav-link">About Us</a>
         </li>
+
+        <li class="nav-item">
+          <a href="/contact" class="nav-link">Contact</a>
+        </li>
       </ul>
 
       <!-- CTA Button inside mobile drawer / desktop end -->
       <div class="header-cta-wrapper">
-        <a href="#contact" class="header-cta">Let’s Talk Architecture 🚀</a>
+        <a href="/contact" class="header-cta">Let’s Talk About Your Project</a>
       </div>
     </nav>
 
@@ -87,23 +103,76 @@ const services = [
 </header>
 
 <script>
-  // Mobile Hamburger Toggle Logic
   const toggleBtn = document.getElementById('menuToggle');
   const navMenu = document.getElementById('navMenu');
-
-  toggleBtn?.addEventListener('click', () => {
-    toggleBtn.classList.toggle('active');
-    navMenu?.classList.toggle('active');
-  });
-
-  // Mobile Accordion Toggle for Services Dropdown
   const dropdownToggle = document.querySelector('.dropdown-toggle');
   const dropdownItem = document.querySelector('.dropdown-item');
+  const navLinks = document.querySelectorAll('.nav-link');
 
+  const DESKTOP_BREAKPOINT = 992;
+
+  function closeMobileMenu() {
+    toggleBtn?.classList.remove('active');
+    navMenu?.classList.remove('active');
+    toggleBtn?.setAttribute('aria-expanded', 'false');
+  }
+
+  function closeDropdown() {
+    dropdownItem?.classList.remove('open');
+    dropdownToggle?.setAttribute('aria-expanded', 'false');
+  }
+
+  // Mobile hamburger toggle
+  toggleBtn?.addEventListener('click', () => {
+    const isOpen = navMenu?.classList.toggle('active') ?? false;
+    toggleBtn.classList.toggle('active', isOpen);
+    toggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    if (!isOpen) {
+      closeDropdown();
+    }
+  });
+
+  // Services dropdown toggle — a real <button>, so this fires for both
+  // mouse clicks and keyboard (Enter/Space) activation, on every viewport.
   dropdownToggle?.addEventListener('click', (e) => {
-    if (window.innerWidth <= 992) {
-      e.preventDefault();
-      dropdownItem?.classList.toggle('mobile-open');
+    e.preventDefault();
+    const isOpen = dropdownItem?.classList.toggle('open') ?? false;
+    dropdownToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+
+  // Close the mobile menu (and any open dropdown) once a nav link is chosen
+  navLinks.forEach((link) => {
+    link.addEventListener('click', () => {
+      closeMobileMenu();
+      closeDropdown();
+    });
+  });
+
+  // Escape closes whichever is open and returns focus to its trigger
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+
+    if (dropdownItem?.classList.contains('open')) {
+      closeDropdown();
+      dropdownToggle?.focus();
+      return;
+    }
+
+    if (navMenu?.classList.contains('active')) {
+      closeMobileMenu();
+      toggleBtn?.focus();
+    }
+  });
+
+  // Reset open/closed state cleanly when crossing the mobile/desktop
+  // breakpoint, so nothing is left stuck open after a viewport change.
+  let lastIsDesktop = window.innerWidth > DESKTOP_BREAKPOINT;
+  window.addEventListener('resize', () => {
+    const isDesktop = window.innerWidth > DESKTOP_BREAKPOINT;
+    if (isDesktop !== lastIsDesktop) {
+      closeMobileMenu();
+      closeDropdown();
+      lastIsDesktop = isDesktop;
     }
   });
 </script>
@@ -180,6 +249,14 @@ const services = [
     color: var(--accent-secondary, #89CFF0);
   }
 
+  .nav-link:focus-visible,
+  .dropdown-toggle:focus-visible,
+  .mobile-toggle:focus-visible,
+  .header-cta:focus-visible {
+    outline: 2px solid var(--accent-primary, #0096FF);
+    outline-offset: 3px;
+  }
+
   .arrow {
     font-size: 0.65rem;
     transition: transform 0.3s ease;
@@ -207,13 +284,15 @@ const services = [
   }
 
   @media (min-width: 993px) {
-    .dropdown-item:hover .dropdown-panel {
+    .dropdown-item:hover .dropdown-panel,
+    .dropdown-item.open .dropdown-panel {
       opacity: 1;
       visibility: visible;
       transform: translateX(-50%) translateY(0);
     }
 
-    .dropdown-item:hover .arrow {
+    .dropdown-item:hover .arrow,
+    .dropdown-item.open .arrow {
       transform: rotate(180deg);
     }
   }
@@ -349,11 +428,11 @@ const services = [
       margin-top: 0.5rem;
     }
 
-    .dropdown-item.mobile-open .dropdown-panel {
+    .dropdown-item.open .dropdown-panel {
       display: block;
     }
 
-    .dropdown-item.mobile-open .arrow {
+    .dropdown-item.open .arrow {
       transform: rotate(180deg);
     }
 
