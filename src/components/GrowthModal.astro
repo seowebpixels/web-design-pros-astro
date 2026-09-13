@@ -926,6 +926,8 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
   .growth-check-title {
     height: 58px;
 
+    transform: translateY(-40px);
+
     display: flex;
     align-items: flex-start;
     justify-content: center;
@@ -1403,6 +1405,43 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
     font-weight: 400 700;
     font-style: normal;
     font-display: swap;
+  }
+
+
+  /* =========================================================
+     REDUCED-HEIGHT DESKTOP
+
+     Keep the two-column composition, but let the outer card scroll
+     so neither column's lower controls can be clipped by the viewport.
+     ========================================================= */
+
+  @media (min-width: 1201px) and (max-height: 900px) {
+
+    .growth-modal {
+      align-items: flex-start;
+    }
+
+    .growth-modal-card {
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+
+    .growth-layout {
+      height: auto;
+      min-height: 900px;
+    }
+
+    .growth-left,
+    .growth-right-column {
+      height: auto;
+    }
+
+    .growth-panel {
+      flex: none;
+      min-height: 760px;
+    }
+
   }
 
 
