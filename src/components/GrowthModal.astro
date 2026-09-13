@@ -969,16 +969,9 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 
   border-radius: 18px;
 
-  overflow-y: auto;
+  overflow-y: hidden;
   overflow-x: hidden;
-  overscroll-behavior: contain;
-  scrollbar-width: none;
 }
-
-  .growth-panel::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-  }
 
   /* =========================================================
      PANEL HEADER
@@ -1436,7 +1429,7 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
     .growth-feature {
       position: absolute;
       right: 0;
-      bottom: 0;
+      bottom: -50px;
       left: 0;
       margin-top: 0;
     }
@@ -1445,16 +1438,18 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
       flex: 0 0 auto;
       height: calc(100% - 88px);
       padding-top: 8px;
-      transform: translateY(30px);
+      transform: translateY(80px);
     }
 
     .growth-step-one {
-      padding-top: 26px;
+      padding-top: 66px;
+      transform: translateY(-40px);
     }
 
     .growth-step-two {
-      margin-top: -4px;
-      padding-top: 0;
+      margin-top: 0;
+      padding-top: 36px;
+      transform: translateY(-40px);
     }
 
   }
