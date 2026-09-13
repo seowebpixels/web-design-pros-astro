@@ -36,7 +36,8 @@
     left: 0;
     border-radius: 50%;
     pointer-events: none;
-    z-index: 9999;
+    /* Always remain above overlays such as GrowthModal (z-index: 9999). */
+    z-index: 2147483647;
     opacity: 0;
     will-change: transform;
   }
@@ -71,13 +72,8 @@
      the custom cursor has a real position and only on devices where the
      effect actually initialised. */
   :global(html.wdp-cursor-active),
-  :global(html.wdp-cursor-active) a,
-  :global(html.wdp-cursor-active) button,
-  :global(html.wdp-cursor-active) input,
-  :global(html.wdp-cursor-active) textarea,
-  :global(html.wdp-cursor-active) select,
-  :global(html.wdp-cursor-active) [role="button"] {
-    cursor: none;
+  :global(html.wdp-cursor-active *) {
+    cursor: none !important;
   }
 </style>
 
