@@ -696,9 +696,6 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
     width: 100%;
     height: 100%;
 
-    box-sizing: border-box;
-    padding-bottom: 30px;
-
     display: grid;
 
     grid-template-columns: minmax(0, 48%) minmax(0, 52%);
@@ -719,7 +716,8 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 
     height: 100%;
 
-    padding: 0;
+    box-sizing: border-box;
+    padding: 0 0 30px;
   }
 
 
@@ -920,6 +918,9 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
     flex-direction: column;
 
     height: 100%;
+
+    box-sizing: border-box;
+    padding-bottom: 30px;
   }
 
 
@@ -927,6 +928,8 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 
   .growth-check-title {
     height: 58px;
+
+    transform: translateY(-40px);
 
     display: flex;
     align-items: flex-start;
