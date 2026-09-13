@@ -717,7 +717,7 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
     height: 100%;
 
     box-sizing: border-box;
-    padding: 0 0 30px;
+    padding: 0;
   }
 
 
@@ -920,7 +920,7 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
     height: 100%;
 
     box-sizing: border-box;
-    padding-bottom: 30px;
+    padding: 0;
   }
 
 
@@ -955,6 +955,8 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
   flex: 1;
 
   min-height: 0;
+
+  box-sizing: border-box;
 
   padding: 38px 36px 30px 36px;
 
@@ -1410,6 +1412,35 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 
 
   /* =========================================================
+     DESKTOP BOTTOM ALIGNMENT
+
+     Use explicit geometry because percentage-height flex chains can
+     absorb margins and padding without moving their visible children.
+     ========================================================= */
+
+  @media (min-width: 1201px) {
+
+    .growth-left {
+      position: relative;
+    }
+
+    .growth-feature {
+      position: absolute;
+      right: 0;
+      bottom: 30px;
+      left: 0;
+      margin-top: 0;
+    }
+
+    .growth-panel {
+      flex: 0 0 auto;
+      height: calc(100% - 88px);
+    }
+
+  }
+
+
+  /* =========================================================
      REDUCED-HEIGHT DESKTOP
 
      Keep the two-column composition, but let the outer card scroll
@@ -1469,6 +1500,7 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 
     .growth-left {
       height: auto;
+      padding-bottom: 30px;
     }
 
     .growth-feature {
@@ -1477,6 +1509,7 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 
     .growth-right-column {
       height: auto;
+      padding-bottom: 30px;
     }
 
     .growth-panel {
