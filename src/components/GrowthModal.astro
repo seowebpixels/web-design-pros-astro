@@ -425,6 +425,14 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 
             </div>
 
+            <p
+              id="growth-step1-status"
+              class="growth-form-status"
+              role="alert"
+              aria-live="assertive"
+              tabindex="-1"
+            ></p>
+
 
             <p class="growth-panel-note">
               Better information allows us to recommend the best growth platform.
@@ -452,6 +460,15 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
               id="growth-form"
               class="growth-form"
             >
+
+              <input
+                type="text"
+                id="growth-company-site"
+                name="website"
+                tabindex="-1"
+                autocomplete="off"
+                hidden
+              />
 
               <!-- NAME -->
               <div class="growth-form-field">
@@ -517,8 +534,9 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
                 <button
                   type="submit"
                   class="growth-submit"
+                  id="growth-submit-btn"
                 >
-                  Get my growth plan
+                  <span class="growth-submit-label">Get my growth plan</span>
                 </button>
               </div>
 
@@ -530,6 +548,13 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
             </p>
 
           </div>
+
+          <p
+            id="growth-form-status"
+            class="growth-form-status"
+            aria-live="polite"
+            tabindex="-1"
+          ></p>
 
         </div>
 
@@ -1364,6 +1389,27 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
     font-size: 18px;
   }
 
+  .growth-form-status {
+    min-height: 1.4em;
+    margin: 12px 0 0;
+    color: var(--growth-muted);
+    font-size: 14px;
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  .growth-form-status:empty {
+    display: none;
+  }
+
+  .growth-form-status.status-error {
+    color: #fca5a5;
+  }
+
+  .growth-form-status.status-success {
+    color: #86efac;
+  }
+
 
   /* =========================================================
      UTILITY
@@ -1714,6 +1760,20 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
     const selects =
       document.querySelectorAll('.growth-select');
 
+    const growthForm =
+      document.getElementById('growth-form');
+
+    const growthStatus =
+      document.getElementById('growth-form-status');
+
+    const growthSubmitBtn =
+      document.getElementById('growth-submit-btn');
+
+    const step1Status =
+      document.getElementById('growth-step1-status');
+
+    let isGrowthSubmitting = false;
+
 
     /* =======================================================
        OPEN
@@ -1722,6 +1782,11 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
     if (openBtn && modal) {
 
       openBtn.addEventListener('click', () => {
+
+        if (growthStatus) {
+          growthStatus.textContent = '';
+          growthStatus.classList.remove('status-error', 'status-success');
+        }
 
         modal.classList.remove('hidden');
         modal.classList.add('flex');
@@ -1759,7 +1824,7 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
        HIGHLIGHT TAB
        ======================================================= */
 
-    function highlightPair(key) {
+    function highlightPair(key: string) {
 
       tabs.forEach(tab => {
 
@@ -1828,6 +1893,41 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 
     btnContinue?.addEventListener('click', () => {
 
+      const fields = [
+        document.getElementById('select-need'),
+        document.getElementById('select-goal'),
+        document.getElementById('select-plan'),
+        document.getElementById('select-budget'),
+      ];
+
+      const firstIncomplete = fields.find(
+        (field) => !(field instanceof HTMLSelectElement) || !field.value
+      );
+
+      if (firstIncomplete) {
+
+        if (step1Status) {
+          step1Status.textContent =
+            'Please answer all four questions before continuing.';
+          step1Status.classList.remove('status-success');
+          step1Status.classList.add('status-error');
+        }
+
+        if (firstIncomplete instanceof HTMLSelectElement) {
+          const targetKey = firstIncomplete.getAttribute('data-target');
+          if (targetKey) highlightPair(targetKey);
+          firstIncomplete.focus();
+        }
+
+        return;
+
+      }
+
+      if (step1Status) {
+        step1Status.textContent = '';
+        step1Status.classList.remove('status-error', 'status-success');
+      }
+
       step1Content?.classList.add('hidden');
 
       step2Content?.classList.remove('hidden');
@@ -1844,6 +1944,176 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
         bar2.classList.remove('progress-inactive');
 
         bar2.classList.add('progress-active');
+
+      }
+
+    });
+
+
+    /* =======================================================
+       RESET AFTER CONFIRMED SUCCESS
+       ======================================================= */
+
+    function resetGrowthModalState() {
+
+      growthForm instanceof HTMLFormElement && growthForm.reset();
+
+      selects.forEach((select) => {
+        if (select instanceof HTMLSelectElement) select.value = '';
+      });
+
+      highlightPair('need');
+
+      step2Content?.classList.add('hidden');
+      step1Content?.classList.remove('hidden');
+
+      if (stepLabel) stepLabel.textContent = 'STEP 1 OF 2';
+
+      if (bar2) {
+        bar2.classList.add('progress-inactive');
+        bar2.classList.remove('progress-active');
+      }
+
+      if (step1Status) {
+        step1Status.textContent = '';
+        step1Status.classList.remove('status-error', 'status-success');
+      }
+
+    }
+
+
+    /* =======================================================
+       LEAD-CAPTURE SUBMIT
+       ======================================================= */
+
+    function setGrowthStatus(message: string, kind: 'error' | 'success') {
+
+      if (!growthStatus) return;
+
+      growthStatus.textContent = message;
+      growthStatus.classList.remove('status-error', 'status-success');
+      growthStatus.classList.add(kind === 'error' ? 'status-error' : 'status-success');
+      growthStatus.setAttribute('role', kind === 'error' ? 'alert' : 'status');
+      growthStatus.focus();
+
+    }
+
+    function selectedValue(id: string) {
+
+      const element = document.getElementById(id);
+      return element instanceof HTMLSelectElement ? element.value : '';
+
+    }
+
+    growthForm?.addEventListener('submit', async (event) => {
+
+      event.preventDefault();
+      if (isGrowthSubmitting) return;
+
+      const nameInput = document.getElementById('full-name');
+      const emailInput = document.getElementById('email-address');
+      const phoneInput = document.getElementById('phone-number');
+      const businessInput = document.getElementById('business-name');
+      const honeypotInput = document.getElementById('growth-company-site');
+
+      const name = nameInput instanceof HTMLInputElement ? nameInput.value.trim() : '';
+      const email = emailInput instanceof HTMLInputElement ? emailInput.value.trim() : '';
+      const phone = phoneInput instanceof HTMLInputElement ? phoneInput.value.trim() : '';
+      const business = businessInput instanceof HTMLInputElement ? businessInput.value.trim() : '';
+      const website = honeypotInput instanceof HTMLInputElement ? honeypotInput.value : '';
+
+      if (!name) {
+        setGrowthStatus('Please tell us your name.', 'error');
+        nameInput?.focus();
+        return;
+      }
+
+      if (!(emailInput instanceof HTMLInputElement) || !emailInput.validity.valid) {
+        setGrowthStatus('Please enter a valid email address.', 'error');
+        emailInput?.focus();
+        return;
+      }
+
+      if (!phone) {
+        setGrowthStatus('Please enter a phone number.', 'error');
+        phoneInput?.focus();
+        return;
+      }
+
+      const need = selectedValue('select-need');
+      const goal = selectedValue('select-goal');
+      const timeframe = selectedValue('select-plan');
+      const budget = selectedValue('select-budget');
+
+      if (!need || !goal || !timeframe || !budget) {
+        setGrowthStatus('Please complete step 1 before submitting.', 'error');
+        return;
+      }
+
+      isGrowthSubmitting = true;
+
+      if (growthSubmitBtn instanceof HTMLButtonElement) {
+        growthSubmitBtn.disabled = true;
+        const label = growthSubmitBtn.querySelector('.growth-submit-label');
+        if (label) label.textContent = 'Sending…';
+      }
+
+      try {
+
+        const response = await fetch('/api/enquiry', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            source: 'growth-modal',
+            name,
+            email,
+            phone,
+            business,
+            need,
+            goal,
+            timeframe,
+            budget,
+            website,
+          }),
+        });
+
+        let result: { ok?: boolean; error?: string } = {};
+        try {
+          result = await response.json();
+        } catch {
+          // A non-JSON response is handled as a failed submission below.
+        }
+
+        if (response.ok && result && result.ok) {
+          setGrowthStatus(
+            'Thanks — your growth plan request has been sent. We’ll be in touch shortly.',
+            'success'
+          );
+          resetGrowthModalState();
+        } else {
+          setGrowthStatus(
+            (result && result.error) ||
+              'Something went wrong sending your request. Please try again.',
+            'error'
+          );
+        }
+
+      } catch {
+
+        setGrowthStatus(
+          'Something went wrong sending your request. Please check your connection and try again.',
+          'error'
+        );
+
+      } finally {
+
+        isGrowthSubmitting = false;
+
+        if (growthSubmitBtn instanceof HTMLButtonElement) {
+          growthSubmitBtn.disabled = false;
+          const label = growthSubmitBtn.querySelector('.growth-submit-label');
+          if (label) label.textContent = 'Get my growth plan';
+        }
 
       }
 
