@@ -180,6 +180,17 @@ export async function queryRdapServer(baseUrl: string, hostname: string): Promis
       headers: { accept: 'application/rdap+json' },
     });
 
+// Verisign's authoritative .com/.net RDAP service returns a genuine
+// HTTP 404 with an empty response body for an unregistered domain.
+// Trust the status only for this exact HTTPS registry hostname.
+if (
+  response.status === 404 &&
+  lookupUrl.protocol === 'https:' &&
+  lookupUrl.hostname.toLowerCase() === 'rdap.verisign.com'
+) {
+  return 'available';
+}
+
     if (response.status === 200 || response.status === 404) {
       let body: unknown;
       let parseFailed = false;
@@ -230,6 +241,11 @@ export async function checkDomainAvailability(hostname: string): Promise<DomainA
   // No bootstrap mapping at all (unsupported/unmapped TLD) leaves status as
   // the 'unknown' default set above — never inferred as available.
 
+  // Do not cache uncertainty; transient upstream failures should be
+// allowed to recover on the next attempt.
+if (status !== 'unknown') {
   setCachedResult(hostname, status);
-  return { domain: hostname, status };
+}
+
+return { domain: hostname, status };
 }
