@@ -31,18 +31,21 @@ import Layout from '../layouts/Layout.astro';
             Search Domain
           </button>
         </form>
+
+        <p id="domain-check-error" class="domain-check-error hidden" role="alert"></p>
       </section>
 
       <!-- 2. DYNAMIC SEARCH RESULT DISPLAY (Hidden by default) -->
       <section id="result-container" class="search-result-card hidden">
         <div class="result-inner">
           <div>
-            <span class="badge-available">Available</span>
+            <span id="result-badge" class="badge-available">Available</span>
             <h3 id="result-domain-name" class="result-domain-title">example.co.za</h3>
-            <p class="result-domain-sub">Renews at R85.00/yr</p>
+            <p id="result-domain-sub" class="result-domain-sub">Renews at R85.00/yr</p>
+            <p id="result-disclosure" class="result-disclosure hidden"></p>
           </div>
           
-          <div class="result-action-block">
+          <div id="result-action-block" class="result-action-block">
             <div class="result-price">R75.00 <span class="price-unit">/ 1st Yr</span></div>
             <button id="buy-now-btn" class="buy-button">
               Buy Now &rarr;
@@ -378,6 +381,127 @@ import Layout from '../layouts/Layout.astro';
   </main>
 </Layout>
 
+<script lang="ts">
+  // Wires the existing search form to the Domain Checker API. This is an
+  // informational availability indicator only — it is not connected to a
+  // registrar and does not reserve or register anything. See the
+  // disclosure text shown alongside an "available" result.
+  const form = document.getElementById('domain-search-form');
+  const input = document.getElementById('domain-input');
+  const submitBtn = form?.querySelector('.search-button');
+
+  const errorEl = document.getElementById('domain-check-error');
+
+  const resultContainer = document.getElementById('result-container');
+  const resultInner = resultContainer?.querySelector('.result-inner');
+  const badgeEl = document.getElementById('result-badge');
+  const domainNameEl = document.getElementById('result-domain-name');
+  const subEl = document.getElementById('result-domain-sub');
+  const disclosureEl = document.getElementById('result-disclosure');
+  const actionBlock = document.getElementById('result-action-block');
+
+  const ERROR_MESSAGES: Record<string, string> = {
+    missing_domain: 'Please enter a domain name to check.',
+    invalid_domain:
+      'That doesn\u2019t look like a valid domain name. Try something like "example.co.za".',
+    subdomain_not_registrable: 'Please enter a registrable domain name, not a subdomain.',
+    method_not_allowed: 'Something went wrong. Please try again.',
+  };
+  const NETWORK_ERROR_MESSAGE =
+    'We couldn\u2019t reach the domain checker right now. Please try again shortly.';
+
+  function hideResult() {
+    resultContainer?.classList.add('hidden');
+  }
+
+  function showError(message: string) {
+    if (!errorEl) return;
+    errorEl.textContent = message;
+    errorEl.classList.remove('hidden');
+  }
+
+  function clearError() {
+    if (!errorEl) return;
+    errorEl.textContent = '';
+    errorEl.classList.add('hidden');
+  }
+
+  function showResult(domain: string, status: 'available' | 'taken' | 'unknown') {
+    if (!resultContainer || !resultInner || !badgeEl || !domainNameEl || !subEl) return;
+
+    domainNameEl.textContent = domain;
+    resultInner.classList.remove('result-available', 'result-taken', 'result-unknown');
+    badgeEl.classList.remove('badge-available', 'badge-taken', 'badge-unknown');
+
+    if (status === 'available') {
+      resultInner.classList.add('result-available');
+      badgeEl.classList.add('badge-available');
+      badgeEl.textContent = 'Available';
+      subEl.textContent = 'This name currently appears to be available.';
+      if (disclosureEl) {
+        disclosureEl.textContent =
+          'This is an availability indication only \u2014 the domain is not reserved. Final registration is subject to our manual verification with the registry before it is confirmed.';
+        disclosureEl.classList.remove('hidden');
+      }
+      actionBlock?.classList.remove('hidden');
+    } else if (status === 'taken') {
+      resultInner.classList.add('result-taken');
+      badgeEl.classList.add('badge-taken');
+      badgeEl.textContent = 'Taken';
+      subEl.textContent = 'This domain already appears to be registered.';
+      disclosureEl?.classList.add('hidden');
+      actionBlock?.classList.add('hidden');
+    } else {
+      // 'unknown' — deliberately neutral: never green, never wording that
+      // suggests the visitor can confidently register it.
+      resultInner.classList.add('result-unknown');
+      badgeEl.classList.add('badge-unknown');
+      badgeEl.textContent = 'Unknown';
+      subEl.textContent =
+        'We couldn\u2019t confirm availability for this domain right now \u2014 contact us and we\u2019ll check it manually.';
+      disclosureEl?.classList.add('hidden');
+      actionBlock?.classList.add('hidden');
+    }
+
+    resultContainer.classList.remove('hidden');
+  }
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!(input instanceof HTMLInputElement)) return;
+
+    const rawDomain = input.value.trim();
+    if (!rawDomain) return;
+
+    clearError();
+    hideResult();
+
+    if (submitBtn instanceof HTMLButtonElement) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Checking\u2026';
+    }
+
+    try {
+      const response = await fetch(`/api/domain-check?domain=${encodeURIComponent(rawDomain)}`);
+      const data = await response.json();
+
+      if (!data.success) {
+        showError(ERROR_MESSAGES[data.error] ?? NETWORK_ERROR_MESSAGE);
+        return;
+      }
+
+      showResult(data.domain, data.status);
+    } catch {
+      showError(NETWORK_ERROR_MESSAGE);
+    } finally {
+      if (submitBtn instanceof HTMLButtonElement) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Search Domain';
+      }
+    }
+  });
+</script>
+
 <style>
   /* Dedicated Page Layout Styles — bypasses Tailwind utility spacing interference */
   #domains-page-container {
@@ -493,6 +617,14 @@ import Layout from '../layouts/Layout.astro';
     gap: 16px;
   }
 
+  .result-inner.result-taken {
+    border-color: rgba(239, 68, 68, 0.3);
+  }
+
+  .result-inner.result-unknown {
+    border-color: #334155;
+  }
+
   .badge-available {
     font-size: 0.75rem;
     text-transform: uppercase;
@@ -544,6 +676,59 @@ import Layout from '../layouts/Layout.astro';
     font-weight: 600;
     border: none;
     cursor: pointer;
+  }
+
+  /* Result badge — additional states alongside the existing "available"
+     styling above. JS swaps the badge's class to match the checker's
+     response; the shape/size matches .badge-available exactly, only the
+     colour changes, consistent with this page's existing .badge-hot /
+     .badge-sale colour convention used elsewhere. */
+  .badge-taken {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #f87171;
+    background-color: #450a0a;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+
+  .badge-unknown {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #94a3b8;
+    background-color: rgba(30, 41, 59, 0.6);
+    padding: 4px 10px;
+    border-radius: 9999px;
+    border: 1px solid #334155;
+  }
+
+  /* Availability disclosure — shown only for an "available" result, so
+     it's never mistaken for a confirmed registration. */
+  .result-disclosure {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    line-height: 1.5;
+    margin-top: 8px;
+    max-width: 40ch;
+  }
+
+  /* Inline error message under the search form (invalid domain,
+     subdomain rejection, or a network/lookup failure). Uses the same
+     rose palette as .badge-hot for visual consistency with the rest of
+     the page's existing colour language. */
+  .domain-check-error {
+    max-width: 650px;
+    margin: 12px auto 0 auto;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background-color: rgba(69, 10, 10, 0.4);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #f87171;
+    font-size: 0.875rem;
+    text-align: center;
   }
 
   /* Shared Glass Cards */

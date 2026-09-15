@@ -425,6 +425,13 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 
             </div>
 
+            <div
+              id="growth-step1-status"
+              class="growth-form-status"
+              role="alert"
+              tabindex="-1"
+            ></div>
+
 
             <p class="growth-panel-note">
               Better information allows us to recommend the best growth platform.
@@ -512,13 +519,32 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
               </div>
 
 
+              <!-- HONEYPOT: hidden from sighted and keyboard users -->
+              <div class="growth-hp-field" aria-hidden="true">
+                <label for="growth-company-site">Leave this field blank</label>
+                <input
+                  type="text"
+                  id="growth-company-site"
+                  name="website"
+                  tabindex="-1"
+                  autocomplete="off"
+                />
+              </div>
+
+              <p class="growth-consent-note">
+                By submitting, you agree that we'll use these details to respond to your
+                enquiry, as described in our
+                <a href="/privacy">Privacy Policy</a>.
+              </p>
+
               <!-- SUBMIT -->
               <div class="growth-action">
                 <button
                   type="submit"
                   class="growth-submit"
+                  id="growth-submit-btn"
                 >
-                  Get my growth plan
+                  <span class="growth-submit-label">Get my growth plan</span>
                 </button>
               </div>
 
@@ -530,6 +556,13 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
             </p>
 
           </div>
+
+          <div
+            id="growth-form-status"
+            class="growth-form-status"
+            role="alert"
+            tabindex="-1"
+          ></div>
 
         </div>
 
@@ -716,7 +749,6 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 
     height: 100%;
 
-    box-sizing: border-box;
     padding: 0;
   }
 
@@ -751,7 +783,7 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 
   .growth-logo {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
 
     margin-bottom: 48px;
@@ -761,7 +793,7 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 
   .growth-logo img {
     width: auto;
-    height: 130px;
+    height: 76px;
 
     object-fit: contain;
   }
@@ -811,8 +843,7 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 
     gap: 16px;
 
-    /* Lift this row—and the feature card that follows it—by 30px. */
-    margin-top: 38px;
+    margin-top: 68px;
   }
 
 
@@ -871,8 +902,6 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 
     min-height: 152px;
 
-    box-sizing: border-box;
-
     padding: 30px 42px;
 
     display: flex;
@@ -920,9 +949,6 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
     flex-direction: column;
 
     height: 100%;
-
-    box-sizing: border-box;
-    padding: 0;
   }
 
 
@@ -930,8 +956,6 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 
   .growth-check-title {
     height: 58px;
-
-    transform: translateY(-40px);
 
     display: flex;
     align-items: flex-start;
@@ -958,8 +982,6 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 
   min-height: 0;
 
-  box-sizing: border-box;
-
   padding: 38px 36px 30px 36px;
 
   display: flex;
@@ -969,7 +991,7 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 
   border-radius: 18px;
 
-  overflow-y: hidden;
+  overflow-y: auto;
   overflow-x: hidden;
 }
 
@@ -1365,6 +1387,65 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
   }
 
 
+  .growth-step-two .growth-submit:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+  }
+
+
+  .growth-hp-field {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+
+  .growth-consent-note {
+    margin: 14px 0 0 0;
+
+    text-align: center;
+
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+
+    color: rgba(255,255,255,.55);
+  }
+
+  .growth-consent-note a {
+    color: var(--growth-light-blue);
+    text-decoration: underline;
+  }
+
+
+  .growth-form-status {
+    margin-top: 14px;
+
+    text-align: center;
+
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+
+    min-height: 1.4em;
+  }
+
+  .growth-form-status:empty {
+    display: none;
+  }
+
+  .growth-form-status.status-success {
+    color: #4ade80;
+  }
+
+  .growth-form-status.status-error {
+    color: #f87171;
+  }
+
+
   /* =========================================================
      UTILITY
      ========================================================= */
@@ -1414,84 +1495,6 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 
 
   /* =========================================================
-     DESKTOP BOTTOM ALIGNMENT
-
-     Use explicit geometry because percentage-height flex chains can
-     absorb margins and padding without moving their visible children.
-     ========================================================= */
-
-  @media (min-width: 1201px) {
-
-    .growth-check-title {
-      transform: translateY(20px);
-    }
-
-    .growth-left {
-      position: relative;
-    }
-
-    .growth-feature {
-      position: absolute;
-      right: 0;
-      bottom: 5px;
-      left: 0;
-      margin-top: 0;
-    }
-
-    .growth-panel {
-      flex: 0 0 auto;
-      height: calc(100% - 88px);
-      padding-top: 8px;
-      transform: translateY(25px);
-    }
-
-    .growth-step-one {
-      padding-top: 66px;
-      transform: translateY(-40px);
-    }
-
-    .growth-step-two {
-      margin-top: 0;
-      padding-top: 36px;
-      transform: translateY(-40px);
-    }
-
-  }
-
-
-  /* =========================================================
-     REDUCED-HEIGHT DESKTOP
-
-     Keep the two-column composition, but let the outer card scroll
-     so neither column's lower controls can be clipped by the viewport.
-     ========================================================= */
-
-  @media (min-width: 1201px) and (max-height: 800px) {
-
-    .growth-modal {
-      align-items: flex-start;
-    }
-
-    .growth-modal-card {
-      min-height: 0;
-      overflow-y: auto;
-      overscroll-behavior: contain;
-    }
-
-    .growth-layout {
-      height: 820px;
-      min-height: 820px;
-    }
-
-    .growth-left,
-    .growth-right-column {
-      height: 100%;
-    }
-
-  }
-
-
-  /* =========================================================
      TABLET
      ========================================================= */
 
@@ -1519,7 +1522,6 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 
     .growth-left {
       height: auto;
-      padding-bottom: 30px;
     }
 
     .growth-feature {
@@ -1528,7 +1530,6 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 
     .growth-right-column {
       height: auto;
-      padding-bottom: 30px;
     }
 
     .growth-panel {
@@ -1574,11 +1575,11 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
     }
 
     .growth-logo {
-      margin-bottom: 72px;
+      margin-bottom: 32px;
     }
 
     .growth-logo img {
-      height: 120px;
+      height: 60px;
     }
 
     .growth-headline {
@@ -1596,7 +1597,7 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
     .growth-indicators {
       gap: 8px;
 
-      margin-top: 8px;
+      margin-top: 38px;
     }
 
     .growth-indicator {
@@ -1714,6 +1715,20 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
     const selects =
       document.querySelectorAll('.growth-select');
 
+    const growthForm =
+      document.getElementById('growth-form');
+
+    const growthStatus =
+      document.getElementById('growth-form-status');
+
+    const growthSubmitBtn =
+      document.getElementById('growth-submit-btn');
+
+    const step1Status =
+      document.getElementById('growth-step1-status');
+
+    let isGrowthSubmitting = false;
+
 
     /* =======================================================
        OPEN
@@ -1823,10 +1838,85 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 
 
     /* =======================================================
+       RESET TO STEP 1 (used after confirmed success)
+       ======================================================= */
+
+    function resetGrowthModalState() {
+
+      const selectIds = ['select-need', 'select-goal', 'select-plan', 'select-budget'];
+
+      selectIds.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el instanceof HTMLSelectElement) el.value = '';
+      });
+
+      highlightPair('need');
+
+      step2Content?.classList.add('hidden');
+      step1Content?.classList.remove('hidden');
+
+      if (stepLabel) {
+        stepLabel.textContent = 'STEP 1 OF 2';
+      }
+
+      if (bar2) {
+        bar2.classList.add('progress-inactive');
+        bar2.classList.remove('progress-active');
+      }
+
+      if (step1Status) {
+        step1Status.textContent = '';
+        step1Status.classList.remove('status-error', 'status-success');
+      }
+
+    }
+
+
+    /* =======================================================
        CONTINUE
        ======================================================= */
 
     btnContinue?.addEventListener('click', () => {
+
+      const needEl = document.getElementById('select-need');
+      const goalEl = document.getElementById('select-goal');
+      const timeframeEl = document.getElementById('select-plan');
+      const budgetEl = document.getElementById('select-budget');
+
+      const fields = [
+        { el: needEl, label: 'need' },
+        { el: goalEl, label: 'goal' },
+        { el: timeframeEl, label: 'time frame' },
+        { el: budgetEl, label: 'budget' },
+      ];
+
+      const firstIncomplete = fields.find(
+        (field) => !(field.el instanceof HTMLSelectElement) || !field.el.value
+      );
+
+      if (firstIncomplete) {
+
+        if (step1Status) {
+          step1Status.textContent =
+            'Please answer all four questions before continuing.';
+          step1Status.classList.remove('status-success');
+          step1Status.classList.add('status-error');
+          step1Status.setAttribute('role', 'alert');
+          step1Status.focus();
+        }
+
+        if (firstIncomplete.el instanceof HTMLSelectElement) {
+          firstIncomplete.el.focus();
+        }
+
+        return;
+
+      }
+
+      if (step1Status) {
+        step1Status.textContent = '';
+        step1Status.classList.remove('status-error', 'status-success');
+      }
 
       step1Content?.classList.add('hidden');
 
@@ -1844,6 +1934,160 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
         bar2.classList.remove('progress-inactive');
 
         bar2.classList.add('progress-active');
+
+      }
+
+    });
+
+
+    /* =======================================================
+       LEAD-CAPTURE SUBMIT
+       ======================================================= */
+
+    function setGrowthStatus(message, kind) {
+
+      if (!growthStatus) return;
+
+      growthStatus.textContent = message;
+
+      growthStatus.classList.remove('status-error', 'status-success');
+      growthStatus.classList.add(kind === 'error' ? 'status-error' : 'status-success');
+      growthStatus.setAttribute('role', kind === 'error' ? 'alert' : 'status');
+
+      growthStatus.focus();
+
+    }
+
+    function selectedValue(id) {
+
+      const el = document.getElementById(id);
+
+      return el instanceof HTMLSelectElement ? el.value || '' : '';
+
+    }
+
+    growthForm?.addEventListener('submit', async (event) => {
+
+      event.preventDefault();
+
+      if (isGrowthSubmitting) return;
+
+      const nameInput = document.getElementById('full-name');
+      const emailInput = document.getElementById('email-address');
+      const phoneInput = document.getElementById('phone-number');
+      const businessInput = document.getElementById('business-name');
+      const honeypotInput = document.getElementById('growth-company-site');
+
+      const name = nameInput instanceof HTMLInputElement ? nameInput.value.trim() : '';
+      const email = emailInput instanceof HTMLInputElement ? emailInput.value.trim() : '';
+      const phone = phoneInput instanceof HTMLInputElement ? phoneInput.value.trim() : '';
+      const business = businessInput instanceof HTMLInputElement ? businessInput.value.trim() : '';
+      const honeypot = honeypotInput instanceof HTMLInputElement ? honeypotInput.value : '';
+
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!name) {
+        setGrowthStatus('Please tell us your name.', 'error');
+        nameInput?.focus();
+        return;
+      }
+
+      if (!email || !emailPattern.test(email)) {
+        setGrowthStatus('Please enter a valid email address.', 'error');
+        emailInput?.focus();
+        return;
+      }
+
+      if (!phone) {
+        setGrowthStatus('Please enter a phone number.', 'error');
+        phoneInput?.focus();
+        return;
+      }
+
+      // Only the raw selection IDs are sent — the server derives the
+      // readable labels and the recommendation summary from these IDs
+      // itself, so a fabricated label can never reach the outgoing email.
+      const need = selectedValue('select-need');
+      const goal = selectedValue('select-goal');
+      const timeframe = selectedValue('select-plan');
+      const budget = selectedValue('select-budget');
+
+      if (!need || !goal || !timeframe || !budget) {
+        setGrowthStatus('Please complete step 1 before submitting.', 'error');
+        return;
+      }
+
+      isGrowthSubmitting = true;
+
+      if (growthSubmitBtn instanceof HTMLButtonElement) {
+        growthSubmitBtn.disabled = true;
+        const label = growthSubmitBtn.querySelector('.growth-submit-label');
+        if (label) label.textContent = 'Sending…';
+      }
+
+      try {
+
+        const response = await fetch('/api/enquiry', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            source: 'growth-modal',
+            name,
+            email,
+            phone,
+            business,
+            need,
+            goal,
+            timeframe,
+            budget,
+            website: honeypot,
+          }),
+        });
+
+        let result = {};
+
+        try {
+          result = await response.json();
+        } catch {
+          // ignore — handled by response.ok check below
+        }
+
+        if (response.ok && result && result.ok) {
+
+          setGrowthStatus('Thanks — your growth plan request has been sent. We\u2019ll be in touch shortly.', 'success');
+
+          if (nameInput instanceof HTMLInputElement) nameInput.value = '';
+          if (emailInput instanceof HTMLInputElement) emailInput.value = '';
+          if (phoneInput instanceof HTMLInputElement) phoneInput.value = '';
+          if (businessInput instanceof HTMLInputElement) businessInput.value = '';
+
+          resetGrowthModalState();
+
+        } else {
+
+          setGrowthStatus(
+            (result && result.error) || 'Something went wrong sending your request. Please try again.',
+            'error'
+          );
+
+        }
+
+      } catch {
+
+        setGrowthStatus(
+          'Something went wrong sending your request. Please check your connection and try again.',
+          'error'
+        );
+
+      } finally {
+
+        isGrowthSubmitting = false;
+
+        if (growthSubmitBtn instanceof HTMLButtonElement) {
+          growthSubmitBtn.disabled = false;
+          const label = growthSubmitBtn.querySelector('.growth-submit-label');
+          if (label) label.textContent = 'Get my growth plan';
+        }
 
       }
 

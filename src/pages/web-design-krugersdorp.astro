@@ -1,0 +1,271 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CTA from '../components/CTA.astro';
+
+const localNeeds = [
+  {
+    icon: '🔧',
+    title: 'Trade and Industrial Suppliers Need to Be Verifiable, Not Just Visible',
+    description: "Many Krugersdorp trade, supply and industrial businesses win work through tenders, procurement lists and direct enquiries. A site needs to make company details, certifications and the actual product or service range easy to check — not just look presentable."
+  },
+  {
+    icon: '🏪',
+    title: 'Local Retailers and Service Providers Compete on Being Easy to Reach',
+    description: "For a Mogale City resident choosing a nearby shop or service, accurate hours, clear directions and a direct way to make contact usually matter more than brand polish."
+  },
+  {
+    icon: '🦴',
+    title: 'Nearby Cradle of Humankind Traffic Is Easy to Miss',
+    description: "Krugersdorp sits close to well-known attractions such as the Sterkfontein Caves and Maropeng. A local business that could pick up passing visitor traffic often has no real way for a searching tourist to find it online at all."
+  },
+  {
+    icon: '📱',
+    title: 'A Fast, Simple Site Beats a Complicated One',
+    description: "As with most independent businesses, owners here rarely have a marketing team on hand. The win is a site that's simple to keep current — new stock, new hours, a closure notice — without needing a developer for every small change."
+  }
+];
+---
+
+<Layout
+  title="Web Design in Krugersdorp | Web Design Pros"
+  description="Web design for Krugersdorp's trade, retail and tourism-adjacent businesses — built for local search, easy updates, and buyers who need to verify a business quickly."
+  canonical="https://webdesignpros.co.za/web-design-krugersdorp"
+>
+  <section class="area-hero">
+    <div class="container">
+      <div class="section-header">
+        <span class="sub-heading">WEB DESIGN IN KRUGERSDORP</span>
+        <h1 class="section-title">Web Design for Krugersdorp's Trade, Retail and Local Businesses</h1>
+        <p class="section-intro">
+          Krugersdorp's business base runs on established trade and industrial suppliers, independent local retailers and service providers, and a smaller set of businesses that benefit from nearby tourist attractions. Each of those needs something a little different from a website, but all three are still routinely overlooked online.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="context-section">
+    <div class="container">
+      <div class="context-card">
+        <h2>Krugersdorp's Business Character Is Practical, Not Flashy</h2>
+        <p>
+          A Krugersdorp hardware supplier, workshop or manufacturer is often chosen because a buyer or procurement contact can confirm exactly what the business does, what it's certified to do, and how to reach it — not because of a polished brand story. A local shop or service provider, meanwhile, is usually chosen simply because it's nearby, open, and easy to contact. Neither of those needs a complicated website. Both need one that's accurate, easy to find, and doesn't get in the way.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="needs-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="sub-heading">WHAT THIS MEANS FOR YOUR SITE</span>
+        <h2 class="section-title-h2">Built Around How Krugersdorp Buyers Actually Decide</h2>
+      </div>
+      <div class="needs-grid">
+        {localNeeds.map((item) => (
+          <div class="need-card">
+            <div class="card-icon">{item.icon}</div>
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="hypothetical-section">
+    <div class="container">
+      <div class="hypothetical-card">
+        <span class="hypothetical-label">Illustrative example — not a real client case study</span>
+        <h2>How We'd Approach a Krugersdorp Trade Supplier or Local Retailer</h2>
+        <p>
+          Suppose an established Krugersdorp hardware supplier or auto workshop that has relied on being known locally for years, with no real web presence beyond a phone listing. The right approach isn't a marketing-heavy rebuild — it's a clear, accurate site listing services or stock, any relevant certifications, and straightforward contact and location details, so a local customer or a procurement contact doing due diligence can both verify the business in a couple of minutes.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="local-links-section">
+    <div class="container">
+      <p>
+        See our <a href="/pricing">website packages and pricing</a>, browse <a href="/#portfolio">recent project work</a>, or view <a href="/#areas">all Gauteng areas we serve</a>.
+      </p>
+    </div>
+  </section>
+
+  <CTA />
+</Layout>
+
+<style>
+  .area-hero {
+    padding: 5rem 2rem 1rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .container {
+    width: 100%;
+  }
+
+  .section-header {
+    text-align: center;
+    width: 100%;
+    max-width: 850px;
+    margin: 0 auto 3rem auto;
+  }
+
+  .sub-heading {
+    color: var(--accent-secondary, #89CFF0);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .section-title {
+    font-size: clamp(2.25rem, 4vw, 3.25rem);
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.15;
+    white-space: normal;
+  }
+
+  .section-title-h2 {
+    font-size: 2.25rem;
+    color: #ffffff;
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+  }
+
+  .section-intro {
+    font-size: 1rem;
+    color: rgba(230, 230, 230, 0.8);
+    line-height: 1.6;
+    max-width: 750px;
+    margin: 0 auto;
+  }
+
+  .context-section,
+  .needs-section,
+  .hypothetical-section {
+    padding: 2rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .context-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 2.5rem;
+  }
+
+  .context-card h2 {
+    font-size: 1.75rem;
+    color: #ffffff;
+    margin-bottom: 1rem;
+  }
+
+  .context-card p {
+    font-size: 1rem;
+    color: rgba(230, 230, 230, 0.85);
+    line-height: 1.65;
+  }
+
+  .needs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-top: 2.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    .needs-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .need-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 2rem 1.5rem;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+
+  .need-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-primary, #0096FF);
+  }
+
+  .card-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .need-card h3 {
+    font-size: 1.15rem;
+    color: #ffffff;
+    margin-bottom: 0.75rem;
+  }
+
+  .need-card p {
+    font-size: 0.875rem;
+    color: rgba(230, 230, 230, 0.8);
+    line-height: 1.55;
+  }
+
+  .hypothetical-card {
+    background: rgba(0, 150, 255, 0.04);
+    border: 1px solid rgba(0, 150, 255, 0.2);
+    border-radius: 16px;
+    padding: 2.5rem;
+  }
+
+  .hypothetical-label {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--accent-secondary, #89CFF0);
+    background: rgba(255, 255, 255, 0.06);
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    margin-bottom: 1.25rem;
+  }
+
+  .hypothetical-card h2 {
+    font-size: 1.6rem;
+    color: #ffffff;
+    margin-bottom: 1rem;
+  }
+
+  .hypothetical-card p {
+    font-size: 0.95rem;
+    color: rgba(230, 230, 230, 0.85);
+    line-height: 1.65;
+  }
+
+  .local-links-section {
+    padding: 1rem 2rem 3rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .local-links-section p {
+    font-size: 0.9rem;
+    color: rgba(230, 230, 230, 0.7);
+  }
+
+  .local-links-section a {
+    color: var(--accent-primary, #0096FF);
+    text-decoration: underline;
+  }
+
+  .local-links-section a:hover {
+    color: var(--accent-secondary, #89CFF0);
+  }
+</style>

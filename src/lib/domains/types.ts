@@ -17,7 +17,11 @@ export interface DomainAvailabilityResult {
 }
 
 /** Error codes the public endpoint may report for invalid client input. */
-export type DomainCheckError = 'missing_domain' | 'invalid_domain' | 'method_not_allowed';
+export type DomainCheckError =
+  | 'missing_domain'
+  | 'invalid_domain'
+  | 'subdomain_not_registrable'
+  | 'method_not_allowed';
 
 export interface DomainCheckSuccessResponse {
   success: true;

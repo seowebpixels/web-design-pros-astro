@@ -39,7 +39,7 @@ interface CachedResult {
 
 const resultCache = new Map<string, CachedResult>();
 
-function getRegistrableTld(hostname: string): string {
+export function getTopLevelLabel(hostname: string): string {
   const labels = hostname.split('.');
   return labels[labels.length - 1];
 }
@@ -106,7 +106,65 @@ function looksLikeRdapDomainObject(body: unknown): boolean {
   return hasDomainObjectClass || (hasLdhName && hasRdapConformance);
 }
 
-async function queryRdapServer(baseUrl: string, hostname: string): Promise<DomainAvailabilityStatus> {
+/**
+ * Conservative check for whether a 404-status response body is plausibly a
+ * genuine RDAP "not found" error object (RFC 9083 §6), rather than HTML,
+ * an empty body, malformed JSON, or unrelated JSON that happens to parse
+ * and happens to have arrived with a 404 status. A CDN, reverse proxy,
+ * misconfigured path, or generic upstream error page can also return a
+ * bare HTTP 404 — none of those are an authoritative "this domain is not
+ * registered" answer, and must not be treated as one.
+ */
+function looksLikeRdapNotFoundObject(body: unknown): boolean {
+  if (typeof body !== 'object' || body === null || Array.isArray(body)) {
+    return false;
+  }
+
+  const record = body as Record<string, unknown>;
+
+  // RFC 9083 error responses carry a numeric errorCode matching the HTTP
+  // status. This is the authoritative signal — a generic proxy/CDN 404
+  // page will essentially never coincidentally produce this exact shape.
+  return record.errorCode === 404;
+}
+
+/**
+ * Pure classification of a single RDAP HTTP response (status + already-
+ * attempted-to-parse body) into WDP's three public states. Extracted as
+ * its own pure function — with no fetch/network/timeout concerns — purely
+ * so it can be unit tested directly and exhaustively without mocking
+ * `fetch`; `queryRdapServer` below is the only caller in production and
+ * its behaviour is unchanged by this extraction.
+ */
+export function classifyRdapHttpResponse(
+  httpStatus: number,
+  body: unknown,
+  bodyParseFailed: boolean,
+): DomainAvailabilityStatus {
+  if (httpStatus === 200) {
+    // A 200 status alone is not proof of registration — the body must
+    // plausibly be a real RDAP domain object. An upstream could return
+    // HTML, an empty body, malformed JSON, or unrelated JSON on a 200.
+    if (bodyParseFailed) return 'unknown';
+    return looksLikeRdapDomainObject(body) ? 'taken' : 'unknown';
+  }
+
+  if (httpStatus === 404) {
+    // A bare 404 status is NOT sufficient on its own — a CDN, reverse
+    // proxy, misconfigured path, or generic upstream error page can also
+    // return 404. Only an authoritative RDAP not-found error object
+    // (RFC 9083 §6, e.g. valid JSON with errorCode: 404) may be
+    // classified as 'available'.
+    if (bodyParseFailed) return 'unknown';
+    return looksLikeRdapNotFoundObject(body) ? 'available' : 'unknown';
+  }
+
+  // 429, 401/403, 5xx, or any other unexpected status. Never inferred as
+  // available.
+  return 'unknown';
+}
+
+export async function queryRdapServer(baseUrl: string, hostname: string): Promise<DomainAvailabilityStatus> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), RDAP_FETCH_TIMEOUT_MS);
 
@@ -122,26 +180,18 @@ async function queryRdapServer(baseUrl: string, hostname: string): Promise<Domai
       headers: { accept: 'application/rdap+json' },
     });
 
-    if (response.status === 200) {
-      // A 200 status alone is not proof of registration — the body must
-      // plausibly be a real RDAP domain object. An upstream could return
-      // HTML, an empty body, malformed JSON, or unrelated JSON on a 200.
+    if (response.status === 200 || response.status === 404) {
       let body: unknown;
+      let parseFailed = false;
       try {
         body = await response.json();
       } catch {
         // Not parseable as JSON at all (e.g. HTML, empty body, truncated
-        // response) — cannot confidently establish "taken".
-        return 'unknown';
+        // response) — cannot confidently establish either 'taken' or
+        // 'available'.
+        parseFailed = true;
       }
-
-      return looksLikeRdapDomainObject(body) ? 'taken' : 'unknown';
-    }
-
-    if (response.status === 404) {
-      // The registry's documented not-found response for this exact,
-      // correctly-resolved RDAP endpoint.
-      return 'available';
+      return classifyRdapHttpResponse(response.status, body, parseFailed);
     }
 
     // 429, 401/403, 5xx, or any other unexpected status. Never inferred as
@@ -161,7 +211,7 @@ export async function checkDomainAvailability(hostname: string): Promise<DomainA
     return { domain: hostname, status: cached.status };
   }
 
-  const tld = getRegistrableTld(hostname);
+  const tld = getTopLevelLabel(hostname);
   const baseUrls = await getRdapBaseUrlsForTld(tld);
 
   let status: DomainAvailabilityStatus = 'unknown';
