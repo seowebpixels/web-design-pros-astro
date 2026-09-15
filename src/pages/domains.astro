@@ -1,0 +1,1184 @@
+---
+// src/pages/domains.astro
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Domain Registration & Pricing | WebDesignPros">
+  <main id="domains-page-container">
+    <div class="domains-content-wrapper">
+      
+      <!-- 1. HERO SEARCH SECTION -->
+      <section class="domains-hero-section">
+        <h1 class="hero-title">
+          Register Your Domain Name Today
+        </h1>
+        <p class="hero-subtitle">
+          From as low as R75 / year <span class="hero-subtext">(Hurry, limited-time offer!)</span>
+        </p>
+
+        <form id="domain-search-form" class="hero-search-form">
+          <input 
+            type="text" 
+            id="domain-input"
+            placeholder="Search for your domain name..." 
+            class="search-input"
+            required
+          />
+          <button 
+            type="submit" 
+            class="search-button"
+          >
+            Search Domain
+          </button>
+        </form>
+
+        <p id="domain-check-error" class="domain-check-error hidden" role="alert"></p>
+      </section>
+
+      <!-- 2. DYNAMIC SEARCH RESULT DISPLAY (Hidden by default) -->
+      <section id="result-container" class="search-result-card hidden">
+        <div class="result-inner">
+          <div>
+            <span id="result-badge" class="badge-available">Available</span>
+            <h3 id="result-domain-name" class="result-domain-title">example.co.za</h3>
+            <p id="result-domain-sub" class="result-domain-sub">Renews at R85.00/yr</p>
+            <p id="result-disclosure" class="result-disclosure hidden"></p>
+          </div>
+          
+          <div id="result-action-block" class="result-action-block">
+            <div class="result-price">R75.00 <span class="price-unit">/ 1st Yr</span></div>
+            <button id="buy-now-btn" class="buy-button">
+              Buy Now &rarr;
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. DOMAIN REGISTRATION PRICES SECTION -->
+      <section class="domains-section space-y-6">
+        <div>
+          <h2 class="section-heading">Domain Registration Prices</h2>
+          <p class="section-subheading">
+            At Web Design Pros, we provide clear, competitive pricing on popular South African and global domain extensions.
+          </p>
+        </div>
+
+        <!-- Table Controls & Filters -->
+        <div class="glass-card table-card-wrapper">
+          
+          <!-- Category Filter Pills -->
+          <div class="filter-pills-row">
+            <button class="pill-btn pill-active">All Domains</button>
+            <button class="pill-btn">Popular</button>
+            <button class="pill-btn">New</button>
+            <button class="pill-btn">Hot</button>
+            <button class="pill-btn">Sale</button>
+          </div>
+
+          <!-- Search Table Input -->
+          <div class="table-controls-row">
+            <input 
+              type="text" 
+              placeholder="Search domain extensions..." 
+              class="table-search-input"
+            />
+            <div class="table-entries-count">
+              Showing 1 to 4 entries
+            </div>
+          </div>
+
+          <!-- Pricing Table -->
+          <div class="table-scroll-container">
+            <table class="domain-pricing-table">
+              <thead>
+                <tr>
+                  <th>Domain Extension</th>
+                  <th>Category</th>
+                  <th>Register</th>
+                  <th>Renew</th>
+                  <th>Transfer</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="font-bold text-white flex-cell">
+                    .co.za <span class="badge-hot">Hot</span>
+                  </td>
+                  <td>Popular</td>
+                  <td class="price-highlight">R75</td>
+                  <td>R85</td>
+                  <td>R85</td>
+                </tr>
+                <tr>
+                  <td class="font-bold text-white flex-cell">
+                    .com <span class="badge-hot">Hot</span>
+                  </td>
+                  <td>Popular</td>
+                  <td class="price-highlight">R200</td>
+                  <td>R230</td>
+                  <td>R215</td>
+                </tr>
+                <tr>
+                  <td class="font-bold text-white flex-cell">
+                    .org.za <span class="badge-sale">Sale</span>
+                  </td>
+                  <td>Popular</td>
+                  <td class="price-highlight">R95</td>
+                  <td>R110</td>
+                  <td>R110</td>
+                </tr>
+                <tr>
+                  <td class="font-bold text-white flex-cell">
+                    .net <span class="badge-hot">Hot</span>
+                  </td>
+                  <td>Popular</td>
+                  <td class="price-highlight">R200</td>
+                  <td>R284</td>
+                  <td>R284</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <p class="vat-notice">All prices in ZAR. VAT included.</p>
+      </section>
+
+      <!-- 4. HOW IT WORKS & INFORMATION SECTION -->
+      <section class="domains-two-col-grid">
+        
+        <!-- Left Column: Steps -->
+        <div class="steps-column-container">
+          <div>
+            <h2 class="section-heading mb-6">How It Works</h2>
+            <ol class="steps-list">
+              <li class="step-card">
+                <strong class="step-title">1) Search Your Domain</strong>
+                Enter your ideal name in our search tool to verify instant availability.
+              </li>
+              <li class="step-card">
+                <strong class="step-title">2) Select Your Extension</strong>
+                Lock in your domain extension before someone else claims your brand.
+              </li>
+              <li class="step-card">
+                <strong class="step-title">3) Complete Checkout</strong>
+                Pay securely via Instant EFT or card with clear, upfront pricing.
+              </li>
+              <li class="step-card">
+                <strong class="step-title">4) Launch & Manage</strong>
+                Connect your domain to hosting or email within your management dashboard.
+              </li>
+            </ol>
+          </div>
+
+          <!-- Banner -->
+          <div class="callout-banner">
+            <h3 class="callout-title">Transparent Renewals for .CO.ZA</h3>
+            <p class="callout-desc">
+              While some registrars lure you with low upfront costs only to charge excessive renewal fees later, we maintain honest, affordable pricing year after year.
+            </p>
+            <ul class="callout-bullets">
+              <li>✔ Low initial registration rates</li>
+              <li>✔ Predictable annual renewal pricing</li>
+              <li>✔ Zero hidden administration fees</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Right Column: Info Guide -->
+        <div class="glass-card info-guide-card">
+          <h3 class="guide-title">Finding the Perfect Domain in South Africa</h3>
+          <p class="guide-desc">
+            Choosing the right domain extension is a critical first step for building your online presence. South Africa’s digital landscape offers several strong TLD options depending on your market focus:
+          </p>
+
+          <div class="tld-pills-grid">
+            <div class="tld-pill">.co.za</div>
+            <div class="tld-pill">.org.za</div>
+            <div class="tld-pill">.net.za</div>
+            <div class="tld-pill">.com</div>
+            <div class="tld-pill">.africa</div>
+            <div class="tld-pill">.shop</div>
+          </div>
+
+          <div class="space-y-3 pt-2">
+            <h4 class="guide-subhead">Key Factors to Consider:</h4>
+            <ul class="guide-bullets">
+              <li><strong>Local SEO Advantage:</strong> A <code>.co.za</code> domain boosts search rankings within South African query results.</li>
+              <li><strong>Brand Match & Length:</strong> Keep your name concise, clear, and easy to communicate verbally.</li>
+              <li><strong>Extension Purpose:</strong> Match the TLD to your industry (e.g., <code>.shop</code> for e-commerce, <code>.org.za</code> for non-profits).</li>
+            </ul>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- 5. POPULAR EXTENSIONS GUIDE -->
+      <section class="domains-section space-y-6">
+        <h2 class="section-heading">Popular Extensions Overview</h2>
+        <div class="extensions-grid">
+          
+          <div class="extension-card">
+            <span class="extension-tag">.co.za</span>
+            <div>
+              <h3 class="extension-title">South African Standard</h3>
+              <p class="extension-desc">The primary choice for local businesses targeting South African audiences.</p>
+            </div>
+          </div>
+
+          <div class="extension-card">
+            <span class="extension-tag">.com</span>
+            <div>
+              <h3 class="extension-title">Global Recognition</h3>
+              <p class="extension-desc">The international gold standard for commercial and cross-border brands.</p>
+            </div>
+          </div>
+
+          <div class="extension-card">
+            <span class="extension-tag">.africa</span>
+            <div>
+              <h3 class="extension-title">Pan-African Reach</h3>
+              <p class="extension-desc">Ideal for expanding operations across multiple African regions.</p>
+            </div>
+          </div>
+
+          <div class="extension-card">
+            <span class="extension-tag">.shop</span>
+            <div>
+              <h3 class="extension-title">E-Commerce Ready</h3>
+              <p class="extension-desc">A modern, descriptive extension built specifically for online stores.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 6. CALL TO ACTION & FAQ -->
+      <section class="domains-narrow-wrapper">
+        
+        <div class="glass-card cta-card">
+          <h2 class="cta-title">Secure Your Brand Name Today</h2>
+          <p class="cta-desc">
+            Don't wait until someone else registers your domain. Check availability and activate yours immediately.
+          </p>
+          <a href="#domain-search-form" class="cta-button">
+            Search Domains Now
+          </a>
+        </div>
+
+        <div class="faq-container">
+          <h2 class="faq-title">Frequently Asked Questions</h2>
+          <div class="faq-accordion-wrapper">
+
+            <details class="faq-accordion-item">
+              <summary class="faq-question-btn">What is a domain name?</summary>
+              <div class="faq-answer-content">
+                <p>A domain name acts as your unique web address on the internet, allowing customers to locate your business online—such as <strong>yourbrand.co.za</strong>. Consider it your business's permanent digital location.</p>
+              </div>
+            </details>
+
+            <details class="faq-accordion-item">
+              <summary class="faq-question-btn">Why do I need a domain name?</summary>
+              <div class="faq-answer-content">
+                <p>Securing a custom domain offers multiple distinct business advantages:</p>
+                <ul>
+                  <li><strong>Build Professional Trust:</strong> Custom web and email addresses immediately establish market credibility.</li>
+                  <li><strong>Protect Your Identity:</strong> Take direct ownership of your commercial name across web searches.</li>
+                  <li><strong>Enhance Local SEO:</strong> Search engines heavily prioritize relevant, direct-match domain extensions in local queries.</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="faq-accordion-item">
+              <summary class="faq-question-btn">How much does a .co.za domain cost?</summary>
+              <div class="faq-answer-content">
+                <p>Standard annual pricing in South Africa generally ranges from R75 to R250. Through our active promotional rates, first-year registrations start at R75. Ongoing annual renewals typically range between R135 and R400 depending on TLD category adjustments.</p>
+              </div>
+            </details>
+
+            <details class="faq-accordion-item">
+              <summary class="faq-question-btn">What do you need to register a domain in SA?</summary>
+              <div class="faq-answer-content">
+                <p>To register your South African domain, prepare these basic requirements:</p>
+                <ul>
+                  <li><strong>Name Selection:</strong> Have 2–3 name variations ready in case your primary choice is unavailable.</li>
+                  <li><strong>Active Email Address:</strong> Used for automated registration updates, DNS credentials, and renewal notifications.</li>
+                  <li><strong>Accepted Payment Option:</strong> Pay securely using Credit Card, Instant EFT, or supported local checkout options like SnapScan.</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="faq-accordion-item">
+              <summary class="faq-question-btn">How do I change my domain name?</summary>
+              <div class="faq-answer-content">
+                <p>Registered domain names cannot be altered once confirmed. To update your web address, register your new preferred name, configure 301 redirects from your previous domain to preserve traffic, and update your branding materials.</p>
+              </div>
+            </details>
+
+            <details class="faq-accordion-item">
+              <summary class="faq-question-btn">Can I register a .com domain for free?</summary>
+              <div class="faq-answer-content">
+                <p>No, global <code>.com</code> extensions are administered centrally by Verisign and incur mandatory licensing costs across accredited registrars (typically USD $10–$20/yr, or roughly R200–R400). Select hosting plans may include complimentary first-year domain registrations.</p>
+              </div>
+            </details>
+
+            <details class="faq-accordion-item">
+              <summary class="faq-question-btn">Who controls .co.za domains?</summary>
+              <div class="faq-answer-content">
+                <p>The <strong>.ZA Domain Name Authority (ZADNA)</strong> serves as the statutory regulator overseeing all <code>.za</code> namespace policies. Web Design Pros partners with accredited channel registrars operating under official ZADNA standards.</p>
+              </div>
+            </details>
+
+            <details class="faq-accordion-item">
+              <summary class="faq-question-btn">What is the most used domain in South Africa?</summary>
+              <div class="faq-answer-content">
+                <p>The <code>.co.za</code> extension remains the premier and most widely trusted domain choice across South African commercial enterprises, professionals, and organizations.</p>
+              </div>
+            </details>
+
+            <details class="faq-accordion-item">
+              <summary class="faq-question-btn">How long does domain registration take?</summary>
+              <div class="faq-answer-content">
+                <p>Registrations process automatically once payment confirmation is logged in our system. While global DNS propagation can take up to 24 hours to resolve worldwide, most registrations complete much faster.</p>
+              </div>
+            </details>
+
+            <details class="faq-accordion-item">
+              <summary class="faq-question-btn">Do I need a website to buy a domain?</summary>
+              <div class="faq-answer-content">
+                <p>No. You can secure your domain ownership immediately and construct your website whenever you are ready. Your domain remains reserved under your account indefinitely. Reach out to our team whenever you require professional web design services.</p>
+              </div>
+            </details>
+
+            <details class="faq-accordion-item">
+              <summary class="faq-question-btn">Will my domain renew automatically?</summary>
+              <div class="faq-answer-content">
+                <p>You maintain full control over your billing settings:</p>
+                <ul>
+                  <li><strong>Manual Renewal:</strong> Receive scheduled email reminders prior to expiry to manually process payment.</li>
+                  <li><strong>Auto-Renew Enabled:</strong> Your domain automatically extends before expiration to ensure uninterrupted service.</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="faq-accordion-item">
+              <summary class="faq-question-btn">Should I register more than one domain?</summary>
+              <div class="faq-answer-content">
+                <p>Acquiring multiple domain variations helps safeguard your brand's market position:</p>
+                <ul>
+                  <li><strong>Cover Key TLDs:</strong> Secure primary extensions including <code>.co.za</code>, <code>.com</code>, and <code>.africa</code>.</li>
+                  <li><strong>Mitigate Typo Traffic:</strong> Route common domain misspellings directly to your core site.</li>
+                  <li><strong>Protect Brand Equity:</strong> Prevent competitors from claiming similar business addresses.</li>
+                </ul>
+              </div>
+            </details>
+
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+</Layout>
+
+<script>
+  // Wires the existing search form to the Domain Checker API. This is an
+  // informational availability indicator only — it is not connected to a
+  // registrar and does not reserve or register anything. See the
+  // disclosure text shown alongside an "available" result.
+  const form = document.getElementById('domain-search-form');
+  const input = document.getElementById('domain-input');
+  const submitBtn = form?.querySelector('.search-button');
+
+  const errorEl = document.getElementById('domain-check-error');
+
+  const resultContainer = document.getElementById('result-container');
+  const resultInner = resultContainer?.querySelector('.result-inner');
+  const badgeEl = document.getElementById('result-badge');
+  const domainNameEl = document.getElementById('result-domain-name');
+  const subEl = document.getElementById('result-domain-sub');
+  const disclosureEl = document.getElementById('result-disclosure');
+  const actionBlock = document.getElementById('result-action-block');
+
+  const ERROR_MESSAGES: Record<string, string> = {
+    missing_domain: 'Please enter a domain name to check.',
+    invalid_domain:
+      'That doesn\u2019t look like a valid domain name. Try something like "example.co.za".',
+    subdomain_not_registrable: 'Please enter a registrable domain name, not a subdomain.',
+    method_not_allowed: 'Something went wrong. Please try again.',
+  };
+  const NETWORK_ERROR_MESSAGE =
+    'We couldn\u2019t reach the domain checker right now. Please try again shortly.';
+
+  function hideResult() {
+    resultContainer?.classList.add('hidden');
+  }
+
+  function showError(message: string) {
+    if (!errorEl) return;
+    errorEl.textContent = message;
+    errorEl.classList.remove('hidden');
+  }
+
+  function clearError() {
+    if (!errorEl) return;
+    errorEl.textContent = '';
+    errorEl.classList.add('hidden');
+  }
+
+  function showResult(domain: string, status: 'available' | 'taken' | 'unknown') {
+    if (!resultContainer || !resultInner || !badgeEl || !domainNameEl || !subEl) return;
+
+    domainNameEl.textContent = domain;
+    resultInner.classList.remove('result-available', 'result-taken', 'result-unknown');
+    badgeEl.classList.remove('badge-available', 'badge-taken', 'badge-unknown');
+
+    if (status === 'available') {
+      resultInner.classList.add('result-available');
+      badgeEl.classList.add('badge-available');
+      badgeEl.textContent = 'Available';
+      subEl.textContent = 'This name currently appears to be available.';
+      if (disclosureEl) {
+        disclosureEl.textContent =
+          'This is an availability indication only \u2014 the domain is not reserved. Final registration is subject to our manual verification with the registry before it is confirmed.';
+        disclosureEl.classList.remove('hidden');
+      }
+      actionBlock?.classList.remove('hidden');
+    } else if (status === 'taken') {
+      resultInner.classList.add('result-taken');
+      badgeEl.classList.add('badge-taken');
+      badgeEl.textContent = 'Taken';
+      subEl.textContent = 'This domain already appears to be registered.';
+      disclosureEl?.classList.add('hidden');
+      actionBlock?.classList.add('hidden');
+    } else {
+      // 'unknown' — deliberately neutral: never green, never wording that
+      // suggests the visitor can confidently register it.
+      resultInner.classList.add('result-unknown');
+      badgeEl.classList.add('badge-unknown');
+      badgeEl.textContent = 'Unknown';
+      subEl.textContent =
+        'We couldn\u2019t confirm availability for this domain right now \u2014 contact us and we\u2019ll check it manually.';
+      disclosureEl?.classList.add('hidden');
+      actionBlock?.classList.add('hidden');
+    }
+
+    resultContainer.classList.remove('hidden');
+  }
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!(input instanceof HTMLInputElement)) return;
+
+    const rawDomain = input.value.trim();
+    if (!rawDomain) return;
+
+    clearError();
+    hideResult();
+
+    if (submitBtn instanceof HTMLButtonElement) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Checking\u2026';
+    }
+
+    try {
+      const response = await fetch(`/api/domain-check?domain=${encodeURIComponent(rawDomain)}`);
+      const data = await response.json();
+
+      if (!data.success) {
+        showError(ERROR_MESSAGES[data.error] ?? NETWORK_ERROR_MESSAGE);
+        return;
+      }
+
+      showResult(data.domain, data.status);
+    } catch {
+      showError(NETWORK_ERROR_MESSAGE);
+    } finally {
+      if (submitBtn instanceof HTMLButtonElement) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Search Domain';
+      }
+    }
+  });
+</script>
+
+<style>
+  /* Dedicated Page Layout Styles — bypasses Tailwind utility spacing interference */
+  #domains-page-container {
+    width: 100%;
+    min-height: 100vh;
+    background-color: #020617; /* bg-slate-950 */
+    color: #ffffff;
+    padding-top: 130px; /* Explicit offset to clear fixed navigation header */
+    padding-bottom: 80px;
+    padding-left: 20px;
+    padding-right: 20px;
+    box-sizing: border-box;
+  }
+
+  .domains-content-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+  }
+
+  /* 1. Hero Section */
+  .domains-hero-section {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .hero-title {
+    font-size: 2.75rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: #ffffff;
+    margin-bottom: 16px;
+  }
+
+  .hero-subtitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #22d3ee; /* cyan-400 */
+  }
+
+  .hero-subtext {
+    color: #94a3b8; /* slate-400 */
+    font-weight: 400;
+  }
+
+  .hero-search-form {
+    margin-top: 32px;
+    display: flex;
+    gap: 12px;
+    max-width: 650px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  @media (max-width: 640px) {
+    .hero-search-form {
+      flex-direction: column;
+    }
+    .hero-title {
+      font-size: 2rem;
+    }
+  }
+
+  .search-input {
+    flex: 1;
+    padding: 16px 20px;
+    border-radius: 12px;
+    background-color: #0f172a;
+    border: 1px solid #334155;
+    color: #ffffff;
+    font-size: 1rem;
+    outline: none;
+  }
+
+  .search-input:focus {
+    border-color: #06b6d4;
+  }
+
+  .search-button {
+    padding: 16px 32px;
+    border-radius: 12px;
+    background-color: #0891b2;
+    color: #ffffff;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s ease;
+  }
+
+  .search-button:hover {
+    background-color: #06b6d4;
+  }
+
+  /* 2. Result Card */
+  .search-result-card {
+    max-width: 650px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .result-inner {
+    padding: 24px;
+    border-radius: 16px;
+    background-color: #0f172a;
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .result-inner.result-taken {
+    border-color: rgba(239, 68, 68, 0.3);
+  }
+
+  .result-inner.result-unknown {
+    border-color: #334155;
+  }
+
+  .badge-available {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #34d399;
+    background-color: rgba(6, 78, 59, 0.6);
+    padding: 4px 10px;
+    border-radius: 9999px;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+
+  .result-domain-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-top: 8px;
+    color: #ffffff;
+  }
+
+  .result-domain-sub {
+    font-size: 0.875rem;
+    color: #94a3b8;
+  }
+
+  .result-action-block {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
+
+  .result-price {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #ffffff;
+  }
+
+  .price-unit {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 400;
+  }
+
+  .buy-button {
+    padding: 10px 24px;
+    border-radius: 8px;
+    background-color: #059669;
+    color: #ffffff;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+  }
+
+  /* Result badge — additional states alongside the existing "available"
+     styling above. JS swaps the badge's class to match the checker's
+     response; the shape/size matches .badge-available exactly, only the
+     colour changes, consistent with this page's existing .badge-hot /
+     .badge-sale colour convention used elsewhere. */
+  .badge-taken {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #f87171;
+    background-color: #450a0a;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+
+  .badge-unknown {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #94a3b8;
+    background-color: rgba(30, 41, 59, 0.6);
+    padding: 4px 10px;
+    border-radius: 9999px;
+    border: 1px solid #334155;
+  }
+
+  /* Availability disclosure — shown only for an "available" result, so
+     it's never mistaken for a confirmed registration. */
+  .result-disclosure {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    line-height: 1.5;
+    margin-top: 8px;
+    max-width: 40ch;
+  }
+
+  /* Inline error message under the search form (invalid domain,
+     subdomain rejection, or a network/lookup failure). Uses the same
+     rose palette as .badge-hot for visual consistency with the rest of
+     the page's existing colour language. */
+  .domain-check-error {
+    max-width: 650px;
+    margin: 12px auto 0 auto;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background-color: rgba(69, 10, 10, 0.4);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #f87171;
+    font-size: 0.875rem;
+    text-align: center;
+  }
+
+  /* Shared Glass Cards */
+  .glass-card {
+    background-color: rgba(15, 23, 42, 0.8);
+    border: 1px solid #1e293b;
+    border-radius: 16px;
+  }
+
+  /* 3. Pricing Table Section */
+  .section-heading {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .section-subheading {
+    color: #94a3b8;
+    margin-top: 8px;
+  }
+
+  .table-card-wrapper {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .filter-pills-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .pill-btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    background-color: #1e293b;
+    color: #cbd5e1;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+  }
+
+  .pill-active {
+    background-color: #0891b2;
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+  .table-controls-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .table-search-input {
+    width: 280px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background-color: #020617;
+    border: 1px solid #334155;
+    font-size: 0.875rem;
+    color: #ffffff;
+  }
+
+  .table-entries-count {
+    font-size: 0.75rem;
+    color: #94a3b8;
+  }
+
+  .table-scroll-container {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .domain-pricing-table {
+    width: 100%;
+    min-width: 600px;
+    border-collapse: collapse;
+    text-align: left;
+  }
+
+  .domain-pricing-table th {
+    padding: 12px 16px;
+    border-bottom: 1px solid #1e293b;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #94a3b8;
+    font-weight: 600;
+  }
+
+  .domain-pricing-table td {
+    padding: 16px;
+    border-bottom: 1px solid rgba(30, 41, 59, 0.6);
+    font-size: 0.875rem;
+    color: #cbd5e1;
+  }
+
+  .flex-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .badge-hot {
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 800;
+    background-color: #450a0a;
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .badge-sale {
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 800;
+    background-color: #064e3b;
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .price-highlight {
+    font-weight: 700;
+    color: #22d3ee;
+  }
+
+  .vat-notice {
+    font-size: 0.75rem;
+    color: #64748b;
+    text-align: right;
+  }
+
+  /* 4. Two-Column Grid */
+  .domains-two-col-grid {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  @media (max-width: 1024px) {
+    .domains-two-col-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .steps-column-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px; /* Explicit gap between steps block and the banner below it */
+  }
+
+  .steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .step-card {
+    padding: 16px;
+    border-radius: 12px;
+    background-color: #0f172a;
+    border: 1px solid #1e293b;
+    font-size: 0.875rem;
+    color: #cbd5e1;
+  }
+
+  .step-title {
+    display: block;
+    color: #22d3ee;
+    font-size: 1rem;
+    margin-bottom: 4px;
+  }
+
+  .callout-banner {
+    padding: 24px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #083344 0%, #0f172a 100%);
+    border: 1px solid rgba(6, 182, 212, 0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .callout-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .callout-desc {
+    font-size: 0.75rem;
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  .callout-bullets {
+    font-size: 0.75rem;
+    color: #67e8f9;
+    font-weight: 500;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .info-guide-card {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 52px; /* Shifts right column down to align directly with step 1 box */
+  }
+
+  @media (max-width: 1024px) {
+    .info-guide-card {
+      margin-top: 0;
+    }
+  }
+
+  .guide-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .guide-desc {
+    font-size: 0.875rem;
+    color: #cbd5e1;
+    line-height: 1.6;
+  }
+
+  .tld-pills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .tld-pill {
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #020617;
+    border: 1px solid #1e293b;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #22d3ee;
+  }
+
+  .guide-subhead {
+    font-weight: 700;
+    color: #ffffff;
+    font-size: 1rem;
+  }
+
+  .guide-bullets {
+    list-style: disc inside;
+    font-size: 0.875rem;
+    color: #cbd5e1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* 5. Popular Extensions Grid */
+  .extensions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  @media (max-width: 768px) {
+    .extensions-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .extension-card {
+    padding: 20px;
+    border-radius: 12px;
+    background-color: #0f172a;
+    border: 1px solid #1e293b;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .extension-tag {
+    color: #22d3ee;
+    font-weight: 800;
+    font-size: 1.25rem;
+  }
+
+  .extension-title {
+    font-weight: 700;
+    color: #ffffff;
+    font-size: 0.875rem;
+  }
+
+  .extension-desc {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-top: 4px;
+  }
+
+  /* 6. CTA & FAQ Narrow Wrapper */
+  .domains-narrow-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+  }
+
+  .cta-card {
+    padding: 32px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    border: 1px solid rgba(6, 182, 212, 0.3);
+  }
+
+  .cta-title {
+    font-size: 1.875rem;
+    font-weight: 800;
+    color: #ffffff;
+  }
+
+  .cta-desc {
+    color: #94a3b8;
+    font-size: 0.875rem;
+    max-width: 500px;
+  }
+
+  .cta-button {
+    padding: 12px 32px;
+    border-radius: 12px;
+    background-color: #0891b2;
+    color: #ffffff;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+  }
+
+  .cta-button:hover {
+    background-color: #06b6d4;
+  }
+
+  .faq-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .faq-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    color: #ffffff;
+  }
+
+  /* Accordion Component Styling */
+  .faq-accordion-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .faq-accordion-item {
+    background-color: #0f172a;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s ease;
+  }
+
+  .faq-accordion-item[open] {
+    border-color: rgba(6, 182, 212, 0.4);
+  }
+
+  .faq-question-btn {
+    padding: 18px 20px;
+    font-weight: 600;
+    color: #ffffff;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+  }
+
+  .faq-question-btn::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-question-btn::after {
+    content: '+';
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: #22d3ee;
+    transition: transform 0.2s ease;
+  }
+
+  .faq-accordion-item[open] .faq-question-btn::after {
+    content: '−';
+    transform: rotate(180deg);
+  }
+
+  .faq-answer-content {
+    padding: 0 20px 20px 20px;
+    font-size: 0.875rem;
+    color: #94a3b8;
+    line-height: 1.6;
+    border-top: 1px solid rgba(30, 41, 59, 0.5);
+    margin-top: 4px;
+    padding-top: 16px;
+  }
+
+  .faq-answer-content strong {
+    color: #cbd5e1;
+  }
+
+  .faq-answer-content code {
+    color: #22d3ee;
+  }
+
+  .faq-answer-content ul {
+    list-style: disc inside;
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  /* Never show purchasing controls for taken or uncertain results. */
+#result-action-block.hidden,
+#result-disclosure.hidden,
+#result-container.hidden,
+#domain-check-error.hidden {
+  display: none !important;
+}
+</style>
