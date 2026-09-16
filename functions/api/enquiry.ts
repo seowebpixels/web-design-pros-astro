@@ -27,6 +27,9 @@ interface EnquiryPayload {
   goal?: unknown;
   timeframe?: unknown;
   budget?: unknown;
+  industry?: unknown;
+  service?: unknown;
+  timeline?: unknown;
   website?: unknown;
 }
 
@@ -52,6 +55,25 @@ const BUDGETS: Record<string, string> = {
   starter: 'R10,000 – R25,000',
   growth: 'R25,000 – R50,000',
   custom: 'R50,000+',
+};
+
+const CONTACT_SERVICES: Record<string, string> = {
+  'Full Custom Website': 'Full Custom Website',
+  'Speed Optimization': 'Speed Optimization',
+  'E-Commerce Store': 'E-Commerce Store',
+};
+
+const CONTACT_BUDGETS: Record<string, string> = {
+  'R9,500 - R15,000': 'R9,500 – R15,000',
+  'R15,000 - R30,000': 'R15,000 – R30,000',
+  'R30,000 - R60,000': 'R30,000 – R60,000',
+  'R60,000+': 'R60,000+',
+};
+
+const CONTACT_TIMELINES: Record<string, string> = {
+  'Under 1 month': 'Under 1 month',
+  '1 - 3 months': '1–3 months',
+  'No immediate rush': 'No immediate rush',
 };
 
 function json(body: { ok: boolean; error?: string }, status = 200): Response {
@@ -109,17 +131,27 @@ export async function onRequestPost({ request, env }: PagesFunctionContext): Pro
   const goal = text(payload.goal, 30);
   const timeframe = text(payload.timeframe, 30);
   const budget = text(payload.budget, 30);
+  const industry = text(payload.industry, 120);
+  const service = text(payload.service, 60);
+  const timeline = text(payload.timeline, 40);
 
-  if (
-    source !== 'growth-modal' ||
-    name.length < 2 ||
-    !isEmail(email) ||
-    phone.length < 7 ||
-    !isAllowed(NEEDS, need) ||
-    !isAllowed(GOALS, goal) ||
-    !isAllowed(TIMEFRAMES, timeframe) ||
-    !isAllowed(BUDGETS, budget)
-  ) {
+  const commonFieldsValid = name.length >= 2 && isEmail(email);
+  const growthFieldsValid =
+    source === 'growth-modal' &&
+    phone.length >= 7 &&
+    isAllowed(NEEDS, need) &&
+    isAllowed(GOALS, goal) &&
+    isAllowed(TIMEFRAMES, timeframe) &&
+    isAllowed(BUDGETS, budget);
+  const contactFieldsValid =
+    source === 'contact-form' &&
+    industry.length >= 2 &&
+    (phone.length === 0 || phone.length >= 7) &&
+    isAllowed(CONTACT_SERVICES, service) &&
+    isAllowed(CONTACT_BUDGETS, budget) &&
+    isAllowed(CONTACT_TIMELINES, timeline);
+
+  if (!commonFieldsValid || (!growthFieldsValid && !contactFieldsValid)) {
     return json({ ok: false, error: 'Please check the form and complete every required field.' }, 400);
   }
 
@@ -132,21 +164,41 @@ export async function onRequestPost({ request, env }: PagesFunctionContext): Pro
     env.ENQUIRY_FROM_EMAIL ||
     'Web Design Pros Website <enquiries@send.webdesignpros.co.za>';
 
-  const message = [
-    'A new Growth Check enquiry was submitted on Web Design Pros.',
-    '',
-    `Name: ${name}`,
-    `Email: ${email}`,
-    `Phone: ${phone}`,
-    `Business: ${business || 'Not provided'}`,
-    '',
-    `Need: ${NEEDS[need]}`,
-    `Goal: ${GOALS[goal]}`,
-    `Time frame: ${TIMEFRAMES[timeframe]}`,
-    `Budget: ${BUDGETS[budget]}`,
-    '',
-    `Submitted: ${new Date().toISOString()}`,
-  ].join('\n');
+  const isGrowthModal = source === 'growth-modal';
+  const message = isGrowthModal
+    ? [
+        'A new Growth Check enquiry was submitted on Web Design Pros.',
+        '',
+        `Name: ${name}`,
+        `Email: ${email}`,
+        `Phone: ${phone}`,
+        `Business: ${business || 'Not provided'}`,
+        '',
+        `Need: ${NEEDS[need]}`,
+        `Goal: ${GOALS[goal]}`,
+        `Time frame: ${TIMEFRAMES[timeframe]}`,
+        `Budget: ${BUDGETS[budget]}`,
+        '',
+        `Submitted: ${new Date().toISOString()}`,
+      ].join('\n')
+    : [
+        'A new project enquiry was submitted on Web Design Pros.',
+        '',
+        `Name: ${name}`,
+        `Email: ${email}`,
+        `Phone: ${phone || 'Not provided'}`,
+        `Industry / niche: ${industry}`,
+        '',
+        `Service: ${CONTACT_SERVICES[service]}`,
+        `Budget: ${CONTACT_BUDGETS[budget]}`,
+        `Timeline: ${CONTACT_TIMELINES[timeline]}`,
+        '',
+        `Submitted: ${new Date().toISOString()}`,
+      ].join('\n');
+
+  const subject = isGrowthModal
+    ? `New Growth Check enquiry — ${business || name}`
+    : `New website project enquiry — ${name}`;
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 8_000);
@@ -162,7 +214,7 @@ export async function onRequestPost({ request, env }: PagesFunctionContext): Pro
         from,
         to: [to],
         reply_to: email,
-        subject: `New Growth Check enquiry — ${business || name}`,
+        subject,
         text: message,
       }),
       signal: controller.signal,

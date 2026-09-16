@@ -12,7 +12,16 @@
       </p>
     </div>
 
-    <form class="interactive-form" id="hybridForm" onsubmit="event.preventDefault();">
+    <form class="interactive-form" id="hybridForm">
+      <input
+        type="text"
+        id="cta-company-site"
+        name="website"
+        class="form-honeypot"
+        tabindex="-1"
+        autocomplete="off"
+        aria-hidden="true"
+      />
       
       <div class="form-phase phase-1">
         <label class="phase-label">1. Tell us what you need 🌐</label>
@@ -64,20 +73,28 @@
         <div class="mad-libs-container">
           <p class="group-title">
             Hi, my name is 
-            <input type="text" id="name" placeholder="First Name" required class="inline-input" /> 
+            <input type="text" id="name" name="name" autocomplete="name" placeholder="First Name" required class="inline-input" /> 
             and I run a business in 
-            <input type="text" id="industry" placeholder="Industry/Niche" required class="inline-input" />. 
+            <input type="text" id="industry" name="industry" autocomplete="organization-title" placeholder="Industry/Niche" required class="inline-input" />. 
             You can reach me at 
-            <input type="email" id="email" placeholder="Email Address" required class="inline-input" /> 
+            <input type="email" id="email" name="email" autocomplete="email" placeholder="Email Address" required class="inline-input" /> 
             or 
-            <input type="tel" id="phone" placeholder="Phone Number" class="inline-input" />.
+            <input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="Phone Number" class="inline-input" />.
           </p>
         </div>
 
         <div class="submit-wrapper">
-          <button type="submit" class="submit-btn">Send My Project Enquiry 🚀</button>
+          <button type="submit" class="submit-btn" id="cta-submit-btn">Send My Project Enquiry 🚀</button>
         </div>
       </div>
+
+      <p
+        id="cta-form-status"
+        class="form-status"
+        role="status"
+        aria-live="polite"
+        tabindex="-1"
+      ></p>
 
     </form>
   </div>
@@ -85,16 +102,45 @@
 
 <script>
   // Dynamic single-page reveal interactions
-  const serviceBtns = document.querySelectorAll('[data-type="service"]');
-  const budgetBtns = document.querySelectorAll('[data-type="budget"]');
-  const timelineBtns = document.querySelectorAll('[data-type="timeline"]');
+  const hybridForm = document.getElementById('hybridForm');
+  const serviceBtns = document.querySelectorAll<HTMLButtonElement>('[data-type="service"]');
+  const budgetBtns = document.querySelectorAll<HTMLButtonElement>('[data-type="budget"]');
+  const timelineBtns = document.querySelectorAll<HTMLButtonElement>('[data-type="timeline"]');
 
   const phase2 = document.getElementById('phase2');
   const phase3 = document.getElementById('phase3');
+  const submitBtn = document.getElementById('cta-submit-btn');
+  const formStatus = document.getElementById('cta-form-status');
 
   let selectedService = '';
   let selectedBudget = '';
   let selectedTimeline = '';
+  let isSubmitting = false;
+
+  function setPressed(
+    buttons: NodeListOf<HTMLButtonElement>,
+    activeButton: HTMLButtonElement | null
+  ) {
+    buttons.forEach(button => {
+      const isActive = button === activeButton;
+      button.classList.toggle('active', isActive);
+      button.setAttribute('aria-pressed', String(isActive));
+    });
+  }
+
+  function setFormStatus(message: string, kind: 'error' | 'success') {
+    if (!formStatus) return;
+    formStatus.textContent = message;
+    formStatus.classList.remove('status-error', 'status-success');
+    formStatus.classList.add(kind === 'error' ? 'status-error' : 'status-success');
+    formStatus.setAttribute('role', kind === 'error' ? 'alert' : 'status');
+    formStatus.focus();
+  }
+
+  function inputValue(id: string) {
+    const input = document.getElementById(id);
+    return input instanceof HTMLInputElement ? input.value.trim() : '';
+  }
 
   function checkPhase3Reveal() {
     if (selectedBudget && selectedTimeline) {
@@ -104,9 +150,9 @@
 
   // Step 1 Selection
   serviceBtns.forEach(btn => {
+    btn.setAttribute('aria-pressed', 'false');
     btn.addEventListener('click', () => {
-      serviceBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+      setPressed(serviceBtns, btn);
       selectedService = btn.getAttribute('data-value') || '';
       
       // Reveal Phase 2
@@ -116,9 +162,9 @@
 
   // Step 2 Budget Selection
   budgetBtns.forEach(btn => {
+    btn.setAttribute('aria-pressed', 'false');
     btn.addEventListener('click', () => {
-      budgetBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+      setPressed(budgetBtns, btn);
       selectedBudget = btn.getAttribute('data-value') || '';
       checkPhase3Reveal();
     });
@@ -126,12 +172,117 @@
 
   // Step 2 Timeline Selection
   timelineBtns.forEach(btn => {
+    btn.setAttribute('aria-pressed', 'false');
     btn.addEventListener('click', () => {
-      timelineBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+      setPressed(timelineBtns, btn);
       selectedTimeline = btn.getAttribute('data-value') || '';
       checkPhase3Reveal();
     });
+  });
+
+  hybridForm?.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (isSubmitting) return;
+
+    const nameInput = document.getElementById('name');
+    const industryInput = document.getElementById('industry');
+    const emailInput = document.getElementById('email');
+
+    const name = inputValue('name');
+    const industry = inputValue('industry');
+    const email = inputValue('email');
+    const phone = inputValue('phone');
+    const website = inputValue('cta-company-site');
+
+    if (!selectedService) {
+      setFormStatus('Please select the service you need.', 'error');
+      serviceBtns[0]?.focus();
+      return;
+    }
+
+    if (!selectedBudget || !selectedTimeline) {
+      setFormStatus('Please select your budget and target timeline.', 'error');
+      (!selectedBudget ? budgetBtns[0] : timelineBtns[0])?.focus();
+      return;
+    }
+
+    if (!name) {
+      setFormStatus('Please enter your name.', 'error');
+      nameInput?.focus();
+      return;
+    }
+
+    if (!industry) {
+      setFormStatus('Please enter your industry or niche.', 'error');
+      industryInput?.focus();
+      return;
+    }
+
+    if (!(emailInput instanceof HTMLInputElement) || !emailInput.validity.valid) {
+      setFormStatus('Please enter a valid email address.', 'error');
+      emailInput?.focus();
+      return;
+    }
+
+    isSubmitting = true;
+    if (submitBtn instanceof HTMLButtonElement) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending…';
+    }
+
+    try {
+      const response = await fetch('/api/enquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          source: 'contact-form',
+          name,
+          industry,
+          email,
+          phone,
+          service: selectedService,
+          budget: selectedBudget,
+          timeline: selectedTimeline,
+          website,
+        }),
+      });
+
+      let result: { ok?: boolean; error?: string } = {};
+      try {
+        result = await response.json();
+      } catch {
+        // A non-JSON response is handled as a failed submission below.
+      }
+
+      if (response.ok && result && result.ok) {
+        hybridForm instanceof HTMLFormElement && hybridForm.reset();
+        selectedService = '';
+        selectedBudget = '';
+        selectedTimeline = '';
+        setPressed(serviceBtns, null);
+        setPressed(budgetBtns, null);
+        setPressed(timelineBtns, null);
+        phase2?.classList.add('hidden');
+        phase3?.classList.add('hidden');
+        setFormStatus('Thanks — your project enquiry has been sent. We’ll be in touch shortly.', 'success');
+      } else {
+        setFormStatus(
+          (result && result.error) || 'Something went wrong sending your enquiry. Please try again.',
+          'error'
+        );
+      }
+    } catch {
+      setFormStatus(
+        'Something went wrong sending your enquiry. Please check your connection and try again.',
+        'error'
+      );
+    } finally {
+      isSubmitting = false;
+      if (submitBtn instanceof HTMLButtonElement) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send My Project Enquiry 🚀';
+      }
+    }
   });
 </script>
 
@@ -306,5 +457,40 @@
 
   .submit-btn:hover {
     background: #0077cc;
+  }
+
+  .submit-btn:disabled {
+    cursor: wait;
+    opacity: 0.7;
+  }
+
+  .form-honeypot {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .form-status {
+    min-height: 1.5rem;
+    margin: 1rem 0 0;
+    text-align: center;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    outline: none;
+  }
+
+  .form-status:empty {
+    min-height: 0;
+    margin: 0;
+  }
+
+  .form-status.status-error {
+    color: #ff8b8b;
+  }
+
+  .form-status.status-success {
+    color: #7ee2b8;
   }
 </style>
