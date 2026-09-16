@@ -1,0 +1,248 @@
+<section class="growth-package-panel" aria-labelledby="growth-package-heading">
+  <div class="growth-package-panel__content">
+    <p class="growth-package-panel__eyebrow">
+      A Practical Place to Start
+    </p>
+
+    <h2 id="growth-package-heading" class="growth-package-panel__heading">
+      Not Sure Which Solution Fits Your Business?
+    </h2>
+
+    <div class="growth-package-panel__copy">
+      <p>
+        Every business needs a different combination of web design, SEO and
+        lead-generation support. Answer a few focused questions about your
+        goals, required functionality, timeframe and budget.
+      </p>
+
+      <p>
+        We’ll use the same criteria applied when scoping Web Design Pros
+        projects to recommend the most practical starting point—without
+        pushing you into more than you need.
+      </p>
+
+      <p>
+        Your result will explain why the recommended route fits and what to
+        prioritise first, giving you a clearer basis for comparing scope,
+        cost and potential business value.
+      </p>
+
+      <p class="growth-package-panel__disclaimer">
+        The recommendation is practical guidance, not a one-size-fits-all
+        quote. Final scope and pricing are confirmed after we understand your
+        technical and business requirements.
+      </p>
+    </div>
+
+    <ul class="growth-package-panel__benefits" aria-label="Recommendation benefits">
+      <li>
+        <span aria-hidden="true">✓</span>
+        Tailored to your business stage
+      </li>
+
+      <li>
+        <span aria-hidden="true">✓</span>
+        Clear reasoning behind the result
+      </li>
+
+      <li>
+        <span aria-hidden="true">✓</span>
+        No obligation or generic upsell
+      </li>
+    </ul>
+
+    <div class="growth-package-panel__action">
+      <slot name="action" />
+      <p class="growth-package-panel__time">Takes about 60 seconds.</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .growth-package-panel {
+    position: relative;
+    width: min(calc(100% - 2rem), 1420px);
+    margin: 5rem auto;
+    padding: clamp(2.5rem, 5vw, 4.5rem);
+    overflow: hidden;
+    border: 1px solid rgba(137, 207, 240, 0.16);
+    border-radius: 20px;
+    background:
+      radial-gradient(
+        circle at 88% 16%,
+        rgba(0, 150, 255, 0.11),
+        transparent 32%
+      ),
+      rgba(24, 35, 65, 0.82);
+  }
+
+  .growth-package-panel::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 10%;
+    width: 80%;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(137, 207, 240, 0.55),
+      transparent
+    );
+  }
+
+  .growth-package-panel__content {
+    position: relative;
+    z-index: 1;
+    max-width: 980px;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .growth-package-panel__eyebrow {
+    margin-bottom: 0.9rem;
+    color: var(--accent-secondary);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .growth-package-panel__heading {
+    margin-bottom: 1.5rem;
+    color: #ffffff;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.08;
+  }
+
+  .growth-package-panel__copy {
+    max-width: 850px;
+    margin-inline: auto;
+    color: rgba(230, 230, 230, 0.78);
+    font-size: clamp(0.98rem, 1.4vw, 1.08rem);
+    line-height: 1.75;
+  }
+
+  .growth-package-panel__copy p + p {
+    margin-top: 0.85rem;
+  }
+
+  .growth-package-panel__disclaimer {
+    color: rgba(230, 230, 230, 0.62);
+    font-size: 0.9rem;
+  }
+
+  .growth-package-panel__benefits {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.85rem 1.75rem;
+    margin: 2rem 0 2.25rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .growth-package-panel__benefits li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #ffffff;
+    font-size: 0.92rem;
+    font-weight: 600;
+  }
+
+  .growth-package-panel__benefits span {
+    color: var(--accent-secondary);
+  }
+
+  .growth-package-panel__action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  /*
+   * Styles the existing slotted modal button without changing its
+   * JavaScript attributes or event wiring.
+   */
+  .growth-package-panel__action :global(button) {
+    width: auto;
+    min-width: min(100%, 260px);
+    min-height: 48px;
+    padding: 0.75rem 1.75rem;
+    border: 0;
+    border-radius: 10px;
+    background: var(--accent-primary);
+    color: #ffffff;
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.2;
+    cursor: pointer;
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease,
+      background-color 180ms ease;
+  }
+
+  .growth-package-panel__action :global(button:hover) {
+    transform: translateY(-2px);
+    background: #168eff;
+    box-shadow: 0 12px 30px rgba(0, 150, 255, 0.22);
+  }
+
+  .growth-package-panel__action :global(button:focus-visible) {
+    outline: 3px solid rgba(137, 207, 240, 0.75);
+    outline-offset: 4px;
+  }
+
+  .growth-package-panel__time {
+    color: rgba(230, 230, 230, 0.55);
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 640px) {
+    .growth-package-panel {
+      width: min(calc(100% - 1.25rem), 1420px);
+      margin-block: 3rem;
+      padding: 2.25rem 1.25rem;
+      border-radius: 16px;
+    }
+
+    .growth-package-panel__heading {
+      font-size: 2rem;
+    }
+
+    .growth-package-panel__copy {
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }
+
+    .growth-package-panel__benefits {
+      flex-direction: column;
+      align-items: flex-start;
+      width: fit-content;
+      margin-inline: auto;
+    }
+
+    .growth-package-panel__action,
+    .growth-package-panel__action :global(button) {
+      width: 100%;
+    }
+
+    .growth-package-panel__action :global(button) {
+      min-width: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .growth-package-panel__action :global(button) {
+      transition: none;
+    }
+
+    .growth-package-panel__action :global(button:hover) {
+      transform: none;
+    }
+  }
+</style>

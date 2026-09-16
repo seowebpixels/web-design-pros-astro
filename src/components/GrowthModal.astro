@@ -1,21 +1,24 @@
 ---
 import { Image } from 'astro:assets';
 import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
+import GrowthPackageFinder from '../components/GrowthPackageFinder.astro';
 ---
 
 <!-- =========================================================
      GROWTH MODAL TRIGGER
      ========================================================= -->
 
-<div class="growth-trigger">
+<GrowthPackageFinder>
   <button
+    slot="action"
     id="open-growth-modal"
     type="button"
-    class="growth-trigger-button"
+    aria-haspopup="dialog"
+    aria-controls="growth-modal"
   >
-    Find Your Growth Package
+    Get My Recommendation
   </button>
-</div>
+</GrowthPackageFinder>
 
 
 <!-- =========================================================
@@ -588,40 +591,7 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
     --growth-muted: #D1D5DB;
   }
 
-
-  /* =========================================================
-     TRIGGER
-     ========================================================= */
-
-  .growth-trigger {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 4rem 1rem;
-  }
-
-  .growth-trigger-button {
-    border: none;
-    border-radius: 8px !important;
-    background: var(--growth-blue);
-    color: white;
-    padding: 30px 38px;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 700;
-    font-size: 1.125rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 12px 30px rgba(0,0,0,.25);
-  }
-
-  .growth-trigger-button:hover {
-    background: var(--growth-light-blue);
-    color: #16213E;
-  }
-
-
-  /* =========================================================
+    /* =========================================================
      MODAL BACKDROP
      ========================================================= */
 
