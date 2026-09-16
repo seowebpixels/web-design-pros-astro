@@ -559,6 +559,16 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 
           </div>
 
+          <div id="growth-success" class="growth-success" role="status" tabindex="-1" hidden>
+            <div class="growth-success-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6" /></svg>
+            </div>
+            <h3>You're one step closer to growth.</h3>
+            <span class="growth-success-badge">REQUEST RECEIVED</span>
+            <p>Thanks for telling us about your business. We’ll review your goals and contact you to discuss the right next steps for your growth plan.</p>
+            <button id="growth-success-close" type="button">Back to the website</button>
+          </div>
+
 
 
         </div>
@@ -707,7 +717,7 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 
     display: grid;
 
-    grid-template-columns: minmax(0, 48%) minmax(0, 52%);
+    grid-template-columns: minmax(0, 48fr) minmax(0, 52fr);
 
     column-gap: 28px;
   }
@@ -1451,81 +1461,6 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
      absorb margins and padding without moving their visible children.
      ========================================================= */
 
-  @media (min-width: 1201px) {
-
-    .growth-check-title {
-      transform: translateY(20px);
-    }
-
-    .growth-left {
-      position: relative;
-    }
-
-    .growth-feature {
-      position: absolute;
-      right: 0;
-      bottom: 5px;
-      left: 0;
-      margin-top: 0;
-    }
-
-    .growth-panel {
-      flex: 0 0 auto;
-      height: calc(100% - 88px);
-      padding-top: 8px;
-      transform: translateY(25px);
-    }
-
-    .growth-step-one {
-      padding-top: 66px;
-      transform: translateY(-40px);
-    }
-
-    .growth-step-two {
-      margin-top: 0;
-      padding-top: 24px;
-      transform: none;
-    }
-
-  }
-
-
-  /* =========================================================
-     REDUCED-HEIGHT DESKTOP
-
-     Keep the two-column composition, but let the outer card scroll
-     so neither column's lower controls can be clipped by the viewport.
-     ========================================================= */
-
-  @media (min-width: 1201px) and (max-height: 800px) {
-
-    .growth-modal {
-      align-items: flex-start;
-    }
-
-    .growth-modal-card {
-      min-height: 0;
-      overflow-y: auto;
-      overscroll-behavior: contain;
-    }
-
-    .growth-layout {
-      height: 820px;
-      min-height: 820px;
-    }
-
-    .growth-left,
-    .growth-right-column {
-      height: 100%;
-    }
-
-  }
-
-
-  /* =========================================================
-     TABLET
-     ========================================================= */
-
   @media (max-width: 1200px) {
 
     .growth-modal {
@@ -1714,6 +1649,61 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
     background: rgba(255, 255, 255, 0.04);
     line-height: 1.6;
   }
+
+  /* Keep both columns in normal flow. Only the outer card may scroll on
+     small screens; its scrollbar is concealed without clipping controls. */
+  .growth-modal, .growth-modal * { box-sizing: border-box; }
+  .growth-modal, .growth-modal-card { scrollbar-width: none; }
+  .growth-modal::-webkit-scrollbar,
+  .growth-modal-card::-webkit-scrollbar { display: none; }
+  .growth-modal-card { min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+  .growth-layout { height: auto; align-items: stretch; }
+  .growth-left, .growth-right-column { height: auto; }
+  .growth-left > * { flex-shrink: 0; }
+  .growth-feature { position: static; margin-top: 20px; }
+  .growth-check-title { transform: none; flex-shrink: 0; }
+  .growth-panel { overflow: visible; height: auto; transform: none; flex: 1; }
+  .growth-step-one { transform: none; padding-top: 26px; }
+  .growth-step-two { transform: none; padding-top: 24px; }
+  .growth-step-two h3 { margin: 0 0 24px; line-height: 1.4; }
+  .growth-success[hidden] { display: none; }
+  .growth-panel.is-success > :not(.growth-success) { display: none; }
+  .growth-success {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; text-align: center; padding: 40px 20px; gap: 22px;
+  }
+  .growth-success-icon {
+    width: 80px; height: 80px; border: 1px solid var(--growth-blue);
+    border-radius: 50%; display: grid; place-items: center;
+    background: rgba(0,150,255,.08); color: var(--growth-light-blue);
+  }
+  .growth-success-icon svg { width: 40px; height: 40px; }
+  .growth-success h3 { margin: 0; font-size: clamp(24px, 2vw, 34px); line-height: 1.2; }
+  .growth-success-badge { color: var(--growth-light-blue); font-size: 12px;
+    font-weight: 700; letter-spacing: .08em; border: 1px solid rgba(0,150,255,.4);
+    border-radius: 999px; padding: 8px 14px; }
+  .growth-success p { margin: 0; max-width: 440px; color: var(--growth-muted);
+    font-size: 17px; line-height: 1.7; }
+  #growth-success-close { border: 0; border-radius: 10px; padding: 14px 24px;
+    background: var(--growth-blue); color: white; font: inherit; cursor: pointer; }
+  @media (min-width: 1201px) {
+    .growth-panel { min-height: 650px; padding: 24px 30px; }
+    .growth-logo { margin-bottom: 24px; }
+    .growth-logo img { height: 100px; }
+    .growth-headline { font-size: clamp(36px, 3vw, 58px); margin-bottom: 22px; }
+    .growth-indicators { margin-top: 24px; }
+    .growth-feature { min-height: 130px; padding: 24px 30px; }
+    .growth-select-grid { margin-top: 32px; }
+    .growth-step-one .growth-action { padding-top: 30px; }
+    .growth-tab { height: 100px; }
+  }
+  @media (max-width: 1200px) {
+    .growth-panel { min-height: 680px; }
+  }
+  @media (max-width: 700px) {
+    .growth-panel { min-height: 0; }
+    .growth-success { min-height: 460px; padding: 30px 0; }
+  }
 </style>
 
 
@@ -1768,6 +1758,9 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
     const step1Status =
       document.getElementById('growth-step1-status');
 
+    const growthPanel = modal?.querySelector('.growth-panel');
+    const successPanel = document.getElementById('growth-success');
+    document.getElementById('growth-success-close')?.addEventListener('click', () => closeBtn?.click());
     let isGrowthSubmitting = false;
 
 
@@ -1779,7 +1772,9 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 
       openBtn.addEventListener('click', () => {
 
-        if (growthStatus?.classList.contains('status-success')) {
+        if (growthPanel?.classList.contains('is-success')) {
+          growthPanel.classList.remove('is-success');
+          if (successPanel) successPanel.hidden = true;
           resetGrowthModalState();
           growthForm?.classList.remove('hidden');
         }
@@ -2087,11 +2082,12 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
         }
 
         if (response.ok && result && result.ok) {
-          growthForm?.classList.add('hidden');
-          setGrowthStatus(
-            'Thanks — your growth plan request has been sent. We’ll be in touch shortly.',
-            'success'
-          );
+          growthPanel?.classList.add('is-success');
+          if (successPanel) {
+            successPanel.hidden = false;
+            successPanel.focus({ preventScroll: true });
+            successPanel.scrollIntoView({ block: 'nearest' });
+          }
         } else {
           setGrowthStatus(
             (result && result.error) ||
