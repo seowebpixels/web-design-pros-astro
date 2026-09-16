@@ -60,38 +60,18 @@
 
 <style>
   .growth-package-panel {
-    position: relative;
-    width: min(calc(100% - 2rem), 1420px);
-    margin: 5rem auto;
-    padding: clamp(2.5rem, 5vw, 4.5rem);
-    overflow: hidden;
-    border: 1px solid rgba(137, 207, 240, 0.16);
-    border-radius: 20px;
-    background:
-      radial-gradient(
-        circle at 88% 16%,
-        rgba(0, 150, 255, 0.11),
-        transparent 32%
-      ),
-      rgba(24, 35, 65, 0.82);
-  }
+  position: relative;
+  width: calc(100% - 4rem);
+  max-width: calc(1200px - 4rem);
+  margin: 4rem auto;
+  padding: 2.5rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.02);
+}
 
-  .growth-package-panel::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 10%;
-    width: 80%;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(137, 207, 240, 0.55),
-      transparent
-    );
-  }
-
-  .growth-package-panel__content {
+    .growth-package-panel__content {
     position: relative;
     z-index: 1;
     max-width: 980px;
@@ -204,11 +184,11 @@
 
   @media (max-width: 640px) {
     .growth-package-panel {
-      width: min(calc(100% - 1.25rem), 1420px);
-      margin-block: 3rem;
-      padding: 2.25rem 1.25rem;
-      border-radius: 16px;
-    }
+  width: calc(100% - 2rem);
+  margin-block: 3rem;
+  padding: 2rem 1.25rem;
+  border-radius: 16px;
+}
 
     .growth-package-panel__heading {
       font-size: 2rem;
