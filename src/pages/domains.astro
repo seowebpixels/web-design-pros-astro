@@ -46,7 +46,8 @@ import Layout from '../layouts/Layout.astro';
           </div>
           
           <div id="result-action-block" class="result-action-block">
-            <div class="result-price">R75.00 <span class="price-unit">/ 1st Yr</span></div>
+            <div id="result-price" class="result-price">R75.00 <span class="price-unit">/ 1st Yr</span></div>
+            <p id="result-price-note" class="result-price-note hidden">Pricing for this extension isn't set up yet — contact us to register it.</p>
             <button id="buy-now-btn" class="buy-button">
               Buy Now &rarr;
             </button>
@@ -399,6 +400,46 @@ import Layout from '../layouts/Layout.astro';
   const subEl = document.getElementById('result-domain-sub');
   const disclosureEl = document.getElementById('result-disclosure');
   const actionBlock = document.getElementById('result-action-block');
+  const priceEl = document.getElementById('result-price');
+  const priceNoteEl = document.getElementById('result-price-note');
+  const buyBtn = document.getElementById('buy-now-btn');
+
+  // Annual registration price per TLD, in Rand. Keyed by the suffix with
+  // no leading dot. Keep this map as the single place prices are edited —
+  // nothing else in this file should hardcode a price.
+  const TLD_PRICES: Record<string, number> = {
+    'co.za': 75,
+    'org.za': 95,
+    'com': 200,
+    'org': 200,
+    'net': 200,
+    'shop': 200,
+    'info': 200,
+    'biz': 200,
+    'co.uk': 200,
+    'io': 200,
+  };
+
+  // Longest suffix first, so a two-label suffix like "co.za" or "org.za"
+  // is matched before a shorter single-label suffix that could otherwise
+  // look like a false match (e.g. never letting "za" or "co" alone decide
+  // the price for a "co.za" domain).
+  const TLD_SUFFIXES_LONGEST_FIRST = Object.keys(TLD_PRICES).sort(
+    (a, b) => b.length - a.length
+  );
+
+  /** Returns the configured annual price for a registrable domain's TLD,
+   * or null if that TLD has no configured price. Never guesses/falls back
+   * to a default price for an unmapped suffix. */
+  function priceForDomain(domain: string): number | null {
+    const lower = domain.toLowerCase();
+    for (const suffix of TLD_SUFFIXES_LONGEST_FIRST) {
+      if (lower.endsWith(`.${suffix}`)) {
+        return TLD_PRICES[suffix];
+      }
+    }
+    return null;
+  }
 
   const ERROR_MESSAGES: Record<string, string> = {
     missing_domain: 'Please enter a domain name to check.',
@@ -444,6 +485,28 @@ import Layout from '../layouts/Layout.astro';
         disclosureEl.classList.remove('hidden');
       }
       actionBlock?.classList.remove('hidden');
+
+      const price = priceForDomain(domain);
+      if (price !== null) {
+        // `price` only ever comes from the TLD_PRICES map above, never
+        // from the domain string itself, so this is safe from injection.
+        if (priceEl) {
+          priceEl.innerHTML = `R${price.toFixed(2)} <span class="price-unit">/ 1st Yr</span>`;
+          priceEl.classList.remove('hidden');
+        }
+        priceNoteEl?.classList.add('hidden');
+        buyBtn?.classList.remove('hidden');
+      } else {
+        // Unmapped/unsupported TLD: never guess a price. Show a neutral
+        // message and hide the purchase action entirely.
+        priceEl?.classList.add('hidden');
+        if (priceNoteEl) {
+          priceNoteEl.textContent =
+            'Pricing for this extension isn\u2019t set up yet \u2014 contact us to register it.';
+          priceNoteEl.classList.remove('hidden');
+        }
+        buyBtn?.classList.add('hidden');
+      }
     } else if (status === 'taken') {
       resultInner.classList.add('result-taken');
       badgeEl.classList.add('badge-taken');
@@ -451,6 +514,9 @@ import Layout from '../layouts/Layout.astro';
       subEl.textContent = 'This domain already appears to be registered.';
       disclosureEl?.classList.add('hidden');
       actionBlock?.classList.add('hidden');
+      priceEl?.classList.add('hidden');
+      priceNoteEl?.classList.add('hidden');
+      buyBtn?.classList.add('hidden');
     } else {
       // 'unknown' — deliberately neutral: never green, never wording that
       // suggests the visitor can confidently register it.
@@ -461,6 +527,9 @@ import Layout from '../layouts/Layout.astro';
         'We couldn\u2019t confirm availability for this domain right now \u2014 contact us and we\u2019ll check it manually.';
       disclosureEl?.classList.add('hidden');
       actionBlock?.classList.add('hidden');
+      priceEl?.classList.add('hidden');
+      priceNoteEl?.classList.add('hidden');
+      buyBtn?.classList.add('hidden');
     }
 
     resultContainer.classList.remove('hidden');
@@ -666,6 +735,13 @@ import Layout from '../layouts/Layout.astro';
     font-size: 0.75rem;
     color: #94a3b8;
     font-weight: 400;
+  }
+
+  .result-price-note {
+    font-size: 0.8125rem;
+    color: #94a3b8;
+    max-width: 220px;
+    text-align: right;
   }
 
   .buy-button {
@@ -1178,7 +1254,10 @@ import Layout from '../layouts/Layout.astro';
 #result-action-block.hidden,
 #result-disclosure.hidden,
 #result-container.hidden,
-#domain-check-error.hidden {
+#domain-check-error.hidden,
+#result-price.hidden,
+#result-price-note.hidden,
+#buy-now-btn.hidden {
   display: none !important;
 }
 </style>
