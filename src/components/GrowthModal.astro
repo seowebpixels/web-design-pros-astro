@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
+import GrowthPackageFinder from './GrowthPackageFinder.astro';
 import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
-import GrowthPackageFinder from '../components/GrowthPackageFinder.astro';
 ---
 
 <!-- =========================================================
@@ -458,6 +458,13 @@ import GrowthPackageFinder from '../components/GrowthPackageFinder.astro';
               Where should we send your plan?
             </h3>
 
+          <p
+            id="growth-form-status"
+            class="growth-form-status"
+            aria-live="polite"
+            tabindex="-1"
+          ></p>
+
 
             <form
               id="growth-form"
@@ -552,12 +559,7 @@ import GrowthPackageFinder from '../components/GrowthPackageFinder.astro';
 
           </div>
 
-          <p
-            id="growth-form-status"
-            class="growth-form-status"
-            aria-live="polite"
-            tabindex="-1"
-          ></p>
+
 
         </div>
 
@@ -591,7 +593,19 @@ import GrowthPackageFinder from '../components/GrowthPackageFinder.astro';
     --growth-muted: #D1D5DB;
   }
 
-    /* =========================================================
+
+  /* =========================================================
+     TRIGGER
+     ========================================================= */
+
+
+
+
+
+
+
+
+  /* =========================================================
      MODAL BACKDROP
      ========================================================= */
 
@@ -964,7 +978,7 @@ import GrowthPackageFinder from '../components/GrowthPackageFinder.astro';
 
   border-radius: 18px;
 
-  overflow-y: hidden;
+  overflow-y: auto;
   overflow-x: hidden;
 }
 
@@ -1279,15 +1293,16 @@ import GrowthPackageFinder from '../components/GrowthPackageFinder.astro';
 
     min-height: 0;
 
-    padding-top: 36px;
+    padding-top: 24px;
+    flex: 0 0 auto;
   }
 
 
   .growth-step-two h3 {
-    margin: 0 0 26px 0;
+    margin: 0 0 24px;
 
     font-family: 'Cabinet Grotesk', sans-serif;
-    font-size: 30px;
+    font-size: 15px;
     font-weight: 700;
 
     line-height: 1.15;
@@ -1468,8 +1483,8 @@ import GrowthPackageFinder from '../components/GrowthPackageFinder.astro';
 
     .growth-step-two {
       margin-top: 0;
-      padding-top: 36px;
-      transform: translateY(-40px);
+      padding-top: 24px;
+      transform: none;
     }
 
   }
@@ -1688,20 +1703,17 @@ import GrowthPackageFinder from '../components/GrowthPackageFinder.astro';
 
   }
 
-  /* Step 2: equal spacing above and below the heading */
-.growth-step-two {
-  padding-top: 24px;
-}
+  #growth-form.hidden {
+    display: none;
+  }
 
-.growth-step-two h3 {
-  margin: 0 0 24px;
-  font-family: 'Cabinet Grotesk', sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  line-height: 1.4;
-  color: #ffffff;
-}
-
+  #growth-form-status:not(:empty) {
+    margin: 0 0 20px;
+    padding: 16px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    line-height: 1.6;
+  }
 </style>
 
 
@@ -1766,6 +1778,11 @@ import GrowthPackageFinder from '../components/GrowthPackageFinder.astro';
     if (openBtn && modal) {
 
       openBtn.addEventListener('click', () => {
+
+        if (growthStatus?.classList.contains('status-success')) {
+          resetGrowthModalState();
+          growthForm?.classList.remove('hidden');
+        }
 
         if (growthStatus) {
           growthStatus.textContent = '';
@@ -1978,7 +1995,8 @@ import GrowthPackageFinder from '../components/GrowthPackageFinder.astro';
       growthStatus.classList.remove('status-error', 'status-success');
       growthStatus.classList.add(kind === 'error' ? 'status-error' : 'status-success');
       growthStatus.setAttribute('role', kind === 'error' ? 'alert' : 'status');
-      growthStatus.focus();
+      growthStatus.focus({ preventScroll: true });
+      growthStatus.scrollIntoView({ block: 'nearest', behavior: 'auto' });
 
     }
 
@@ -2069,11 +2087,11 @@ import GrowthPackageFinder from '../components/GrowthPackageFinder.astro';
         }
 
         if (response.ok && result && result.ok) {
+          growthForm?.classList.add('hidden');
           setGrowthStatus(
             'Thanks — your growth plan request has been sent. We’ll be in touch shortly.',
             'success'
           );
-          resetGrowthModalState();
         } else {
           setGrowthStatus(
             (result && result.error) ||
