@@ -1,11 +1,10 @@
 import type { APIRoute } from 'astro';
-import { env } from 'cloudflare:workers';
 import { checkDomainAvailability } from '../../lib/domains/checkDomainAvailability';
 import { normalizeDomainInput } from '../../lib/domains/normalizeDomain';
 import { validateDomain } from '../../lib/domains/validateDomain';
 import type { DomainCheckResponse } from '../../lib/domains/types';
 
-export const GET: APIRoute = async ({ request }) => {
+export const GET: APIRoute = async ({ request, locals }) => {
   console.log('--> Incoming domain-check request received!');
 
   const url = new URL(request.url);
@@ -36,7 +35,11 @@ export const GET: APIRoute = async ({ request }) => {
 
   try {
     // Access environment variables directly from Cloudflare runtime or node process
-    const apiKey = (env as any)?.WHOISJSON_API_KEY || process.env.WHOISJSON_API_KEY || '';
+    const apiKey = 
+    (locals as any)?.runtime?.env?.WHOISJSON_API_KEY || 
+  process?.env?.WHOISJSON_API_KEY || 
+  import.meta.env.WHOISJSON_API_KEY || 
+  '';
 
     console.log(`--> Executing lookup for ${validation.hostname} (Key length: ${apiKey.length})`);
 
