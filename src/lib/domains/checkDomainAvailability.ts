@@ -5,9 +5,9 @@ export interface DomainCheckResult {
 }
 
 /**
-  Fetch with a configurable timeout (defaults to 2000ms / 2s)
+  Fetch with a configurable timeout (defaults to 8000ms)
  */
-async function fetchWithTimeout(url: string, options: RequestInit = {}, timeoutMs = 2000): Promise<Response> {
+async function fetchWithTimeout(url: string, options: RequestInit = {}, timeoutMs = 8000): Promise<Response> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -23,13 +23,13 @@ async function fetchWithTimeout(url: string, options: RequestInit = {}, timeoutM
 }
 
 /**
-  Standard RDAP Lookup with 2-second timeout
+  Standard RDAP Lookup with 8-second timeout
  */
 async function queryRDAP(domain: string): Promise<'available' | 'taken' | 'unknown'> {
   try {
     const res = await fetchWithTimeout(`https://rdap.org/domain/${domain}`, {
       headers: { Accept: 'application/rdap+json' },
-    }, 2000);
+    }, 8000);
 
     if (res.status === 404) {
       return 'available';
@@ -58,8 +58,11 @@ async function queryWhoisJSON(domain: string, apiKey: string): Promise<'availabl
   try {
     const url = `https://whoisjson.com/api/v1/whois?domain=${encodeURIComponent(domain)}`;
     const res = await fetchWithTimeout(url, {
-      headers: { Authorization: `Token ${apiKey}` }, // FIXED: Space separator instead of '='
-    }, 2000);
+      headers: { 
+        'Authorization': `TOKEN=${apiKey}`, // FIXED: Correct WhoisJSON authentication header format
+        'Accept': 'application/json' 
+      },
+    }, 8000);
 
     if (!res.ok) {
       console.error(`[WhoisJSON HTTP Error ${res.status} for ${domain}]`);
