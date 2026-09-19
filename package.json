@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node -e \"require('fs').rmSync('dist/server/wrangler.json', {force: true})\"",
+    "build": "astro build && node -e \"require('fs').writeFileSync('dist/server/wrangler.json', JSON.stringify({pages_build_output_dir: 'dist/client', compatibility_date: '2024-09-23'}))\"",
     "preview": "astro preview",
     "astro": "astro",
     "test": "vitest run"
