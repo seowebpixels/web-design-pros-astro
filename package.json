@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node -e \"require('fs').rmSync('dist/server/wrangler.json', {force: true})\"",
     "preview": "astro preview",
     "astro": "astro",
     "test": "vitest run"
