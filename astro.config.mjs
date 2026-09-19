@@ -6,13 +6,11 @@ import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
   site: 'https://webdesignpros.co.za',
-  output: 'server', 
+  output: 'server',
   adapter: cloudflare(),
-      
   integrations: [
     sitemap()
   ],
-
   vite: {
     plugins: [tailwindcss()]
   }
