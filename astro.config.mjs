@@ -7,7 +7,9 @@ import cloudflare from '@astrojs/cloudflare';
 export default defineConfig({
   site: 'https://webdesignpros.co.za',
   output: 'server',
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    imageService: 'passthrough',
+  }),
   integrations: [
     sitemap()
   ],
