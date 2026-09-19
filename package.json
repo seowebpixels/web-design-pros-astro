@@ -7,8 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node -e \"require('fs').writeFileSync('dist/server/wrangler.json', JSON.stringify({name: 'web-design-pros-astro', pages_build_output_dir: 'dist/client', compatibility_date: '2024-09-23'}))\"",
-    "preview": "astro preview",
+    "build": "astro build && node -e \"require('fs').writeFileSync('dist/server/wrangler.json', JSON.stringify({name: 'web-design-pros-astro', pages_build_output_dir: '../client', compatibility_date: '2024-09-23'}))\"",
     "astro": "astro",
     "test": "vitest run"
   },
