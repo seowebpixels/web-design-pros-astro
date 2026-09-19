@@ -8,7 +8,7 @@ export default defineConfig({
   site: 'https://webdesignpros.co.za',
   output: 'server', 
   adapter: cloudflare(),
-
+      
   integrations: [
     sitemap()
   ],
