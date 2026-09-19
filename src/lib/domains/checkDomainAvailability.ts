@@ -1,251 +1,107 @@
-/**
- * Performs the RDAP lookup for a validated hostname and classifies the
- * result into WDP's three public states: 'available' | 'taken' | 'unknown'.
- *
- * CRITICAL RULE (must never be violated): an error, timeout, unsupported
- * TLD, rate limit, or any other uncertain condition must resolve to
- * 'unknown' — never 'available'. False negatives (telling a customer a
- * domain is unavailable/unknown when it was actually free) are an
- * acceptable cost; false positives (telling a customer a domain is
- * available when it is not, or when we simply couldn't check) are not.
- *
- * REMINDER: this result is informational only. It does not reserve or
- * register anything, and does not guarantee the domain will still be
- * available by the time WDP manually completes a registrar purchase.
- */
-
-import { getRdapBaseUrlsForTld } from './rdapBootstrap';
-import type { DomainAvailabilityResult, DomainAvailabilityStatus } from './types';
-
-const RDAP_FETCH_TIMEOUT_MS = 5000; // 5 seconds per upstream RDAP request
-
-// Short-lived cache of the final classified result, keyed by hostname.
-// Deliberately short (60s) — availability is time-sensitive and must never
-// be treated as a reservation. This only exists to absorb rapid repeated
-// identical requests (e.g. accidental double-submits), not to serve stale
-// answers. Opportunistic/isolate-lifetime only, same caveat as the
-// bootstrap cache.
-const RESULT_CACHE_TTL_MS = 60 * 1000;
-
-// Hard cap on the result cache so a burst of many unique valid-looking
-// domain lookups cannot grow the Map without bound. This is an in-memory
-// performance cache only, never authoritative storage.
-const MAX_RESULT_CACHE_ENTRIES = 750;
-
-interface CachedResult {
-  status: DomainAvailabilityStatus;
-  cachedAt: number;
-}
-
-const resultCache = new Map<string, CachedResult>();
-
-export function getTopLevelLabel(hostname: string): string {
-  const labels = hostname.split('.');
-  return labels[labels.length - 1];
+export interface DomainCheckResult {
+  domain: string;
+  status: 'available' | 'taken' | 'unknown';
+  error?: string;
 }
 
 /**
- * Records a result in the bounded cache. Because every entry shares the
- * same TTL and a Map iterates in insertion order, the oldest inserted
- * entry is always the next to expire — so a simple front-to-back walk is
- * sufficient to opportunistically prune expired entries, with no separate
- * expiry index needed. If the cache is still at capacity after pruning,
- * the single oldest remaining entry is evicted to make room.
+  Fetch with a configurable timeout (defaults to 2000ms / 2s)
  */
-function setCachedResult(hostname: string, status: DomainAvailabilityStatus): void {
-  const now = Date.now();
-
-  for (const [key, entry] of resultCache) {
-    if (now - entry.cachedAt >= RESULT_CACHE_TTL_MS) {
-      resultCache.delete(key);
-    } else {
-      // Insertion-ordered Map: once a non-expired entry is reached, every
-      // entry after it is non-expired too.
-      break;
-    }
-  }
-
-  // Delete-before-set on an existing key moves it to the end of insertion
-  // order, keeping the invariant above correct even on the rare
-  // near-simultaneous duplicate lookup.
-  resultCache.delete(hostname);
-
-  if (resultCache.size >= MAX_RESULT_CACHE_ENTRIES) {
-    const oldestKey = resultCache.keys().next().value;
-    if (oldestKey !== undefined) {
-      resultCache.delete(oldestKey);
-    }
-  }
-
-  resultCache.set(hostname, { status, cachedAt: now });
-}
-
-/**
- * Conservative check for whether a 200-status response body is plausibly a
- * genuine RDAP domain object, rather than HTML, an empty body, malformed
- * JSON, or unrelated JSON that happens to have parsed. This is NOT a full
- * RDAP schema validator — it only checks for the minimum characteristics
- * needed to reasonably distinguish a real domain response (RFC 9083) from
- * anything else that could have produced a 200.
- */
-function looksLikeRdapDomainObject(body: unknown): boolean {
-  if (typeof body !== 'object' || body === null || Array.isArray(body)) {
-    return false;
-  }
-
-  const record = body as Record<string, unknown>;
-
-  const hasDomainObjectClass = record.objectClassName === 'domain';
-  const hasLdhName = typeof record.ldhName === 'string' && record.ldhName.length > 0;
-  const hasRdapConformance = Array.isArray(record.rdapConformance);
-
-  // The explicit "objectClassName": "domain" marker is the strongest
-  // signal and sufficient on its own. Failing that, require a domain-name
-  // field alongside an RDAP conformance marker — enough to reasonably
-  // rule out an unrelated JSON payload without a full schema check.
-  return hasDomainObjectClass || (hasLdhName && hasRdapConformance);
-}
-
-/**
- * Conservative check for whether a 404-status response body is plausibly a
- * genuine RDAP "not found" error object (RFC 9083 §6), rather than HTML,
- * an empty body, malformed JSON, or unrelated JSON that happens to parse
- * and happens to have arrived with a 404 status. A CDN, reverse proxy,
- * misconfigured path, or generic upstream error page can also return a
- * bare HTTP 404 — none of those are an authoritative "this domain is not
- * registered" answer, and must not be treated as one.
- */
-function looksLikeRdapNotFoundObject(body: unknown): boolean {
-  if (typeof body !== 'object' || body === null || Array.isArray(body)) {
-    return false;
-  }
-
-  const record = body as Record<string, unknown>;
-
-  // RFC 9083 error responses carry a numeric errorCode matching the HTTP
-  // status. This is the authoritative signal — a generic proxy/CDN 404
-  // page will essentially never coincidentally produce this exact shape.
-  return record.errorCode === 404;
-}
-
-/**
- * Pure classification of a single RDAP HTTP response (status + already-
- * attempted-to-parse body) into WDP's three public states. Extracted as
- * its own pure function — with no fetch/network/timeout concerns — purely
- * so it can be unit tested directly and exhaustively without mocking
- * `fetch`; `queryRdapServer` below is the only caller in production and
- * its behaviour is unchanged by this extraction.
- */
-export function classifyRdapHttpResponse(
-  httpStatus: number,
-  body: unknown,
-  bodyParseFailed: boolean,
-): DomainAvailabilityStatus {
-  if (httpStatus === 200) {
-    // A 200 status alone is not proof of registration — the body must
-    // plausibly be a real RDAP domain object. An upstream could return
-    // HTML, an empty body, malformed JSON, or unrelated JSON on a 200.
-    if (bodyParseFailed) return 'unknown';
-    return looksLikeRdapDomainObject(body) ? 'taken' : 'unknown';
-  }
-
-  if (httpStatus === 404) {
-    // A bare 404 status is NOT sufficient on its own — a CDN, reverse
-    // proxy, misconfigured path, or generic upstream error page can also
-    // return 404. Only an authoritative RDAP not-found error object
-    // (RFC 9083 §6, e.g. valid JSON with errorCode: 404) may be
-    // classified as 'available'.
-    if (bodyParseFailed) return 'unknown';
-    return looksLikeRdapNotFoundObject(body) ? 'available' : 'unknown';
-  }
-
-  // 429, 401/403, 5xx, or any other unexpected status. Never inferred as
-  // available.
-  return 'unknown';
-}
-
-export async function queryRdapServer(baseUrl: string, hostname: string): Promise<DomainAvailabilityStatus> {
+async function fetchWithTimeout(url: string, options: RequestInit = {}, timeoutMs = 2000): Promise<Response> {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), RDAP_FETCH_TIMEOUT_MS);
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
-    const normalizedBase = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
-    // URL construction (not string concatenation) + encodeURIComponent on
-    // the path segment, so a hostname can never be used to break out of the
-    // intended RDAP path.
-    const lookupUrl = new URL(`domain/${encodeURIComponent(hostname)}`, normalizedBase);
-
-    const response = await fetch(lookupUrl.toString(), {
+    const response = await fetch(url, {
+      ...options,
       signal: controller.signal,
-      headers: { accept: 'application/rdap+json' },
     });
-
-// Verisign's authoritative .com/.net RDAP service returns a genuine
-// HTTP 404 with an empty response body for an unregistered domain.
-// Trust the status only for this exact HTTPS registry hostname.
-if (
-  response.status === 404 &&
-  lookupUrl.protocol === 'https:' &&
-  lookupUrl.hostname.toLowerCase() === 'rdap.verisign.com'
-) {
-  return 'available';
-}
-
-    if (response.status === 200 || response.status === 404) {
-      let body: unknown;
-      let parseFailed = false;
-      try {
-        body = await response.json();
-      } catch {
-        // Not parseable as JSON at all (e.g. HTML, empty body, truncated
-        // response) — cannot confidently establish either 'taken' or
-        // 'available'.
-        parseFailed = true;
-      }
-      return classifyRdapHttpResponse(response.status, body, parseFailed);
-    }
-
-    // 429, 401/403, 5xx, or any other unexpected status. Never inferred as
-    // available.
-    return 'unknown';
-  } catch {
-    // Network failure, DNS failure, or timeout/abort.
-    return 'unknown';
+    return response;
   } finally {
-    clearTimeout(timer);
+    clearTimeout(timeoutId);
   }
 }
 
-export async function checkDomainAvailability(hostname: string): Promise<DomainAvailabilityResult> {
-  const cached = resultCache.get(hostname);
-  if (cached && Date.now() - cached.cachedAt < RESULT_CACHE_TTL_MS) {
-    return { domain: hostname, status: cached.status };
-  }
+/**
+  Standard RDAP Lookup with 2-second timeout
+ */
+async function queryRDAP(domain: string): Promise<'available' | 'taken' | 'unknown'> {
+  try {
+    const res = await fetchWithTimeout(`https://rdap.org/domain/${domain}`, {
+      headers: { Accept: 'application/rdap+json' },
+    }, 2000);
 
-  const tld = getTopLevelLabel(hostname);
-  const baseUrls = await getRdapBaseUrlsForTld(tld);
-
-  let status: DomainAvailabilityStatus = 'unknown';
-
-  if (baseUrls && baseUrls.length > 0) {
-    // Try each documented base URL in order until one produces a confident
-    // (non-'unknown') classification.
-    for (const baseUrl of baseUrls) {
-      const result = await queryRdapServer(baseUrl, hostname);
-      if (result !== 'unknown') {
-        status = result;
-        break;
-      }
+    if (res.status === 404) {
+      return 'available';
     }
-  }
-  // No bootstrap mapping at all (unsupported/unmapped TLD) leaves status as
-  // the 'unknown' default set above — never inferred as available.
 
-  // Do not cache uncertainty; transient upstream failures should be
-// allowed to recover on the next attempt.
-if (status !== 'unknown') {
-  setCachedResult(hostname, status);
+    if (res.status === 200) {
+      return 'taken';
+    }
+
+    return 'unknown';
+  } catch (err) {
+    console.error(`[RDAP Error for ${domain}]:`, err);
+    return 'unknown';
+  }
 }
 
-return { domain: hostname, status };
+/**
+  WhoisJSON Lookup (Handles .za, .de, .fr, and RDAP fallbacks)
+ */
+async function queryWhoisJSON(domain: string, apiKey: string): Promise<'available' | 'taken' | 'unknown'> {
+  if (!apiKey) {
+    console.error('WhoisJSON API key is missing from environment variables.');
+    return 'unknown';
+  }
+
+  try {
+    const url = `https://whoisjson.com/api/v1/whois?domain=${encodeURIComponent(domain)}`;
+    const res = await fetchWithTimeout(url, {
+      headers: { Authorization: `Token ${apiKey}` }, // FIXED: Space separator instead of '='
+    }, 2000);
+
+    if (!res.ok) {
+      console.error(`[WhoisJSON HTTP Error ${res.status} for ${domain}]`);
+      return 'unknown';
+    }
+
+    const data = await res.json() as { registered?: boolean; status?: string };
+    console.log(`[WhoisJSON Raw Output for ${domain}]:`, JSON.stringify(data, null, 2));
+
+    if (typeof data.registered === 'boolean') {
+      return data.registered ? 'taken' : 'available';
+    }
+
+    return 'unknown';
+  } catch (err) {
+    console.error(`[WhoisJSON Fetch Exception for ${domain}]:`, err);
+    return 'unknown';
+  }
+}
+
+/**
+  Main Availability Checker
+ */
+export async function checkDomainAvailability(
+  domain: string,
+  apiKey?: string
+): Promise<DomainCheckResult> {
+  const cleanDomain = domain.toLowerCase().trim();
+
+  // Rule 3: All .za domains go directly to WhoisJSON (skipping RDAP entirely)
+  if (cleanDomain.endsWith('.za')) {
+    const status = await queryWhoisJSON(cleanDomain, apiKey || '');
+    return { domain: cleanDomain, status };
+  }
+
+  // Rule 1: Non-.za domains query RDAP directly
+  let status = await queryRDAP(cleanDomain);
+
+  // Rule 2: If RDAP returns UNKNOWN (or times out), failover to WhoisJSON
+  if (status === 'unknown' && apiKey) {
+    status = await queryWhoisJSON(cleanDomain, apiKey);
+  }
+
+  return { domain: cleanDomain, status };
 }
