@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node -e \"const fs = require('fs'); const routes = { version: 1, include: ['/*'], exclude: ['/_astro/*', '/favicon.ico', '/favicon.svg', '/robots.txt', '/sitemap*.xml', '/*.css', '/*.js'] }; fs.writeFileSync('dist/client/_routes.json', JSON.stringify(routes, null, 2));\"",
     "preview": "astro preview",
     "astro": "astro",
     "test": "vitest run"
