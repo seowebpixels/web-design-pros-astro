@@ -8,9 +8,8 @@
     "/favicon.ico",
     "/favicon.svg",
     "/robots.txt",
-    "/sitemap-*.xml",
+    "/sitemap*.xml",
     "/*.css",
-    "/*.avif",
     "/*.js"
   ]
 }
