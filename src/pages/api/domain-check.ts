@@ -4,7 +4,7 @@ import { normalizeDomainInput } from '../../lib/domains/normalizeDomain';
 import { validateDomain } from '../../lib/domains/validateDomain';
 import type { DomainCheckResponse } from '../../lib/domains/types';
 
-export const prerender = true;
+export const prerender = false;
 
 export const GET: APIRoute = async ({ request, locals }) => {
   console.log('--> Incoming domain-check request received!');

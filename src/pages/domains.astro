@@ -488,8 +488,6 @@ import Layout from '../layouts/Layout.astro';
 
       const price = priceForDomain(domain);
       if (price !== null) {
-        // `price` only ever comes from the TLD_PRICES map above, never
-        // from the domain string itself, so this is safe from injection.
         if (priceEl) {
           priceEl.innerHTML = `R${price.toFixed(2)} <span class="price-unit">/ 1st Yr</span>`;
           priceEl.classList.remove('hidden');
@@ -497,8 +495,6 @@ import Layout from '../layouts/Layout.astro';
         priceNoteEl?.classList.add('hidden');
         buyBtn?.classList.remove('hidden');
       } else {
-        // Unmapped/unsupported TLD: never guess a price. Show a neutral
-        // message and hide the purchase action entirely.
         priceEl?.classList.add('hidden');
         if (priceNoteEl) {
           priceNoteEl.textContent =
@@ -518,8 +514,6 @@ import Layout from '../layouts/Layout.astro';
       priceNoteEl?.classList.add('hidden');
       buyBtn?.classList.add('hidden');
     } else {
-      // 'unknown' — deliberately neutral: never green, never wording that
-      // suggests the visitor can confidently register it.
       resultInner.classList.add('result-unknown');
       badgeEl.classList.add('badge-unknown');
       badgeEl.textContent = 'Unknown';
@@ -547,11 +541,22 @@ import Layout from '../layouts/Layout.astro';
 
     if (submitBtn instanceof HTMLButtonElement) {
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Checking\u2026';
+      submitBtn.textContent = 'Checking…';
     }
 
     try {
-      const response = await fetch(`/api/domain-check?domain=${encodeURIComponent(rawDomain)}`);
+      const cleanDomain = rawDomain
+        .toLowerCase()
+        .replace(/^https?:\/\//, '')
+        .replace(/^www\./, '')
+        .split('/')[0];
+
+      const response = await fetch(`/api/domain-check?domain=${encodeURIComponent(cleanDomain)}`);
+      
+      if (!response.ok) {
+        throw new Error('API route unavailable');
+      }
+
       const data = await response.json();
 
       if (!data.success) {
