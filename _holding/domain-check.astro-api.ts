@@ -19,7 +19,7 @@ import { validateDomain } from '../../lib/domains/validateDomain';
 import { checkDomainAvailability } from '../../lib/domains/checkDomainAvailability';
 import type { DomainCheckResponse } from '../../lib/domains/types';
 
-export const prerender = false;
+export const prerender = true;
 
 function jsonResponse(body: DomainCheckResponse, status: number): Response {
   return new Response(JSON.stringify(body), {
