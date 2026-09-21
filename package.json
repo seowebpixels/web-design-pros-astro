@@ -7,7 +7,8 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node -e \"const fs = require('fs'); if (fs.existsSync('dist/server/_routes.json')) fs.copyFileSync('dist/server/_routes.json', 'dist/client/_routes.json');\"",
+    "preview": "astro preview",
     "astro": "astro",
     "test": "vitest run"
   },
