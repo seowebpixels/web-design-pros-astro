@@ -6,7 +6,7 @@ import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
   site: 'https://webdesignpros.co.za',
-  output: 'server', // Enables server runtime execution (_worker.js) for API routes
+  output: 'server',
   build: {
     format: 'directory'
   },
@@ -18,5 +18,6 @@ export default defineConfig({
   },
   adapter: cloudflare({
     imageService: 'passthrough',
+    mode: 'advanced' // Explicitly generates _worker.js at the root of dist/
   })
 });
