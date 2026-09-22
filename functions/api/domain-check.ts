@@ -31,78 +31,6 @@ async function queryRDAP(domain: string): Promise<'available' | 'taken' | 'unkno
   }
 }
 
-async function queryWhoisJSON(domain: string, apiKey: string): Promise<'available' | 'taken' | 'unknown'> {
-  if (!apiKey) {
-    console.error('WHOISJSON_API_KEY is not defined in context.env');
-    return 'unknown';
-  }
-
-  try {
-    // Pass API key both in header and query string for compatibility across WhoisJSON endpoints
-    const url = `https://whoisjson.com/api/v1/whois?domain=${encodeURIComponent(domain)}&token=${encodeURIComponent(apiKey)}`;
-    
-    const res = await fetchWithTimeout(url, {
-      headers: { 
-        'Authorization': `Bearer ${apiKey}`,
-        'Accept': 'application/json',
-        'User-Agent': 'WebDesignPros-DomainChecker/1.0'
-      },
-    }, 8000);
-
-    if (!res.ok) {
-      console.error(`WhoisJSON HTTP Error: ${res.status}`);
-      return 'unknown';
-    }
-
-    const data = await res.json() as Record<string, any>;
-
-    if (data.error || data.message) {
-      return 'unknown';
-    }
-
-    // Direct boolean evaluation
-    if (typeof data.registered === 'boolean') {
-      return data.registered ? 'taken' : 'available';
-    }
-
-    // Registrar/domain metadata evaluation
-    if (
-      data.name || 
-      data.domain_name || 
-      data.registrar || 
-      data.created_date || 
-      (Array.isArray(data.nameserver) && data.nameserver.length > 0) ||
-      (Array.isArray(data.nameservers) && data.nameservers.length > 0)
-    ) {
-      return 'taken';
-    }
-
-    const rawString = JSON.stringify(data).toLowerCase();
-
-    if (
-      rawString.includes('domain name:') || 
-      rawString.includes('"registered":true') || 
-      rawString.includes('status: active') ||
-      rawString.includes('registered')
-    ) {
-      return 'taken';
-    }
-
-    if (
-      rawString.includes('no match') || 
-      rawString.includes('not found') || 
-      rawString.includes('"registered":false')
-    ) {
-      return 'available';
-    }
-
-    return 'unknown';
-  } catch (err) {
-    console.error('WhoisJSON fetch error:', err);
-    return 'unknown';
-  }
-}
-
 export const onRequestGet: PagesFunction<Env> = async (context) => {
   const url = new URL(context.request.url);
   const rawDomain = url.searchParams.get('domain');
@@ -117,17 +45,45 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
   const cleanDomain = rawDomain.toLowerCase().trim();
   const apiKey = context.env.WHOISJSON_API_KEY || '';
 
+  let debugInfo: any = {};
   let status: 'available' | 'taken' | 'unknown' = 'unknown';
 
   const isZaDomain = cleanDomain.endsWith('.za');
 
   if (isZaDomain) {
-    status = await queryWhoisJSON(cleanDomain, apiKey);
+    if (!apiKey) {
+      debugInfo = { error: 'No API key' };
+    } else {
+      try {
+        const whoisUrl = `https://whoisjson.com/api/v1/whois?domain=${encodeURIComponent(cleanDomain)}`;
+        const res = await fetchWithTimeout(whoisUrl, {
+          headers: { 
+            'Authorization': `Token ${apiKey}`,
+            'Accept': 'application/json',
+            'User-Agent': 'WebDesignPros-DomainChecker/1.0'
+          },
+        }, 8000);
+
+        const httpStatus = res.status;
+        const responseData = await res.json() as Record<string, any>;
+
+        debugInfo = {
+          httpStatus,
+          responseData
+        };
+
+        // Standard parsing check
+        if (typeof responseData.registered === 'boolean') {
+          status = responseData.registered ? 'taken' : 'available';
+        } else if (responseData.name || responseData.domain_name || responseData.registrar) {
+          status = 'taken';
+        }
+      } catch (err: any) {
+        debugInfo = { catchError: err.message || String(err) };
+      }
+    }
   } else {
     status = await queryRDAP(cleanDomain);
-    if (status === 'unknown' && apiKey) {
-      status = await queryWhoisJSON(cleanDomain, apiKey);
-    }
   }
 
   return new Response(
@@ -135,7 +91,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
       success: true,
       domain: cleanDomain,
       status: status,
-      hasApiKey: Boolean(apiKey) // Returns true/false to verify environment variable binding
+      debug: debugInfo
     }),
     {
       status: 200,
