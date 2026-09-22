@@ -2,13 +2,11 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
-
 import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
   site: 'https://webdesignpros.co.za',
-  output: 'static',
-
+  
   integrations: [
     sitemap()
   ],
@@ -17,5 +15,7 @@ export default defineConfig({
     plugins: [tailwindcss()]
   },
 
-  adapter: cloudflare()
+  adapter: cloudflare({
+    imageService: 'passthrough',
+  })
 });
