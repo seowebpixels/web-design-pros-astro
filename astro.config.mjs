@@ -6,7 +6,7 @@ import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
   site: 'https://webdesignpros.co.za',
-  
+  trailingSlash: 'never', // Ensures /pricing and /contact match cleanly
   integrations: [
     sitemap()
   ],
