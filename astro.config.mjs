@@ -6,7 +6,7 @@ import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
   site: 'https://webdesignpros.co.za',
-  output: 'static',
+  output: 'server', // Enables server runtime execution (_worker.js) for API routes
   build: {
     format: 'directory'
   },
