@@ -48,30 +48,36 @@ async function queryWhoisJSON(domain: string, apiKey: string): Promise<'availabl
 
     const data = await res.json() as Record<string, any>;
 
-    // 1. Check direct top-level boolean
+    // Handle WhoisJSON specific error responses
+    if (data.error || data.message) {
+      return 'unknown';
+    }
+
+    // 1. Check direct boolean field
     if (typeof data.registered === 'boolean') {
       return data.registered ? 'taken' : 'available';
     }
 
-    // 2. Check nested WHOIS object keys typical of WhoisJSON for .za / .fr / .shop
+    // 2. Check for standard registration fields
     if (
       data.name || 
       data.domain_name || 
       data.registrar || 
       data.created_date || 
-      (data.nameserver && data.nameserver.length > 0)
+      (Array.isArray(data.nameserver) && data.nameserver.length > 0) ||
+      (Array.isArray(data.nameservers) && data.nameservers.length > 0)
     ) {
       return 'taken';
     }
 
-    // 3. Inspect raw JSON string for registration status or errors
+    // 3. Fallback string inspection
     const rawString = JSON.stringify(data).toLowerCase();
 
     if (
       rawString.includes('domain name:') || 
       rawString.includes('"registered":true') || 
       rawString.includes('status: active') ||
-      rawString.includes('ok / active')
+      rawString.includes('registered')
     ) {
       return 'taken';
     }
@@ -79,7 +85,6 @@ async function queryWhoisJSON(domain: string, apiKey: string): Promise<'availabl
     if (
       rawString.includes('no match') || 
       rawString.includes('not found') || 
-      rawString.includes('available') ||
       rawString.includes('"registered":false')
     ) {
       return 'available';
@@ -107,17 +112,13 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 
   let status: 'available' | 'taken' | 'unknown' = 'unknown';
 
-  // Force ccTLDs (.za, .fr, etc.) and non-standard gTLDs (.shop) to WhoisJSON directly
-  const useWhoisDirectly = 
-    cleanDomain.endsWith('.za') || 
-    cleanDomain.endsWith('.co.za') || 
-    cleanDomain.endsWith('.org.za') ||
-    cleanDomain.endsWith('.fr') ||
-    cleanDomain.endsWith('.shop');
+  // Only route South African (.za) TLDs directly to WhoisJSON
+  const isZaDomain = cleanDomain.endsWith('.za');
 
-  if (useWhoisDirectly && apiKey) {
+  if (isZaDomain) {
     status = await queryWhoisJSON(cleanDomain, apiKey);
   } else {
+    // .fr and all other domains go to RDAP first
     status = await queryRDAP(cleanDomain);
     if (status === 'unknown' && apiKey) {
       status = await queryWhoisJSON(cleanDomain, apiKey);
