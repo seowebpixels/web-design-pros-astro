@@ -7,6 +7,9 @@ import cloudflare from '@astrojs/cloudflare';
 export default defineConfig({
   site: 'https://webdesignpros.co.za',
   trailingSlash: 'never', // Ensures /pricing and /contact match cleanly
+  build: {
+    format: 'file' // Generates /contact.html instead of /contact/index.html
+  },
   integrations: [
     sitemap()
   ],
