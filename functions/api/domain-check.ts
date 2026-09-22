@@ -47,24 +47,41 @@ async function queryWhoisJSON(domain: string, apiKey: string): Promise<'availabl
     if (!res.ok) return 'unknown';
 
     const data = await res.json() as Record<string, any>;
-    
-    // Check standard boolean field
+
+    // 1. Check direct top-level boolean
     if (typeof data.registered === 'boolean') {
       return data.registered ? 'taken' : 'available';
     }
 
-    // Check presence of key WHOIS object fields
-    if (data.name || data.domain_name || data.registrar || data.created_date) {
+    // 2. Check nested WHOIS object keys typical of WhoisJSON for .za / .fr / .shop
+    if (
+      data.name || 
+      data.domain_name || 
+      data.registrar || 
+      data.created_date || 
+      (data.nameserver && data.nameserver.length > 0)
+    ) {
       return 'taken';
     }
 
-    // Check raw WHOIS text payload if returned as string
+    // 3. Inspect raw JSON string for registration status or errors
     const rawString = JSON.stringify(data).toLowerCase();
-    if (rawString.includes('domain name:') || rawString.includes('registered') || rawString.includes('status: active')) {
+
+    if (
+      rawString.includes('domain name:') || 
+      rawString.includes('"registered":true') || 
+      rawString.includes('status: active') ||
+      rawString.includes('ok / active')
+    ) {
       return 'taken';
     }
 
-    if (rawString.includes('no match') || rawString.includes('not found') || rawString.includes('available')) {
+    if (
+      rawString.includes('no match') || 
+      rawString.includes('not found') || 
+      rawString.includes('available') ||
+      rawString.includes('"registered":false')
+    ) {
       return 'available';
     }
 
@@ -90,10 +107,15 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 
   let status: 'available' | 'taken' | 'unknown' = 'unknown';
 
-  // Force .za domains and specific ccTLDs directly to WhoisJSON
-  const isZaDomain = cleanDomain.endsWith('.za') || cleanDomain.endsWith('.co.za') || cleanDomain.endsWith('.org.za');
-  
-  if (isZaDomain) {
+  // Force ccTLDs (.za, .fr, etc.) and non-standard gTLDs (.shop) to WhoisJSON directly
+  const useWhoisDirectly = 
+    cleanDomain.endsWith('.za') || 
+    cleanDomain.endsWith('.co.za') || 
+    cleanDomain.endsWith('.org.za') ||
+    cleanDomain.endsWith('.fr') ||
+    cleanDomain.endsWith('.shop');
+
+  if (useWhoisDirectly && apiKey) {
     status = await queryWhoisJSON(cleanDomain, apiKey);
   } else {
     status = await queryRDAP(cleanDomain);
