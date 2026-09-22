@@ -31,71 +31,6 @@ async function queryRDAP(domain: string): Promise<'available' | 'taken' | 'unkno
   }
 }
 
-async function queryWhoisJSON(domain: string, apiKey: string): Promise<'available' | 'taken' | 'unknown'> {
-  if (!apiKey) return 'unknown';
-
-  try {
-    const url = `https://whoisjson.com/api/v1/whois?domain=${encodeURIComponent(domain)}`;
-    
-    const res = await fetchWithTimeout(url, {
-      headers: { 
-        'Authorization': `TOKEN=${apiKey}`,
-        'Accept': 'application/json',
-        'User-Agent': 'WebDesignPros-DomainChecker/1.0'
-      },
-    }, 8000);
-
-    if (!res.ok) return 'unknown';
-
-    const data = await res.json() as Record<string, any>;
-
-    if (data.error || data.message || data.statusCode) {
-      return 'unknown';
-    }
-
-    // 1. Direct boolean evaluation
-    if (typeof data.registered === 'boolean') {
-      return data.registered ? 'taken' : 'available';
-    }
-
-    // 2. Metadata field evaluation
-    if (
-      data.name || 
-      data.domain_name || 
-      data.registrar || 
-      data.created_date || 
-      (Array.isArray(data.nameserver) && data.nameserver.length > 0) ||
-      (Array.isArray(data.nameservers) && data.nameservers.length > 0)
-    ) {
-      return 'taken';
-    }
-
-    // 3. Fallback string matching
-    const rawString = JSON.stringify(data).toLowerCase();
-
-    if (
-      rawString.includes('domain name:') || 
-      rawString.includes('"registered":true') || 
-      rawString.includes('status: active') ||
-      rawString.includes('registered')
-    ) {
-      return 'taken';
-    }
-
-    if (
-      rawString.includes('no match') || 
-      rawString.includes('not found') || 
-      rawString.includes('"registered":false')
-    ) {
-      return 'available';
-    }
-
-    return 'unknown';
-  } catch {
-    return 'unknown';
-  }
-}
-
 export const onRequestGet: PagesFunction<Env> = async (context) => {
   const url = new URL(context.request.url);
   const rawDomain = url.searchParams.get('domain');
@@ -110,17 +45,33 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
   const cleanDomain = rawDomain.toLowerCase().trim();
   const apiKey = context.env.WHOISJSON_API_KEY || '';
 
+  let debugInfo: any = {};
   let status: 'available' | 'taken' | 'unknown' = 'unknown';
 
   const isZaDomain = cleanDomain.endsWith('.za');
 
   if (isZaDomain) {
-    status = await queryWhoisJSON(cleanDomain, apiKey);
+    try {
+      const url = `https://whoisjson.com/api/v1/whois?domain=${encodeURIComponent(cleanDomain)}`;
+      const res = await fetchWithTimeout(url, {
+        headers: { 
+          'Authorization': `TOKEN=${apiKey}`,
+          'Accept': 'application/json',
+          'User-Agent': 'WebDesignPros-DomainChecker/1.0'
+        },
+      }, 8000);
+
+      const data = await res.json() as Record<string, any>;
+      debugInfo = { httpStatus: res.status, data };
+
+      if (typeof data.registered === 'boolean') {
+        status = data.registered ? 'taken' : 'available';
+      }
+    } catch (err: any) {
+      debugInfo = { error: err.message || String(err) };
+    }
   } else {
     status = await queryRDAP(cleanDomain);
-    if (status === 'unknown' && apiKey) {
-      status = await queryWhoisJSON(cleanDomain, apiKey);
-    }
   }
 
   return new Response(
@@ -128,6 +79,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
       success: true,
       domain: cleanDomain,
       status: status,
+      debug: debugInfo
     }),
     {
       status: 200,
