@@ -7,8 +7,6 @@ import type { DomainCheckResponse } from '../../lib/domains/types';
 export const prerender = false;
 
 export const GET: APIRoute = async ({ request, locals }) => {
-  console.log('--> Incoming domain-check request received!');
-
   const url = new URL(request.url);
   const rawDomain = url.searchParams.get('domain');
 
@@ -36,14 +34,12 @@ export const GET: APIRoute = async ({ request, locals }) => {
   }
 
   try {
-    // Access environment variables directly from Cloudflare runtime or node process
+    // Safely retrieve environment variable across Cloudflare Pages / Node / Astro environments
     const apiKey = 
-    (locals as any)?.runtime?.env?.WHOISJSON_API_KEY || 
-  process?.env?.WHOISJSON_API_KEY || 
-  import.meta.env.WHOISJSON_API_KEY || 
-  '';
-
-    console.log(`--> Executing lookup for ${validation.hostname} (Key length: ${apiKey.length})`);
+      (locals as any)?.runtime?.env?.WHOISJSON_API_KEY || 
+      import.meta.env.WHOISJSON_API_KEY || 
+      (typeof process !== 'undefined' ? process.env?.WHOISJSON_API_KEY : '') || 
+      '';
 
     const result = await checkDomainAvailability(validation.hostname, apiKey);
     
@@ -55,13 +51,25 @@ export const GET: APIRoute = async ({ request, locals }) => {
 
     return new Response(JSON.stringify(responsePayload), {
       status: 200,
-      headers: { 'content-type': 'application/json' },
+      headers: { 
+        'content-type': 'application/json',
+        'cache-control': 'public, max-age=60' // Cache responses for 60 seconds to prevent API rate-limiting
+      },
     });
   } catch (error) {
-    console.error('DEBUG: Domain check execution failed:', error);
+    console.error('Domain check execution failed:', error);
+
     return new Response(
-      JSON.stringify({ success: true, domain: validation.hostname, status: 'unknown' }),
-      { status: 200, headers: { 'content-type': 'application/json' } }
+      JSON.stringify({ 
+        success: false, 
+        domain: validation.hostname, 
+        status: 'unknown',
+        error: 'server_error' 
+      }),
+      { 
+        status: 500, 
+        headers: { 'content-type': 'application/json' } 
+      }
     );
   }
 };

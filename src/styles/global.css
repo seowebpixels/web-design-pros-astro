@@ -40,50 +40,38 @@ h1, h2, h3, h4, h5 {
   font-family: var(--font-heading);
 }
 
-/* Specific Heading Weights */
+/* Base Heading Styles */
 h1 {
-  font-weight: 800; /* Extrabold */
+  font-weight: 800;
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  text-transform: capitalize;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: #ffffff; /* Solid fallback so text is never invisible */
+}
+
+/* Apply gradient text only when explicitly requested via class */
+h1.gradient-title,
+.gradient-text {
   background-image: linear-gradient(180deg, var(--gradient-h1-from) 0%, var(--gradient-h1-to) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: transparent;
-
-  /* Increased size for prominence */
-  font-size: 6rem;
-  text-transform: capitalize;
-  margin-bottom: 2rem;
-  text-align: center;
 }
 
 h2 {
-  font-weight: 700; /* Bold */
+  font-weight: 700;
 }
 
 h3 {
-  font-weight: 500; /* Medium */
+  font-weight: 500;
 }
 
 h4 {
-  font-weight: 400; /* Regular */
+  font-weight: 400;
 }
 
 /* Paragraph Text */
 p {
   font-family: var(--font-body);
-}
-
-/* Desktop single-line rule & responsive sizing */
-@media (min-width: 1024px) {
-  h1 {
-    white-space: nowrap; /* Forces H1 onto a single line for desktop */
-    font-size: 3.5rem;   /* Calibrated so a long heading fits across standard screen widths */
-  }
-}
-
-@media (max-width: 1023px) {
-  h1 {
-    font-size: 2.5rem;
-    white-space: normal; /* Allows wrapping on smaller mobile screens */
-  }
 }
