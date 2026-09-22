@@ -1,10 +1,9 @@
+export const prerender = false;
 import type { APIRoute } from 'astro';
 import { checkDomainAvailability } from '../../lib/domains/checkDomainAvailability';
 import { normalizeDomainInput } from '../../lib/domains/normalizeDomain';
 import { validateDomain } from '../../lib/domains/validateDomain';
 import type { DomainCheckResponse } from '../../lib/domains/types';
-
-export const prerender = false;
 
 export const GET: APIRoute = async ({ request, locals }) => {
   const url = new URL(request.url);
