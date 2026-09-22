@@ -32,33 +32,40 @@ async function queryRDAP(domain: string): Promise<'available' | 'taken' | 'unkno
 }
 
 async function queryWhoisJSON(domain: string, apiKey: string): Promise<'available' | 'taken' | 'unknown'> {
-  if (!apiKey) return 'unknown';
+  if (!apiKey) {
+    console.error('WHOISJSON_API_KEY is not defined in context.env');
+    return 'unknown';
+  }
 
   try {
-    const url = `https://whoisjson.com/api/v1/whois?domain=${encodeURIComponent(domain)}`;
+    // Pass API key both in header and query string for compatibility across WhoisJSON endpoints
+    const url = `https://whoisjson.com/api/v1/whois?domain=${encodeURIComponent(domain)}&token=${encodeURIComponent(apiKey)}`;
+    
     const res = await fetchWithTimeout(url, {
       headers: { 
-        'Authorization': `Token ${apiKey}`,
+        'Authorization': `Bearer ${apiKey}`,
         'Accept': 'application/json',
         'User-Agent': 'WebDesignPros-DomainChecker/1.0'
       },
     }, 8000);
 
-    if (!res.ok) return 'unknown';
+    if (!res.ok) {
+      console.error(`WhoisJSON HTTP Error: ${res.status}`);
+      return 'unknown';
+    }
 
     const data = await res.json() as Record<string, any>;
 
-    // Handle WhoisJSON specific error responses
     if (data.error || data.message) {
       return 'unknown';
     }
 
-    // 1. Check direct boolean field
+    // Direct boolean evaluation
     if (typeof data.registered === 'boolean') {
       return data.registered ? 'taken' : 'available';
     }
 
-    // 2. Check for standard registration fields
+    // Registrar/domain metadata evaluation
     if (
       data.name || 
       data.domain_name || 
@@ -70,7 +77,6 @@ async function queryWhoisJSON(domain: string, apiKey: string): Promise<'availabl
       return 'taken';
     }
 
-    // 3. Fallback string inspection
     const rawString = JSON.stringify(data).toLowerCase();
 
     if (
@@ -91,7 +97,8 @@ async function queryWhoisJSON(domain: string, apiKey: string): Promise<'availabl
     }
 
     return 'unknown';
-  } catch {
+  } catch (err) {
+    console.error('WhoisJSON fetch error:', err);
     return 'unknown';
   }
 }
@@ -112,13 +119,11 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 
   let status: 'available' | 'taken' | 'unknown' = 'unknown';
 
-  // Only route South African (.za) TLDs directly to WhoisJSON
   const isZaDomain = cleanDomain.endsWith('.za');
 
   if (isZaDomain) {
     status = await queryWhoisJSON(cleanDomain, apiKey);
   } else {
-    // .fr and all other domains go to RDAP first
     status = await queryRDAP(cleanDomain);
     if (status === 'unknown' && apiKey) {
       status = await queryWhoisJSON(cleanDomain, apiKey);
@@ -130,6 +135,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
       success: true,
       domain: cleanDomain,
       status: status,
+      hasApiKey: Boolean(apiKey) // Returns true/false to verify environment variable binding
     }),
     {
       status: 200,
