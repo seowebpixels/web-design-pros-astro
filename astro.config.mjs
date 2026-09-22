@@ -1,4 +1,4 @@
-// @ts-check
+// astro.config.mjs
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
@@ -6,19 +6,16 @@ import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
   site: 'https://webdesignpros.co.za',
-  output: 'static', // Forces static site generation for all pages by default
-  trailingSlash: 'ignore', // Allows Cloudflare Pages to resolve both /contact and /contact/ seamlessly
+  output: 'static',
   build: {
-    format: 'file' // Generates /contact.html instead of /contact/index.html
+    format: 'directory'
   },
   integrations: [
     sitemap()
   ],
-
   vite: {
     plugins: [tailwindcss()]
   },
-
   adapter: cloudflare({
     imageService: 'passthrough',
   })
