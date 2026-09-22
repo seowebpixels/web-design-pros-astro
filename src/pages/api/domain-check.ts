@@ -1,9 +1,11 @@
-export const prerender = false;
+// src/pages/api/domain-check.ts
 import type { APIRoute } from 'astro';
 import { checkDomainAvailability } from '../../lib/domains/checkDomainAvailability';
 import { normalizeDomainInput } from '../../lib/domains/normalizeDomain';
 import { validateDomain } from '../../lib/domains/validateDomain';
 import type { DomainCheckResponse } from '../../lib/domains/types';
+
+export const prerender = false;
 
 export const GET: APIRoute = async ({ request, locals }) => {
   const url = new URL(request.url);
@@ -33,11 +35,11 @@ export const GET: APIRoute = async ({ request, locals }) => {
   }
 
   try {
-    // Safely retrieve environment variable across Cloudflare Pages / Node / Astro environments
+    // Correctly retrieve environment variable from Cloudflare Pages runtime
+    const runtimeEnv = (locals as any)?.runtime?.env;
     const apiKey = 
-      (locals as any)?.runtime?.env?.WHOISJSON_API_KEY || 
+      runtimeEnv?.WHOISJSON_API_KEY || 
       import.meta.env.WHOISJSON_API_KEY || 
-      (typeof process !== 'undefined' ? process.env?.WHOISJSON_API_KEY : '') || 
       '';
 
     const result = await checkDomainAvailability(validation.hostname, apiKey);
@@ -50,10 +52,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
 
     return new Response(JSON.stringify(responsePayload), {
       status: 200,
-      headers: { 
-        'content-type': 'application/json',
-        'cache-control': 'public, max-age=60' // Cache responses for 60 seconds to prevent API rate-limiting
-      },
+      headers: { 'content-type': 'application/json' },
     });
   } catch (error) {
     console.error('Domain check execution failed:', error);
@@ -65,10 +64,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
         status: 'unknown',
         error: 'server_error' 
       }),
-      { 
-        status: 500, 
-        headers: { 'content-type': 'application/json' } 
-      }
+      { status: 500, headers: { 'content-type': 'application/json' } }
     );
   }
 };
