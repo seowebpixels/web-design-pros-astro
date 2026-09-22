@@ -2,9 +2,14 @@
 interface Props {
   title?: string;
   activeNav?: 'dashboard' | 'services' | 'domains' | 'billing';
+  userName?: string;
 }
 
-const { title = 'Client Portal - Web Design Pros', activeNav = 'dashboard' } = Astro.props;
+const { 
+  title = 'Client Portal - Web Design Pros', 
+  activeNav = 'dashboard',
+  userName = 'My Account'
+} = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -86,7 +91,7 @@ const { title = 'Client Portal - Web Design Pros', activeNav = 'dashboard' } = A
 
     <div class="user-pill">
       <span style="width: 10px; height: 10px; background: #10B981; border-radius: 50%;"></span>
-      <span style="font-size: 0.9rem;">Marlan Pather</span>
+      <span style="font-size: 0.9rem;">{userName}</span>
     </div>
   </header>
 
