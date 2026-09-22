@@ -32,10 +32,7 @@ async function queryRDAP(domain: string): Promise<'available' | 'taken' | 'unkno
 }
 
 async function queryWhoisJSON(domain: string, apiKey: string): Promise<'available' | 'taken' | 'unknown'> {
-  if (!apiKey) {
-    console.error('WHOISJSON_API_KEY is missing from environment variables.');
-    return 'unknown';
-  }
+  if (!apiKey) return 'unknown';
 
   try {
     const url = `https://whoisjson.com/api/v1/whois?domain=${encodeURIComponent(domain)}`;
@@ -49,16 +46,28 @@ async function queryWhoisJSON(domain: string, apiKey: string): Promise<'availabl
 
     if (!res.ok) return 'unknown';
 
-    const data = await res.json() as any;
+    const data = await res.json() as Record<string, any>;
     
-    // WhoisJSON returns { registered: true/false } or check domain availability fields
+    // Check standard boolean field
     if (typeof data.registered === 'boolean') {
       return data.registered ? 'taken' : 'available';
     }
-    if (data.name || data.domain_name) {
+
+    // Check presence of key WHOIS object fields
+    if (data.name || data.domain_name || data.registrar || data.created_date) {
       return 'taken';
     }
-    
+
+    // Check raw WHOIS text payload if returned as string
+    const rawString = JSON.stringify(data).toLowerCase();
+    if (rawString.includes('domain name:') || rawString.includes('registered') || rawString.includes('status: active')) {
+      return 'taken';
+    }
+
+    if (rawString.includes('no match') || rawString.includes('not found') || rawString.includes('available')) {
+      return 'available';
+    }
+
     return 'unknown';
   } catch {
     return 'unknown';
@@ -81,8 +90,10 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 
   let status: 'available' | 'taken' | 'unknown' = 'unknown';
 
-  // Route .co.za directly to WhoisJSON
-  if (cleanDomain.endsWith('.za')) {
+  // Force .za domains and specific ccTLDs directly to WhoisJSON
+  const isZaDomain = cleanDomain.endsWith('.za') || cleanDomain.endsWith('.co.za') || cleanDomain.endsWith('.org.za');
+  
+  if (isZaDomain) {
     status = await queryWhoisJSON(cleanDomain, apiKey);
   } else {
     status = await queryRDAP(cleanDomain);
