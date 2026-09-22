@@ -12,11 +12,6 @@ interface Env {
   ENQUIRY_FROM_EMAIL?: string;
 }
 
-interface PagesFunctionContext {
-  request: Request;
-  env: Env;
-}
-
 interface EnquiryPayload {
   source?: unknown;
   name?: unknown;
@@ -98,7 +93,9 @@ function isAllowed(map: Record<string, string>, value: string): boolean {
   return Object.prototype.hasOwnProperty.call(map, value);
 }
 
-export async function onRequestPost({ request, env }: PagesFunctionContext): Promise<Response> {
+export const onRequestPost: PagesFunction<Env> = async (context) => {
+  const { request, env } = context;
+
   const contentType = request.headers.get('content-type') ?? '';
   if (!contentType.toLowerCase().includes('application/json')) {
     return json({ ok: false, error: 'Please submit the form again.' }, 415);
@@ -230,9 +227,9 @@ export async function onRequestPost({ request, env }: PagesFunctionContext): Pro
   } finally {
     clearTimeout(timeout);
   }
-}
+};
 
-export async function onRequest(): Promise<Response> {
+export const onRequest: PagesFunction = async () => {
   return new Response(
     JSON.stringify({ ok: false, error: 'Method not allowed.' }),
     {
@@ -244,4 +241,4 @@ export async function onRequest(): Promise<Response> {
       },
     },
   );
-}
+};
