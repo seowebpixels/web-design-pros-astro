@@ -7,9 +7,6 @@ import cloudflare from '@astrojs/cloudflare';
 export default defineConfig({
   site: 'https://webdesignpros.co.za',
   output: 'server',
-  build: {
-    format: 'directory'
-  },
   integrations: [
     sitemap()
   ],
@@ -18,6 +15,5 @@ export default defineConfig({
   },
   adapter: cloudflare({
     imageService: 'passthrough',
-    mode: 'advanced' // Explicitly generates _worker.js at the root of dist/
   })
 });
