@@ -385,10 +385,6 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script>
-  // Wires the existing search form to the Domain Checker API. This is an
-  // informational availability indicator only — it is not connected to a
-  // registrar and does not reserve or register anything. See the
-  // disclosure text shown alongside an "available" result.
   const form = document.getElementById('domain-search-form');
   const input = document.getElementById('domain-input');
   const submitBtn = form?.querySelector('.search-button');
@@ -406,9 +402,6 @@ import Layout from '../layouts/Layout.astro';
   const priceNoteEl = document.getElementById('result-price-note');
   const buyBtn = document.getElementById('buy-now-btn');
 
-  // Annual registration price per TLD, in Rand. Keyed by the suffix with
-  // no leading dot. Keep this map as the single place prices are edited —
-  // nothing else in this file should hardcode a price.
   const TLD_PRICES: Record<string, number> = {
     'co.za': 75,
     'org.za': 95,
@@ -422,17 +415,10 @@ import Layout from '../layouts/Layout.astro';
     'io': 200,
   };
 
-  // Longest suffix first, so a two-label suffix like "co.za" or "org.za"
-  // is matched before a shorter single-label suffix that could otherwise
-  // look like a false match (e.g. never letting "za" or "co" alone decide
-  // the price for a "co.za" domain).
   const TLD_SUFFIXES_LONGEST_FIRST = Object.keys(TLD_PRICES).sort(
     (a, b) => b.length - a.length
   );
 
-  /** Returns the configured annual price for a registrable domain's TLD,
-   * or null if that TLD has no configured price. Never guesses/falls back
-   * to a default price for an unmapped suffix. */
   function priceForDomain(domain: string): number | null {
     const lower = domain.toLowerCase();
     for (const suffix of TLD_SUFFIXES_LONGEST_FIRST) {
@@ -576,16 +562,22 @@ import Layout from '../layouts/Layout.astro';
       }
     }
   });
+
+  buyBtn?.addEventListener('click', () => {
+    const domain = domainNameEl?.textContent?.trim();
+    if (domain) {
+      window.location.href = `/dashboard/domains?domain=${encodeURIComponent(domain)}&action=register`;
+    }
+  });
 </script>
 
 <style>
-  /* Dedicated Page Layout Styles — bypasses Tailwind utility spacing interference */
   #domains-page-container {
     width: 100%;
     min-height: 100vh;
-    background-color: #020617; /* bg-slate-950 */
+    background-color: #020617;
     color: #ffffff;
-    padding-top: 130px; /* Explicit offset to clear fixed navigation header */
+    padding-top: 130px;
     padding-bottom: 80px;
     padding-left: 20px;
     padding-right: 20px;
@@ -600,7 +592,6 @@ import Layout from '../layouts/Layout.astro';
     gap: 80px;
   }
 
-  /* 1. Hero Section */
   .domains-hero-section {
     max-width: 800px;
     margin: 0 auto;
@@ -618,11 +609,11 @@ import Layout from '../layouts/Layout.astro';
   .hero-subtitle {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #22d3ee; /* cyan-400 */
+    color: #22d3ee;
   }
 
   .hero-subtext {
-    color: #94a3b8; /* slate-400 */
+    color: #94a3b8;
     font-weight: 400;
   }
 
@@ -675,7 +666,6 @@ import Layout from '../layouts/Layout.astro';
     background-color: #06b6d4;
   }
 
-  /* 2. Result Card */
   .search-result-card {
     max-width: 650px;
     margin: 0 auto;
@@ -761,11 +751,6 @@ import Layout from '../layouts/Layout.astro';
     cursor: pointer;
   }
 
-  /* Result badge — additional states alongside the existing "available"
-     styling above. JS swaps the badge's class to match the checker's
-     response; the shape/size matches .badge-available exactly, only the
-     colour changes, consistent with this page's existing .badge-hot /
-     .badge-sale colour convention used elsewhere. */
   .badge-taken {
     font-size: 0.75rem;
     text-transform: uppercase;
@@ -788,8 +773,6 @@ import Layout from '../layouts/Layout.astro';
     border: 1px solid #334155;
   }
 
-  /* Availability disclosure — shown only for an "available" result, so
-     it's never mistaken for a confirmed registration. */
   .result-disclosure {
     font-size: 0.75rem;
     color: #94a3b8;
@@ -798,10 +781,6 @@ import Layout from '../layouts/Layout.astro';
     max-width: 40ch;
   }
 
-  /* Inline error message under the search form (invalid domain,
-     subdomain rejection, or a network/lookup failure). Uses the same
-     rose palette as .badge-hot for visual consistency with the rest of
-     the page's existing colour language. */
   .domain-check-error {
     max-width: 650px;
     margin: 12px auto 0 auto;
@@ -814,14 +793,12 @@ import Layout from '../layouts/Layout.astro';
     text-align: center;
   }
 
-  /* Shared Glass Cards */
   .glass-card {
     background-color: rgba(15, 23, 42, 0.8);
     border: 1px solid #1e293b;
     border-radius: 16px;
   }
 
-  /* 3. Pricing Table Section */
   .section-heading {
     font-size: 1.875rem;
     font-weight: 700;
@@ -952,7 +929,6 @@ import Layout from '../layouts/Layout.astro';
     text-align: right;
   }
 
-  /* 4. Two-Column Grid */
   .domains-two-col-grid {
     display: grid;
     grid-template-columns: 5fr 7fr;
@@ -969,7 +945,7 @@ import Layout from '../layouts/Layout.astro';
   .steps-column-container {
     display: flex;
     flex-direction: column;
-    gap: 16px; /* Explicit gap between steps block and the banner below it */
+    gap: 16px;
   }
 
   .steps-list {
@@ -1030,7 +1006,7 @@ import Layout from '../layouts/Layout.astro';
     display: flex;
     flex-direction: column;
     gap: 24px;
-    margin-top: 52px; /* Shifts right column down to align directly with step 1 box */
+    margin-top: 52px;
   }
 
   @media (max-width: 1024px) {
@@ -1083,7 +1059,6 @@ import Layout from '../layouts/Layout.astro';
     gap: 8px;
   }
 
-  /* 5. Popular Extensions Grid */
   .extensions-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -1124,7 +1099,6 @@ import Layout from '../layouts/Layout.astro';
     margin-top: 4px;
   }
 
-  /* 6. CTA & FAQ Narrow Wrapper */
   .domains-narrow-wrapper {
     max-width: 800px;
     margin: 0 auto;
@@ -1183,7 +1157,6 @@ import Layout from '../layouts/Layout.astro';
     color: #ffffff;
   }
 
-  /* Accordion Component Styling */
   .faq-accordion-wrapper {
     display: flex;
     flex-direction: column;
@@ -1257,7 +1230,6 @@ import Layout from '../layouts/Layout.astro';
     gap: 6px;
   }
 
-  /* Never show purchasing controls for taken or uncertain results. */
 #result-action-block.hidden,
 #result-disclosure.hidden,
 #result-container.hidden,
