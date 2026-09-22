@@ -1,0 +1,49 @@
+---
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+
+let servicesCount = 0;
+let domainsCount = 0;
+let unpaidInvoicesCount = 0;
+let userProfile = { name: 'Marlan Pather', address: '15 Madge Avenue, Northcliff' };
+
+try {
+  // Access Cloudflare D1 from Astro runtime
+  const DB = Astro.locals.runtime?.env?.DB;
+
+  if (DB) {
+    const servicesRes = await DB.prepare("SELECT COUNT(*) as count FROM services WHERE user_id = 'usr_01'").first();
+    const domainsRes = await DB.prepare("SELECT COUNT(*) as count FROM domains WHERE user_id = 'usr_01'").first();
+    const invoicesRes = await DB.prepare("SELECT COUNT(*) as count FROM invoices WHERE user_id = 'usr_01' AND status = 'unpaid'").first();
+
+    servicesCount = (servicesRes?.count as number) || 0;
+    domainsCount = (domainsRes?.count as number) || 0;
+    unpaidInvoicesCount = (invoicesRes?.count as number) || 0;
+  }
+} catch (e) {
+  console.error('D1 Query Error:', e);
+}
+---
+
+<DashboardLayout title="My Dashboard - Web Design Pros" activeNav="dashboard">
+  <h1 style="margin-bottom: 1.5rem;">My Dashboard</h1>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+    <!-- Stat Card: Services -->
+    <div style="background: #001f54; padding: 1.5rem; border-radius: 8px; border: 1px solid #1E293B; text-align: center;">
+      <h2 style="font-size: 2.5rem; color: #00E5FF; margin: 0;">{servicesCount}</h2>
+      <p style="color: #94A3B8; margin-top: 0.5rem;">Services</p>
+    </div>
+
+    <!-- Stat Card: Domains -->
+    <div style="background: #001f54; padding: 1.5rem; border-radius: 8px; border: 1px solid #1E293B; text-align: center;">
+      <h2 style="font-size: 2.5rem; color: #00E5FF; margin: 0;">{domainsCount}</h2>
+      <p style="color: #94A3B8; margin-top: 0.5rem;">Domains</p>
+    </div>
+
+    <!-- Stat Card: Unpaid Invoices -->
+    <div style="background: #001f54; padding: 1.5rem; border-radius: 8px; border: 1px solid #1E293B; text-align: center;">
+      <h2 style="font-size: 2.5rem; color: #EF4444; margin: 0;">{unpaidInvoicesCount}</h2>
+      <p style="color: #94A3B8; margin-top: 0.5rem;">Unpaid Invoices</p>
+    </div>
+  </div>
+</DashboardLayout>

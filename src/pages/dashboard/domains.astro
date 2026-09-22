@@ -1,0 +1,276 @@
+---
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+
+interface Domain {
+  id: string;
+  user_id: string;
+  domain_name: string;
+  status: string;
+  next_due_date: string;
+  auto_renew: number;
+}
+
+let domains: Domain[] = [];
+
+try {
+  const DB = Astro.locals.runtime?.env?.DB;
+
+  if (DB) {
+    const { results } = await DB.prepare(
+      "SELECT * FROM domains WHERE user_id = 'usr_01' ORDER BY domain_name ASC"
+    ).all();
+
+    domains = (results as unknown as Domain[]) || [];
+  }
+} catch (e) {
+  console.error('D1 Query Error (Domains):', e);
+}
+---
+
+<DashboardLayout title="My Domains - Web Design Pros" activeNav="domains">
+  <div class="page-header">
+    <div>
+      <h1>My Domains</h1>
+      <p class="subtitle">Manage your registered domain names and auto-renewal settings</p>
+    </div>
+    <div class="actions">
+      <a href="/#domain-checker" class="btn-primary">+ Register New Domain</a>
+    </div>
+  </div>
+
+  <div class="domains-grid">
+    <!-- Left Sidebar Actions -->
+    <aside class="sidebar-card">
+      <h3 class="sidebar-title">Domain Actions</h3>
+      <nav class="sidebar-nav">
+        <a href="/dashboard/domains" class="sidebar-link active">My Domains</a>
+        <a href="/#domain-checker" class="sidebar-link">Register Domain</a>
+        <a href="/#domain-checker" class="sidebar-link">Transfer Domain</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content: Domains Table -->
+    <main class="main-content">
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Domain Name</th>
+              <th>Next Due Date</th>
+              <th>Auto Renew</th>
+              <th>Status</th>
+              <th style="text-align: right;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {domains.length > 0 ? (
+              domains.map((domain) => (
+                <tr>
+                  <td class="domain-name">
+                    <span class="ssl-icon" title="SSL Active">🔒</span>
+                    {domain.domain_name}
+                  </td>
+                  <td>{domain.next_due_date}</td>
+                  <td>
+                    <span class={domain.auto_renew ? 'toggle-on' : 'toggle-off'}>
+                      {domain.auto_renew ? 'ON' : 'OFF'}
+                    </span>
+                  </td>
+                  <td>
+                    <span class={`status-badge ${domain.status}`}>
+                      {domain.status.toUpperCase()}
+                    </span>
+                  </td>
+                  <td style="text-align: right;">
+                    <button class="table-manage-btn">Manage</button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colspan="5" class="empty-state">No domains found.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+</DashboardLayout>
+
+<style>
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .page-header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: var(--text-main);
+  }
+
+  .subtitle {
+    margin: 0.25rem 0 0 0;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  .btn-primary {
+    background: var(--accent-cyan);
+    color: #001437;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: inline-block;
+  }
+
+  .domains-grid {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  @media (max-width: 768px) {
+    .domains-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Sidebar */
+  .sidebar-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.25rem;
+  }
+
+  .sidebar-title {
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+    color: var(--text-main);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .sidebar-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.95rem;
+  }
+
+  .sidebar-link.active {
+    background: #001437;
+    color: var(--accent-cyan);
+    font-weight: 600;
+  }
+
+  /* Main Table */
+  .table-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.95rem;
+  }
+
+  th {
+    background: #001133;
+    color: var(--text-muted);
+    font-weight: 600;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+  }
+
+  td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-main);
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  .domain-name {
+    font-weight: 600;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .ssl-icon {
+    font-size: 0.85rem;
+  }
+
+  .toggle-on {
+    color: #10B981;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+
+  .toggle-off {
+    color: var(--text-muted);
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+
+  .status-badge {
+    padding: 0.25rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: inline-block;
+  }
+
+  .status-badge.active {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10B981;
+    border: 1px solid #10B981;
+  }
+
+  .table-manage-btn {
+    background: transparent;
+    color: var(--accent-cyan);
+    border: 1px solid var(--accent-cyan);
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+
+  .table-manage-btn:hover {
+    background: rgba(0, 229, 255, 0.1);
+  }
+
+  .empty-state {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 2rem;
+  }
+</style>
