@@ -59,7 +59,7 @@ async function queryWhoisJSON(domain: string, apiKey: string): Promise<'availabl
     const url = `https://whoisjson.com/api/v1/whois?domain=${encodeURIComponent(domain)}`;
     const res = await fetchWithTimeout(url, {
       headers: { 
-        'Authorization': `TOKEN=${apiKey}`, // FIXED: Correct WhoisJSON authentication header format
+        'Authorization': `Token ${apiKey}`, // Standard WhoisJSON Token format
         'Accept': 'application/json' 
       },
     }, 8000);

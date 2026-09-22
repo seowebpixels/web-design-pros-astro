@@ -6,7 +6,7 @@ import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
   site: 'https://webdesignpros.co.za',
-  output: 'static',
+  output: 'hybrid', // Pre-renders all pages statically while enabling SSR API endpoints
   integrations: [
     sitemap()
   ],
