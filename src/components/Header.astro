@@ -115,6 +115,48 @@ const services = [
       </div> <!-- Closes .header-actions -->
     </nav> <!-- Closes nav#navMenu -->
   </div> <!-- Closes .header-container -->
+
+<!-- Cart Container inside Header -->
+<div class="cart-wrapper relative">
+  
+  <!-- Direct link to Checkout on click -->
+  <a href="/checkout" id="headerCartBtn" class="header-cart-btn hidden" aria-label="Shopping Cart">
+    <div class="cart-icon-wrapper">
+      <svg class="cart-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="9" cy="21" r="1"></circle>
+        <circle cx="20" cy="21" r="1"></circle>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+      </svg>
+      <span id="cartTotalValue" class="cart-total-price">R 0.00</span>
+      <span id="cartCountBadge" class="cart-badge">0</span>
+    </div>
+  </a>
+
+  <!-- Hover Dropdown Card -->
+  <div id="cartHoverPanel" class="cart-hover-panel">
+    <div class="panel-header">
+      <span class="panel-title">Selected Domains</span>
+      <span id="hoverItemCount" class="panel-count">0 items</span>
+    </div>
+
+    <!-- Dynamic list rendered via JS -->
+    <div id="cartHoverItemList" class="panel-item-list">
+      <!-- Item rows injected here -->
+    </div>
+
+    <div class="panel-footer">
+      <div class="subtotal-row">
+        <span>Subtotal</span>
+        <span id="hoverSubtotalPrice" class="subtotal-price">R 0.00</span>
+      </div>
+      <a href="/checkout" class="checkout-link-btn">
+        Review → <br />
+        <span class="sub-text">Click to view cart</span>
+      </a>
+    </div>
+  </div>
+
+</div>
 </header>
 
 <script>
@@ -384,11 +426,12 @@ const services = [
 
   .cart-icon-wrapper {
   position: relative;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem; /* Adds space between SVG and price text */
-  padding: 4px 12px; /* Extra horizontal padding for text */
-  height: 38px;
+  gap: 0.5rem; /* Space between SVG icon and price text */
+  min-width: 90px; /* Base width for single/double digits */
+  width: auto; /* Allows expansion for 4-digit prices */
+  padding: 6px 14px; /* Generous padding on left/right */
   border: 2px solid #00a8cc;
   border-radius: 10px;
   background-color: transparent;
@@ -434,6 +477,124 @@ const services = [
     padding: 0 4px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
   }
+
+  .cart-wrapper {
+  position: relative;
+}
+
+/* Matching the exact colors from domains.astro */
+.cart-hover-panel {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 12px;
+  width: 280px;
+  background-color: #0f172a; /* Exact match from domains.astro */
+  border: 1px solid rgba(6, 182, 212, 0.3); /* Exact translucent cyan border */
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+
+  /* Hidden by default, shown on hover */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+/* Reveal panel on hover over the wrapper */
+.cart-wrapper:hover .cart-hover-panel {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.85rem;
+}
+
+.panel-title {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.panel-count {
+  color: #22d3ee;
+  font-size: 0.75rem;
+}
+
+.panel-item-list {
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.cart-hover-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.item-domain {
+  font-weight: 600;
+  color: #ffffff;
+  font-size: 0.875rem;
+}
+
+.item-price {
+  color: #22d3ee;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.panel-footer {
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.subtotal-row {
+  display: flex;
+  justify-content: space-between;
+  color: #cbd5e1;
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+}
+
+.subtotal-price {
+  font-weight: 800;
+  color: #22d3ee;
+}
+
+.checkout-link-btn {
+  display: block;
+  text-align: center;
+  background-color: #0891b2;
+  color: #ffffff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  transition: background-color 0.2s ease;
+}
+
+.checkout-link-btn:hover {
+  background-color: #06b6d4;
+}
+
+.sub-text {
+  font-size: 0.7rem;
+  font-weight: 400;
+  opacity: 0.9;
+}
 
   .header-cart-btn.hidden {
     display: none !important;
