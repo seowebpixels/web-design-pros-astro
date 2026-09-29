@@ -563,12 +563,66 @@ import Layout from '../layouts/Layout.astro';
     }
   });
 
+  // Helper to read current cart from localStorage
+  function getCart() {
+    return JSON.parse(localStorage.getItem('cart_domains') || '[]');
+  }
+
+  // Helper to save cart to localStorage
+  function setCart(cart: any[]) {
+    localStorage.setItem('cart_domains', JSON.stringify(cart));
+    // Trigger a custom event so the Header cart icon updates immediately
+    window.dispatchEvent(new Event('cart-updated'));
+  }
+
+  // Function to update the Buy Now button visual state
+  function updateButtonState(domain: string) {
+    if (!buyBtn) return;
+    const cart = getCart();
+    const isInCart = cart.some((item: any) => item.domain === domain);
+
+    if (isInCart) {
+      buyBtn.textContent = 'View Cart →';
+      buyBtn.style.backgroundColor = '#0891b2'; // Primary teal accent
+    } else {
+      buyBtn.textContent = 'Buy Now →';
+      buyBtn.style.backgroundColor = '#059669'; // Original green
+    }
+  }
+
+  // Handle Buy Now / View Cart Click
   buyBtn?.addEventListener('click', () => {
     const domain = domainNameEl?.textContent?.trim();
-    if (domain) {
-      window.location.href = `/dashboard/domains?domain=${encodeURIComponent(domain)}&action=register`;
+    if (!domain) return;
+
+    const cart = getCart();
+    const isInCart = cart.some((item: any) => item.domain === domain);
+
+    if (!isInCart) {
+      // 1. Add new domain to cart
+      cart.push({
+        domain: domain,
+        registrationPrice: 200, // Placeholder price
+        renewalPrice: 230,       // Placeholder renewal
+        selectedYears: 1
+      });
+      setCart(cart);
+      updateButtonState(domain);
+    } else {
+      // 2. If already in cart, navigate to checkout
+      window.location.href = '/checkout';
     }
   });
+
+  // Watch for domain search results being rendered to update button state
+  const observer = new MutationObserver(() => {
+    const domain = domainNameEl?.textContent?.trim();
+    if (domain) updateButtonState(domain);
+  });
+
+  if (domainNameEl) {
+    observer.observe(domainNameEl, { childList: true, characterData: true, subtree: true });
+  }
 </script>
 
 <style>
