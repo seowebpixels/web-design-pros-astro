@@ -93,70 +93,55 @@ const services = [
         </li>
       </ul>
 
-      <!-- Far-Right Actions: CTA Button then Cart Icon -->
+      <!-- Far-Right Actions: CTA Button then Cart Icon Wrapper -->
       <div class="header-actions">
         
         <div class="header-cta-wrapper">
           <a href="/contact" class="header-cta">Let’s Talk About Your Project</a>
         </div>
 
-        <a href="/checkout" id="headerCartBtn" class="header-cart-btn hidden" aria-label="Shopping Cart">
-          <div class="cart-icon-wrapper">
-            <svg class="cart-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="9" cy="21" r="1"></circle>
-              <circle cx="20" cy="21" r="1"></circle>
-              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-            </svg>
-            <span id="cartTotalValue" class="cart-total-price">R0</span>
-            <span id="cartCountBadge" class="cart-badge">0</span>
+        <!-- Cart Wrapper (Container for hover panel positioning) -->
+        <div class="cart-wrapper">
+          <a href="/checkout" id="headerCartBtn" class="header-cart-btn hidden" aria-label="Shopping Cart">
+            <div class="cart-icon-wrapper">
+              <svg class="cart-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+              </svg>
+              <span id="cartTotalValue" class="cart-total-price">R0</span>
+              <span id="cartCountBadge" class="cart-badge">0</span>
+            </div>
+          </a>
+
+          <!-- Hover Dropdown Card -->
+          <div id="cartHoverPanel" class="cart-hover-panel">
+            <div class="panel-header">
+              <span class="panel-title">Selected Domains</span>
+              <span id="hoverItemCount" class="panel-count">0 items</span>
+            </div>
+
+            <!-- Dynamic list rendered via JS -->
+            <div id="cartHoverItemList" class="panel-item-list">
+              <!-- Item rows injected here -->
+            </div>
+
+            <div class="panel-footer">
+              <div class="subtotal-row">
+                <span>Subtotal</span>
+                <span id="hoverSubtotalPrice" class="subtotal-price">R 0.00</span>
+              </div>
+              <a href="/checkout" class="checkout-link-btn">
+                Review → <br />
+                <span class="sub-text">Click to view cart</span>
+              </a>
+            </div>
           </div>
-        </a>
+        </div>
 
       </div> <!-- Closes .header-actions -->
     </nav> <!-- Closes nav#navMenu -->
   </div> <!-- Closes .header-container -->
-
-<!-- Cart Container inside Header -->
-<div class="cart-wrapper relative">
-  
-  <!-- Direct link to Checkout on click -->
-  <a href="/checkout" id="headerCartBtn" class="header-cart-btn hidden" aria-label="Shopping Cart">
-    <div class="cart-icon-wrapper">
-      <svg class="cart-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="9" cy="21" r="1"></circle>
-        <circle cx="20" cy="21" r="1"></circle>
-        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-      </svg>
-      <span id="cartTotalValue" class="cart-total-price">R 0.00</span>
-      <span id="cartCountBadge" class="cart-badge">0</span>
-    </div>
-  </a>
-
-  <!-- Hover Dropdown Card -->
-  <div id="cartHoverPanel" class="cart-hover-panel">
-    <div class="panel-header">
-      <span class="panel-title">Selected Domains</span>
-      <span id="hoverItemCount" class="panel-count">0 items</span>
-    </div>
-
-    <!-- Dynamic list rendered via JS -->
-    <div id="cartHoverItemList" class="panel-item-list">
-      <!-- Item rows injected here -->
-    </div>
-
-    <div class="panel-footer">
-      <div class="subtotal-row">
-        <span>Subtotal</span>
-        <span id="hoverSubtotalPrice" class="subtotal-price">R 0.00</span>
-      </div>
-      <a href="/checkout" class="checkout-link-btn">
-        Review → <br />
-        <span class="sub-text">Click to view cart</span>
-      </a>
-    </div>
-  </div>
-
-</div>
 </header>
 
 <script>
@@ -168,6 +153,10 @@ const services = [
 
   const cartBtn = document.getElementById('headerCartBtn');
   const cartBadge = document.getElementById('cartCountBadge');
+  const cartTotalValue = document.getElementById('cartTotalValue');
+  const hoverItemCount = document.getElementById('hoverItemCount');
+  const cartHoverItemList = document.getElementById('cartHoverItemList');
+  const hoverSubtotalPrice = document.getElementById('hoverSubtotalPrice');
 
   const DESKTOP_BREAKPOINT = 992;
 
@@ -182,7 +171,7 @@ const services = [
     dropdownToggle?.setAttribute('aria-expanded', 'false');
   }
 
-  // Cart badge update logic
+  // Cart update & dynamic hover panel rendering logic
   function updateHeaderCart() {
     if (!cartBtn || !cartBadge) return;
 
@@ -192,6 +181,33 @@ const services = [
     if (count > 0) {
       cartBadge.textContent = String(count);
       cartBtn.classList.remove('hidden');
+
+      // Calculate subtotal
+      let subtotal = 0;
+      cart.forEach((item: any) => {
+        const price = Number(item.registrationPrice) || 0;
+        const years = Number(item.selectedYears) || 1;
+        subtotal += price * years;
+      });
+
+      const formattedTotal = `R${subtotal.toFixed(2)}`;
+
+      // Update badge header price
+      if (cartTotalValue) cartTotalValue.textContent = formattedTotal;
+
+      // Update panel count and subtotal
+      if (hoverItemCount) hoverItemCount.textContent = `${count} ${count === 1 ? 'item' : 'items'}`;
+      if (hoverSubtotalPrice) hoverSubtotalPrice.textContent = formattedTotal;
+
+      // Render items in hover panel
+      if (cartHoverItemList) {
+        cartHoverItemList.innerHTML = cart.map((item: any) => `
+          <div class="cart-hover-item">
+            <span class="item-domain">${item.domain}</span>
+            <span class="item-price">R${(Number(item.registrationPrice) || 0).toFixed(2)}</span>
+          </div>
+        `).join('');
+      }
     } else {
       cartBtn.classList.add('hidden');
     }
@@ -417,6 +433,10 @@ const services = [
     margin-left: auto;
   }
 
+  .cart-wrapper {
+    position: relative;
+  }
+
   /* Custom Shopping Cart Button Styling */
   .header-cart-btn {
     text-decoration: none;
@@ -425,23 +445,23 @@ const services = [
   }
 
   .cart-icon-wrapper {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem; /* Space between SVG icon and price text */
-  min-width: 90px; /* Base width for single/double digits */
-  width: auto; /* Allows expansion for 4-digit prices */
-  padding: 6px 14px; /* Generous padding on left/right */
-  border: 2px solid #00a8cc;
-  border-radius: 10px;
-  background-color: transparent;
-}
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 90px;
+    width: auto;
+    padding: 6px 14px;
+    border: 2px solid #00a8cc;
+    border-radius: 10px;
+    background-color: transparent;
+  }
 
-.cart-total-price {
-  color: #00a8cc;
-  font-weight: 700;
-  font-size: 0.9rem;
-}
+  .cart-total-price {
+    color: #00a8cc;
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
 
   .header-cart-btn:hover .cart-icon-wrapper {
     border-color: #00d5ff;
@@ -478,123 +498,118 @@ const services = [
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
   }
 
-  .cart-wrapper {
-  position: relative;
-}
+  /* Hover Panel - Matching exact colors from domains.astro */
+  .cart-hover-panel {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 12px;
+    width: 280px;
+    background-color: #0f172a;
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
 
-/* Matching the exact colors from domains.astro */
-.cart-hover-panel {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 12px;
-  width: 280px;
-  background-color: #0f172a; /* Exact match from domains.astro */
-  border: 1px solid rgba(6, 182, 212, 0.3); /* Exact translucent cyan border */
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-  z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+  }
 
-  /* Hidden by default, shown on hover */
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 0.2s ease, visibility 0.2s ease;
-}
+  /* Reveal panel on hover over wrapper */
+  .cart-wrapper:hover .cart-hover-panel {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
 
-/* Reveal panel on hover over the wrapper */
-.cart-wrapper:hover .cart-hover-panel {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-}
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.85rem;
+  }
 
-.panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: 0.85rem;
-}
+  .panel-title {
+    font-weight: 700;
+    color: #ffffff;
+  }
 
-.panel-title {
-  font-weight: 700;
-  color: #ffffff;
-}
+  .panel-count {
+    color: #22d3ee;
+    font-size: 0.75rem;
+  }
 
-.panel-count {
-  color: #22d3ee;
-  font-size: 0.75rem;
-}
+  .panel-item-list {
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 8px 0;
+  }
 
-.panel-item-list {
-  max-height: 200px;
-  overflow-y: auto;
-  padding: 8px 0;
-}
+  .cart-hover-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
 
-.cart-hover-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
+  .item-domain {
+    font-weight: 600;
+    color: #ffffff;
+    font-size: 0.875rem;
+  }
 
-.item-domain {
-  font-weight: 600;
-  color: #ffffff;
-  font-size: 0.875rem;
-}
+  .item-price {
+    color: #22d3ee;
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
 
-.item-price {
-  color: #22d3ee;
-  font-size: 0.875rem;
-  font-weight: 700;
-}
+  .panel-footer {
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
 
-.panel-footer {
-  padding-top: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
+  .subtotal-row {
+    display: flex;
+    justify-content: space-between;
+    color: #cbd5e1;
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+  }
 
-.subtotal-row {
-  display: flex;
-  justify-content: space-between;
-  color: #cbd5e1;
-  font-size: 0.85rem;
-  margin-bottom: 12px;
-}
+  .subtotal-price {
+    font-weight: 800;
+    color: #22d3ee;
+  }
 
-.subtotal-price {
-  font-weight: 800;
-  color: #22d3ee;
-}
+  .checkout-link-btn {
+    display: block;
+    text-align: center;
+    background-color: #0891b2;
+    color: #ffffff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: background-color 0.2s ease;
+  }
 
-.checkout-link-btn {
-  display: block;
-  text-align: center;
-  background-color: #0891b2;
-  color: #ffffff;
-  padding: 8px 12px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 0.85rem;
-  transition: background-color 0.2s ease;
-}
+  .checkout-link-btn:hover {
+    background-color: #06b6d4;
+  }
 
-.checkout-link-btn:hover {
-  background-color: #06b6d4;
-}
-
-.sub-text {
-  font-size: 0.7rem;
-  font-weight: 400;
-  opacity: 0.9;
-}
+  .sub-text {
+    font-size: 0.7rem;
+    font-weight: 400;
+    opacity: 0.9;
+  }
 
   .header-cart-btn.hidden {
     display: none !important;
