@@ -93,8 +93,13 @@ const services = [
         </li>
       </ul>
 
-      <!-- Far-Right Actions: Cart Icon & CTA Button -->
+      <!-- Far-Right Actions: CTA Button then Cart Icon -->
       <div class="header-actions">
+        
+        <div class="header-cta-wrapper">
+          <a href="/contact" class="header-cta">Let’s Talk About Your Project</a>
+        </div>
+
         <a href="/checkout" id="headerCartBtn" class="header-cart-btn hidden" aria-label="Shopping Cart">
           <div class="cart-icon-wrapper">
             <svg class="cart-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -102,17 +107,14 @@ const services = [
               <circle cx="20" cy="21" r="1"></circle>
               <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
             </svg>
+            <span id="cartTotalValue" class="cart-total-price">R0</span>
             <span id="cartCountBadge" class="cart-badge">0</span>
           </div>
         </a>
 
-        <div class="header-cta-wrapper">
-          <a href="/contact" class="header-cta">Let’s Talk About Your Project</a>
-        </div>
-      </div>
-    </nav>
-
-  </div>
+      </div> <!-- Closes .header-actions -->
+    </nav> <!-- Closes nav#navMenu -->
+  </div> <!-- Closes .header-container -->
 </header>
 
 <script>
@@ -381,18 +383,22 @@ const services = [
   }
 
   .cart-icon-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 52px;
-    height: 38px;
-    border: 2px solid #00a8cc;
-    border-radius: 10px;
-    background-color: transparent;
-    padding: 4px;
-    transition: border-color 0.2s ease, transform 0.2s ease;
-  }
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* Adds space between SVG and price text */
+  padding: 4px 12px; /* Extra horizontal padding for text */
+  height: 38px;
+  border: 2px solid #00a8cc;
+  border-radius: 10px;
+  background-color: transparent;
+}
+
+.cart-total-price {
+  color: #00a8cc;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
 
   .header-cart-btn:hover .cart-icon-wrapper {
     border-color: #00d5ff;
