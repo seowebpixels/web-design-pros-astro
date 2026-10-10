@@ -1,4 +1,6 @@
 ---
+import Layout from '../layouts/Layout.astro';
+
 export const prerender = true;
 
 /* 1. Core Web Design Packages */
@@ -120,90 +122,92 @@ const hostingTiers = [
 ];
 ---
 
-<section class="pricing-section">
-  <div class="container">
-    
-    <!-- Section 1: Web Design Packages -->
-    <div class="section-header">
-      <span class="sub-heading">TRANSPARENT PRICING</span>
-      <h2 class="section-title">Web Design & Development Packages</h2>
-    </div>
-
-    <div class="pricing-grid">
-      {buildPackages.map((pkg) => (
-        <div class={`glass-card ${pkg.highlight ? 'featured' : ''}`}>
-          {pkg.highlight && <span class="badge">Most Popular</span>}
-          <h3>{pkg.name}</h3>
-          <div class="price">{pkg.price}</div>
-          <p class="description">{pkg.description}</p>
-          
-          <ul class="features-list">
-            {pkg.features.map((feature) => (
-              <li><span class="check-icon">✓</span> {feature}</li>
-            ))}
-          </ul>
-
-          <div class="best-for">
-            <strong>BEST FOR</strong>
-            <span>{pkg.bestFor}</span>
-          </div>
-
-          <a href="/contact" class="btn-select">Launch Your Project</a>
-        </div>
-      ))}
-    </div>
-
-    <!-- Section 2: Website As A Service (WaaS) -->
-    <div class="waas-wrapper">
-      <div class="waas-header">
-        <span class="sub-label">WEBSITE AS A SERVICE</span>
-        <h3>SaaS-style Monthly Offers</h3>
-      </div>
-      <div class="waas-grid">
-        {waasOffers.map((offer) => (
-          <div class="waas-card">
-            <h4>{offer.title}</h4>
-            <div class="waas-price">
-              {offer.price} <span class="period">{offer.period}</span>
-            </div>
-            <p>{offer.details}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-
-    <!-- Section 3: Web Hosting Tiers -->
-    <div class="hosting-wrapper">
-      <div class="hosting-header">
-        <span class="sub-label">HIGH-SPEED INFRASTRUCTURE</span>
-        <h3>Web Hosting Packages</h3>
-        <p>Ultra-fast edge hosting with full cPanel email administration for your team.</p>
+<Layout title="Pricing">
+  <section class="pricing-section">
+    <div class="container">
+      
+      <!-- Section 1: Web Design Packages -->
+      <div class="section-header">
+        <span class="sub-heading">TRANSPARENT PRICING</span>
+        <h2 class="section-title">Web Design & Development Packages</h2>
       </div>
 
-      <div class="hosting-grid">
-        {hostingTiers.map((tier) => (
-          <div class="hosting-card">
-            <div class="hosting-icon">🌐</div>
-            <h4>{tier.name}</h4>
-            <div class="hosting-price">
-              {tier.price} <span class="period">/monthly</span>
-            </div>
-            <ul class="hosting-specs">
-              <li>{tier.storage}</li>
-              <li>{tier.bandwidth}</li>
-              <li>{tier.email}</li>
-              <li>cPanel Admin Access</li>
-              <li>{tier.support}</li>
-              <li>{tier.domain}</li>
+      <div class="pricing-grid">
+        {buildPackages.map((pkg) => (
+          <div class={`glass-card ${pkg.highlight ? 'featured' : ''}`}>
+            {pkg.highlight && <span class="badge">Most Popular</span>}
+            <h3>{pkg.name}</h3>
+            <div class="price">{pkg.price}</div>
+            <p class="description">{pkg.description}</p>
+            
+            <ul class="features-list">
+              {pkg.features.map((feature) => (
+                <li><span class="check-icon">✓</span> {feature}</li>
+              ))}
             </ul>
-            <a href="/contact" class="btn-hosting">Get Started</a>
+
+            <div class="best-for">
+              <strong>BEST FOR</strong>
+              <span>{pkg.bestFor}</span>
+            </div>
+
+            <a href="/contact" class="btn-select">Launch Your Project</a>
           </div>
         ))}
       </div>
-    </div>
 
-  </div>
-</section>
+      <!-- Section 2: Website As A Service (WaaS) -->
+      <div class="waas-wrapper">
+        <div class="waas-header">
+          <span class="sub-label">WEBSITE AS A SERVICE</span>
+          <h3>SaaS-style Monthly Offers</h3>
+        </div>
+        <div class="waas-grid">
+          {waasOffers.map((offer) => (
+            <div class="waas-card">
+              <h4>{offer.title}</h4>
+              <div class="waas-price">
+                {offer.price} <span class="period">{offer.period}</span>
+              </div>
+              <p>{offer.details}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Section 3: Web Hosting Tiers -->
+      <div class="hosting-wrapper">
+        <div class="hosting-header">
+          <span class="sub-label">HIGH-SPEED INFRASTRUCTURE</span>
+          <h3>Web Hosting Packages</h3>
+          <p>Ultra-fast edge hosting with full cPanel email administration for your team.</p>
+        </div>
+
+        <div class="hosting-grid">
+          {hostingTiers.map((tier) => (
+            <div class="hosting-card">
+              <div class="hosting-icon">🌐</div>
+              <h4>{tier.name}</h4>
+              <div class="hosting-price">
+                {tier.price} <span class="period">/monthly</span>
+              </div>
+              <ul class="hosting-specs">
+                <li>{tier.storage}</li>
+                <li>{tier.bandwidth}</li>
+                <li>{tier.email}</li>
+                <li>cPanel Admin Access</li>
+                <li>{tier.support}</li>
+                <li>{tier.domain}</li>
+              </ul>
+              <a href="/contact" class="btn-hosting">Get Started</a>
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  </section>
+</Layout>
 
 <style>
   .pricing-section {
