@@ -56,16 +56,24 @@ form.querySelectorAll<HTMLInputElement>('input[name="account"]').forEach(radio =
   signedIn = false; byId('login-status').textContent = '';
   const existing = account() === 'existing';
   byId('demo-login').hidden = !existing;
+  const billingFields = byId<HTMLFieldSetElement>('billing-fields');
+  billingFields.hidden = existing;
+  billingFields.disabled = existing;
+  byId('account-note').hidden = existing;
+  byId('password-help').hidden = existing;
+  byId('owner-source').textContent = existing
+    ? 'Use my saved account details for the domain owner'
+    : 'Use my billing details for the domain owner';
   const password = byId<HTMLInputElement>('password'); password.minLength = existing ? 1 : 8; password.autocomplete = existing ? 'current-password' : 'new-password'; password.value = '';
-  byId('password-help').textContent = existing ? 'Sample password only · preview sign-in below' : 'At least 8 characters · preview only';
-  byId('account-note').textContent = existing ? 'Preview signing in without leaving checkout. Enter sample credentials and billing details; no real account is accessed.' : 'Create your account as part of checkout. Use a made-up password for this preview.';
+  byId('password-help').textContent = existing ? 'Sample password only' : 'At least 8 characters · preview only';
+  byId('account-note').textContent = existing ? 'Sign in to use your saved account details.' : 'Create your account as part of checkout. Use a made-up password for this preview.';
 }));
 form.querySelectorAll('input[type="email"], #password').forEach(input => input.addEventListener('input', () => { signedIn = false; byId('login-status').textContent = ''; }));
 byId('demo-login').addEventListener('click', () => {
   const email = form.elements.namedItem('email') as HTMLInputElement;
   const password = byId<HTMLInputElement>('password');
   if (!email.reportValidity() || !password.reportValidity()) return;
-  signedIn = true; byId('login-status').textContent = 'Demo sign-in complete. Continue with your billing details below.';
+  signedIn = true; byId('login-status').textContent = 'Demo login complete. In the live checkout, your saved account details will be used.';
 });
 byId<HTMLInputElement>('same-owner').addEventListener('change', event => {
   const same = (event.target as HTMLInputElement).checked;
@@ -74,7 +82,7 @@ byId<HTMLInputElement>('same-owner').addEventListener('change', event => {
 form.addEventListener('submit', event => {
   event.preventDefault();
   if (!cart.length || !form.reportValidity()) return;
-  if (account() === 'existing' && !signedIn) { status.textContent = 'Please use Preview sign-in before continuing.'; byId('demo-login').focus(); return; }
+  if (account() === 'existing' && !signedIn) { status.textContent = 'Please log in before continuing.'; byId('demo-login').focus(); return; }
   status.textContent = ''; paymentOpen = true;
   byId('payment-total').textContent = `Demo total: ${money(total())}`;
   dialog.showModal();
