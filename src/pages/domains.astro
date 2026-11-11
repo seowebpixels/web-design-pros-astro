@@ -565,7 +565,10 @@ import Layout from '../layouts/Layout.astro';
 
   // Helper to read current cart from localStorage
   function getCart() {
-    return JSON.parse(localStorage.getItem('cart_domains') || '[]');
+    try {
+      const cart = JSON.parse(localStorage.getItem('cart_domains') || '[]');
+      return Array.isArray(cart) ? cart : [];
+    } catch { return []; }
   }
 
   // Helper to save cart to localStorage
@@ -600,13 +603,20 @@ import Layout from '../layouts/Layout.astro';
 
     if (!isInCart) {
       // 1. Add new domain to cart
+      const registrationPrice = priceForDomain(domain);
+      if (registrationPrice === null) return;
+      const renewalPrices: Record<string, number> = { 'co.za': 85, 'org.za': 110, 'com': 230, 'net': 284 };
+      const suffix = TLD_SUFFIXES_LONGEST_FIRST.find(suffix => domain.toLowerCase().endsWith(`.${suffix}`));
       cart.push({
-        domain: domain,
-        registrationPrice: 200, // Placeholder price
-        renewalPrice: 230,       // Placeholder renewal
+        domain,
+        registrationPrice,
+        renewalPrice: suffix ? (renewalPrices[suffix] ?? null) : null,
         selectedYears: 1
       });
-      setCart(cart);
+      try { setCart(cart); } catch {
+        showError('Your browser could not save the cart. Please enable browser storage and try again.');
+        return;
+      }
       updateButtonState(domain);
     } else {
       // 2. If already in cart, navigate to checkout
