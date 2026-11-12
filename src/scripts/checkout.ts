@@ -61,9 +61,9 @@ form.querySelectorAll<HTMLInputElement>('input[name="account"]').forEach(radio =
   byId('owner-source').textContent = existing
     ? 'Use my saved account details for the domain owner'
     : 'Use my billing details for the domain owner';
-  const password = byId<HTMLInputElement>('password'); password.minLength = existing ? 1 : 12; password.autocomplete = existing ? 'current-password' : 'new-password'; password.value = '';
-  byId('password-help').textContent = existing ? '' : 'At least 12 characters';
-  byId('account-note').textContent = existing ? 'Sign in to use your saved account details.' : 'Create your account as part of checkout.';
+  const password = byId<HTMLInputElement>('password'); password.minLength = existing ? 1 : 8; password.autocomplete = existing ? 'current-password' : 'new-password'; password.value = '';
+  byId('password-help').textContent = existing ? '' : 'At least 8 characters';
+  byId('account-note').textContent = existing ? 'Sign in to use your saved account details.' : 'Create your account as part of checkout. When you continue, we will email you a link to verify your address before payment.';
 }));
 byId<HTMLInputElement>('same-owner').addEventListener('change', event => {
   const same = (event.target as HTMLInputElement).checked;
@@ -73,9 +73,11 @@ form.addEventListener('submit', async event => {
   event.preventDefault();
   if (paymentBusy || !cart.length || !form.reportValidity()) return;
   const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
-  paymentBusy = true; submit.disabled = true; status.textContent = 'Preparing secure payment…';
+  const paymentStatus=byId('payment-status');
+  paymentBusy = true; submit.disabled = true; paymentStatus.textContent = 'Checking your account…';
   try {
     await ensureCheckoutAccount();
+    paymentStatus.textContent = 'Preparing secure payment…';
     const payload = {domains:cart.map(item=>item.domain), hosting:hosting.checked, termsAccepted:byId<HTMLInputElement>('terms').checked, quotedAmount:Math.round(total()*100)};
     const fingerprint = JSON.stringify(payload);
     let saved;
@@ -96,6 +98,9 @@ form.addEventListener('submit', async event => {
     status.textContent = error instanceof Error && error.name === 'TimeoutError'
       ? 'Payment setup timed out. Retry to resume the same payment attempt.'
       : error instanceof Error ? error.message : 'Unable to start payment. Please try again.';
+    paymentStatus.textContent=status.textContent;
+    paymentStatus.focus({preventScroll:true});
+    paymentStatus.scrollIntoView({block:'center'});
   } finally { paymentBusy = false; submit.disabled = false; }
 });
 window.addEventListener('storage', event => {

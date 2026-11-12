@@ -55,10 +55,13 @@ export async function ensureCheckoutAccount(){
     saveDraft();
     await accountRequest('/api/auth/sign-up/email',{name:field('firstName').value+' '+field('lastName').value,email:field('email').value,password:password.value,callbackURL:'/checkout/'});
     password.value='';
-    throw new Error('Check your inbox and verify your email address to continue. If you already have an account, select Login. Your cart and billing draft are saved.');
+    throw new Error(`Check the inbox and spam folder for ${field('email').value}. Open the email titled “Verify your WDP email address” and click its link, then return to checkout to continue to payment. If you already have an account, select Login. Your cart and billing draft are saved.`);
   }
   if(!form.reportValidity())throw new Error('Please complete your billing details.');
   const response=await fetch('/api/customer/profile',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.fromEntries(profileKeys.map(key=>[key,field(key).value])))});
   const value=await response.json();if(!response.ok)throw new Error(value.error || 'Unable to save billing details.');
   sessionStorage.removeItem('wdp_billing_draft');
 }
+// Verification links may open another tab. Refresh the session when returning here.
+window.addEventListener('focus',()=>{if(!customer)void loadCheckoutAccount();});
+window.addEventListener('pageshow',event=>{if(event.persisted && !customer)void loadCheckoutAccount();});

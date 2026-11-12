@@ -36,7 +36,7 @@ export function createAuth(env: AccountEnv, waitUntil: (promise: Promise<unknown
     account:{modelName:'wdp_auth_accounts',accountLinking:{enabled:false}},
     verification:{modelName:'wdp_auth_verifications'},
     emailAndPassword:{
-      enabled:true,minPasswordLength:12,maxPasswordLength:128,requireEmailVerification:true,revokeSessionsOnPasswordReset:true,
+      enabled:true,minPasswordLength:8,maxPasswordLength:128,requireEmailVerification:true,revokeSessionsOnPasswordReset:true,
       sendResetPassword:async({user,url})=>{send(user.email,'Reset your WDP password',`Use this link to reset your Web Design Pros password:\n\n${url}\n\nIf you did not request this, you can ignore this email.`);}
     },
     emailVerification:{

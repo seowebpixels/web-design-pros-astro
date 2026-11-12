@@ -31,6 +31,20 @@ function setup(){
 afterEach(()=>vi.restoreAllMocks());
 describe('customer accounts',()=>{
   it('does not enable accounts without configured secrets',()=>{expect(()=>createAuth({},()=>{})).toThrow('not configured');});
+  it('accepts eight-character passwords and rejects seven for signup and password reset',async()=>{
+    const app=setup();
+    const signup=(email:string,password:string)=>app.auth.handler(app.request('sign-up/email',{name:'Test customer',email,password,callbackURL:'/checkout/'}));
+    expect((await signup('short@example.com','Abcd123')).status).toBe(400);
+    expect((await signup('eight@example.com','Abcd1234')).status).toBe(200);
+    await app.verify('eight@example.com');app.mail.length=0;
+    await app.auth.handler(app.request('request-password-reset',{email:'eight@example.com',redirectTo:'https://wdp.test/account/'}));
+    await Promise.all(app.tasks);
+    const link=app.mail[0].text.match(/https:\/\/\S+/)[0];
+    const redirect=await app.auth.handler(new Request(link));
+    const token=new URL(redirect.headers.get('location')!).searchParams.get('token');
+    expect((await app.auth.handler(app.request('reset-password',{token,newPassword:'New1234'}))).status).toBe(400);
+    expect((await app.auth.handler(app.request('reset-password',{token,newPassword:'New12345'}))).status).toBe(200);
+  });
   it('creates separate auth records, hashes passwords, requires verification and issues secure session cookies',async()=>{
     const app=setup();const response=await app.register('new@example.com');
     expect(response.status).toBe(200);

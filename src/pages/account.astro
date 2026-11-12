@@ -11,7 +11,7 @@ import Layout from '../layouts/Layout.astro';
       <label id="name-label" hidden>Full name<input id="name" autocomplete="name" maxlength="160" /></label>
       <label id="email-label">Email address<input id="email" type="email" autocomplete="email" required /></label>
       <label id="password-label">Password<input id="account-password" type="password" autocomplete="current-password" required maxlength="128" /></label>
-      <p id="password-tip" hidden>Use at least 12 characters.</p>
+      <p id="password-tip" hidden>Use at least 8 characters.</p>
       <button id="account-submit" type="submit">Login</button>
     </form>
     <a href="/checkout/">Return to checkout →</a>
@@ -28,7 +28,7 @@ import Layout from '../layouts/Layout.astro';
   let mode=params.has('token')?'reset':'login'; let busy=false;
   function display(){
     element('name-label').hidden=mode!=='register';name.required=mode==='register';
-    element('password-label').hidden=mode==='forgot';password.required=mode!=='forgot';password.minLength=mode==='login'?1:12;
+    element('password-label').hidden=mode==='forgot';password.required=mode!=='forgot';password.minLength=mode==='login'?1:8;
     password.autocomplete=mode==='login'?'current-password':'new-password';password.value='';
     element('email-label').hidden=mode==='reset';email.required=mode!=='reset';
     element('password-tip').hidden=!['register','reset'].includes(mode);
