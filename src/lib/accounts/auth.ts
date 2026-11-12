@@ -16,7 +16,7 @@ export function accountJson(value: unknown, status = 200) {
 export function accountFailure(error: unknown) {
   return error instanceof AccountError ? accountJson({error:error.message},error.status) : accountJson({error:'Account service unavailable. Please try again shortly.'},503);
 }
-export function createAuth(env: AccountEnv, waitUntil: (promise: Promise<unknown>)=>void) {
+export function createAuth(env: AccountEnv, waitUntil: (promise: Promise<unknown>)=>void, initialProfile?:Record<string,string>) {
   if (env.WDP_ACCOUNTS_ENABLED !== 'true' || !env.DB || !env.AUTH_SECRET || env.AUTH_SECRET.length < 32 || !env.AUTH_BASE_URL || !env.RESEND_API_KEY || !env.AUTH_FROM_EMAIL)
     throw new AccountError(503,'Customer accounts are not configured yet. Please contact WDP.');
   const base = new URL(env.AUTH_BASE_URL);
@@ -31,6 +31,11 @@ export function createAuth(env: AccountEnv, waitUntil: (promise: Promise<unknown
   return betterAuth({
     appName:'Web Design Pros',baseURL:base.origin,basePath:'/api/auth',secret:env.AUTH_SECRET,
     database:env.DB,trustedOrigins:[base.origin],
+    // Runs only for a newly created user, before signup sends verification email.
+    // A duplicate signup must never replace an existing customer's billing details.
+    databaseHooks:{user:{create:{after:async user=>{
+      if(initialProfile) await env.DB!.prepare('INSERT INTO wdp_customer_profiles (auth_user_id,profile_json) VALUES (?,?)').bind(user.id,JSON.stringify(initialProfile)).run();
+    }}}},
     user:{modelName:'wdp_auth_users'},
     session:{modelName:'wdp_auth_sessions',expiresIn:7*24*60*60,updateAge:24*60*60},
     account:{modelName:'wdp_auth_accounts',accountLinking:{enabled:false}},

@@ -28,7 +28,7 @@ This adds verified customer accounts, login/logout, password recovery and saved 
 
 ## Check the journey
 
-- New email: signup sends a verification link and blocks sign-in/payment until verified. The browser cart stays available. Checkout keeps a billing draft in that tab's session storage; passwords are never stored there.
+- New email: checkout saves the validated billing details against the newly created account before sending a verification link. Sign-in/payment stay blocked until verified. On return, billing details are pre-populated even if the link opens a new tab. The cart stays in that browser. Passwords are never stored in browser drafts. A duplicate signup cannot replace an existing customer's billing details.
 - Existing verified customer: login reveals saved billing details; a second customer cannot access the first customer's profile.
 - Forgot password: generic confirmation avoids disclosing registered addresses; emailed reset tokens are single use. Reset revokes existing sessions. Passwords require at least 8 characters and are hashed by Better Auth.
 - Logout: invalidates the session. Direct `/dashboard/` navigation redirects to login. Customer dashboard totals start empty until real orders/services/invoices are implemented.

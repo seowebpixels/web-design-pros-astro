@@ -31,6 +31,38 @@ function setup(){
 afterEach(()=>vi.restoreAllMocks());
 describe('customer accounts',()=>{
   it('does not enable accounts without configured secrets',()=>{expect(()=>createAuth({},()=>{})).toThrow('not configured');});
+  it('saves signup billing details before sending verification and returns them in a new browser tab',async()=>{
+    const app=setup();
+    const billingProfile={firstName:'New',lastName:'Customer',phone:'0100000000',company:'',address:'Sample street',city:'Test city',province:'Test province',postalCode:'0000',country:'South Africa'};
+    vi.mocked(fetch).mockImplementationOnce(async(_url,options)=>{
+      const saved=app.sql.prepare('SELECT profile_json FROM wdp_customer_profiles').get()!;
+      expect(JSON.parse(saved.profile_json as string)).toEqual(billingProfile);
+      app.mail.push(JSON.parse(options!.body as string));
+      return new Response('{"id":"test-email"}',{status:200});
+    });
+    const request=app.request('sign-up/email',{name:'New Customer',email:'new@example.com',password:'Abcd1234',callbackURL:'/checkout/',billingProfile});
+    expect((await authEndpoint(app.context(request))).status).toBe(200);
+    const cookie=app.cookie(await app.verify('new@example.com'));
+    // A fresh request represents the verification tab: no browser draft is supplied.
+    const response=await onRequestGet(app.context(new Request('https://wdp.test/api/customer/profile',{headers:{Cookie:cookie}})));
+    expect(response.status).toBe(200);expect((await response.json()).profile).toEqual(billingProfile);
+  });
+  it('does not overwrite billing details through a duplicate unauthenticated signup',async()=>{
+    const app=setup();
+    const profile={firstName:'Original',lastName:'Customer',phone:'0100000000',company:'',address:'Sample street',city:'Test city',province:'Test province',postalCode:'0000',country:'South Africa'};
+    const signup=(billingProfile:unknown)=>authEndpoint(app.context(app.request('sign-up/email',{name:'Customer',email:'same@example.com',password:'Abcd1234',callbackURL:'/checkout/',billingProfile})));
+    expect((await signup(profile)).status).toBe(200);
+    await signup({...profile,firstName:'Changed'});
+    const saved=app.sql.prepare('SELECT profile_json FROM wdp_customer_profiles').get()!;
+    expect(JSON.parse(saved.profile_json as string)).toEqual(profile);
+    expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_auth_users').get()!.n).toBe(1);
+  });
+  it('rejects incomplete signup billing details before creating an account',async()=>{
+    const app=setup();
+    const response=await authEndpoint(app.context(app.request('sign-up/email',{name:'Customer',email:'new@example.com',password:'Abcd1234',billingProfile:{firstName:'Incomplete'}})));
+    expect(response.status).toBe(400);expect(app.mail).toHaveLength(0);
+    expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_auth_users').get()!.n).toBe(0);
+  });
   it('accepts eight-character passwords and rejects seven for signup and password reset',async()=>{
     const app=setup();
     const signup=(email:string,password:string)=>app.auth.handler(app.request('sign-up/email',{name:'Test customer',email,password,callbackURL:'/checkout/'}));

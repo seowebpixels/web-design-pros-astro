@@ -9,10 +9,6 @@ const login=document.getElementById('account-login') as HTMLButtonElement;
 const logout=document.getElementById('account-logout') as HTMLButtonElement;
 let customer:any=null;
 let busy=false;
-function saveDraft(){
-  const draft=Object.fromEntries(profileKeys.map(key=>[key,field(key).value]));
-  sessionStorage.setItem('wdp_billing_draft',JSON.stringify(draft));
-}
 function signedIn(value:any){
   customer=value;password.value='';password.disabled=true;password.required=false;
   field('email').value=value.user.email;field('email').disabled=true;
@@ -26,10 +22,6 @@ function signedIn(value:any){
   notice.textContent=value.profile?'Your saved billing details are ready. You can update them below.':'Complete your billing details to continue.';
 }
 export async function loadCheckoutAccount(){
-  try{
-    const draft=JSON.parse(sessionStorage.getItem('wdp_billing_draft') || 'null');
-    if(draft)for(const key of profileKeys)if(typeof draft[key]==='string')field(key).value=draft[key];
-  }catch{/* No usable draft. */}
   try{const response=await fetch('/api/customer/profile',{cache:'no-store',credentials:'same-origin'});if(response.ok)signedIn(await response.json());}catch{/* Existing checkout remains available. */}
 }
 login.addEventListener('click',async()=>{
@@ -52,10 +44,9 @@ export async function ensureCheckoutAccount(){
   if(!customer){
     const mode=form.querySelector<HTMLInputElement>('input[name="account"]:checked')!.value;
     if(mode==='existing')throw new Error('Please log in before continuing.');
-    saveDraft();
-    await accountRequest('/api/auth/sign-up/email',{name:field('firstName').value+' '+field('lastName').value,email:field('email').value,password:password.value,callbackURL:'/checkout/'});
+    await accountRequest('/api/auth/sign-up/email',{name:field('firstName').value+' '+field('lastName').value,email:field('email').value,password:password.value,callbackURL:'/checkout/',billingProfile:Object.fromEntries(profileKeys.map(key=>[key,field(key).value]))});
     password.value='';
-    throw new Error(`Check the inbox and spam folder for ${field('email').value}. Open the email titled “Verify your WDP email address” and click its link, then return to checkout to continue to payment. If you already have an account, select Login. Your cart and billing draft are saved.`);
+    throw new Error(`Check the inbox and spam folder for ${field('email').value}. Open the email titled “Verify your WDP email address” and click its link, then return to checkout to continue to payment. Your billing details are saved and will be filled in for you. If you already have an account, select Login.`);
   }
   if(!form.reportValidity())throw new Error('Please complete your billing details.');
   const response=await fetch('/api/customer/profile',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.fromEntries(profileKeys.map(key=>[key,field(key).value])))});
