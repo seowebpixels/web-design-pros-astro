@@ -6,6 +6,6 @@ export default defineConfig({
     // library functions (normalisation, validation, RDAP response
     // classification), not Astro components or browser code.
     environment: 'node',
-    include: ['src/lib/domains/__tests__/**/*.test.ts'],
+    include: ['src/lib/domains/__tests__/**/*.test.ts', 'src/lib/payments/__tests__/**/*.test.ts'],
   },
 });

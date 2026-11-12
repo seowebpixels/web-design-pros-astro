@@ -4,7 +4,7 @@ const money = (value: number) => new Intl.NumberFormat('en-ZA', { style: 'curren
 const status = byId('checkout-status');
 let cart: CartItem[] = [];
 const form = byId<HTMLFormElement>('checkout-form');
-const dialog = byId<HTMLDialogElement>('yoco');
+let paymentBusy = false;
 const hosting = byId<HTMLInputElement>('hosting');
 const account = () => form.querySelector<HTMLInputElement>('input[name="account"]:checked')!.value;
 const extras = () => hosting.checked ? 60 : 0;
@@ -75,16 +75,37 @@ byId<HTMLInputElement>('same-owner').addEventListener('change', event => {
   const same = (event.target as HTMLInputElement).checked;
   const fields = byId<HTMLFieldSetElement>('owner-fields'); fields.hidden = same; fields.disabled = same;
 });
-form.addEventListener('submit', event => {
+form.addEventListener('submit', async event => {
   event.preventDefault();
-  if (!cart.length || !form.reportValidity()) return;
-  if (account() === 'existing') { status.textContent = 'Account sign-in is not available yet. Please contact WDP to continue with your order.'; byId('account-login').focus(); return; }
-  status.textContent = '';
-  dialog.showModal();
+  if (paymentBusy || !cart.length || !form.reportValidity()) return;
+  if (account() === 'existing') { status.textContent = 'Account sign-in is not available yet. Use the new-customer option with sample details to test the payment journey.'; byId('account-login').focus(); return; }
+  const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+  paymentBusy = true; submit.disabled = true; status.textContent = 'Preparing secure payment…';
+  try {
+    const payload = {domains:cart.map(item=>item.domain), hosting:hosting.checked, termsAccepted:byId<HTMLInputElement>('terms').checked, quotedAmount:Math.round(total()*100)};
+    const fingerprint = JSON.stringify(payload);
+    let saved;
+    try { saved = JSON.parse(sessionStorage.getItem('wdp_payment_attempt') || 'null'); } catch { saved = null; }
+    if (!saved || saved.fingerprint !== fingerprint || saved.completed) saved = {attemptId:crypto.randomUUID(), accessToken:crypto.randomUUID(), fingerprint};
+    sessionStorage.setItem('wdp_payment_attempt',JSON.stringify(saved));
+    // Send only the cart and a private status-access token. No password, card or personal data.
+    const response = await fetch('/api/payments/create', {
+      method:'POST', headers:{'Content-Type':'application/json'}, signal:AbortSignal.timeout(20000),
+      body:JSON.stringify({...payload, attemptId:saved.attemptId, accessToken:saved.accessToken})
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || 'Unable to start payment. Please try again.');
+    const destination = new URL(result.redirectUrl);
+    if (destination.protocol !== 'https:' || !(destination.hostname === 'yoco.com' || destination.hostname.endsWith('.yoco.com'))) throw new Error('Invalid payment destination.');
+    window.location.assign(destination.href);
+  } catch(error) {
+    status.textContent = error instanceof Error && error.name === 'TimeoutError'
+      ? 'Payment setup timed out. Retry to resume the same payment attempt.'
+      : error instanceof Error ? error.message : 'Unable to start payment. Please try again.';
+  } finally { paymentBusy = false; submit.disabled = false; }
 });
 window.addEventListener('storage', event => {
   if (event.key !== 'cart_domains' && event.key !== null) return;
-  if (dialog.open) dialog.close();
   status.textContent = 'Your cart changed in another tab. Please review your order again.';
   loadCart(); render();
 });

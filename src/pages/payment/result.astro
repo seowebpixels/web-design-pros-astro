@@ -1,0 +1,20 @@
+---
+export const prerender = true;
+import Layout from '../../layouts/Layout.astro';
+---
+<Layout title="Payment status | Web Design Pros">
+  <section class="payment-result">
+    <span class="eyebrow">WEB DESIGN PROS</span>
+    <h1 id="result-title">Checking payment</h1>
+    <p id="result-message" role="status" aria-live="polite">Please wait while we confirm your payment.</p>
+    <p id="result-reference"></p>
+    <p class="test-note">Test transaction only. No money is charged, no account is created and no domain is registered.</p>
+    <div class="actions"><button id="check-payment" type="button">Check again</button><a href="/checkout/">Return to checkout →</a><a href="/contact/">Contact WDP</a></div>
+  </section>
+</Layout>
+<script>
+  import '../../scripts/payment-result';
+</script>
+<style>
+  .payment-result{max-width:780px;margin:0 auto;padding:160px 24px 90px}.eyebrow{font-size:.8rem;letter-spacing:2px;color:#89cff0}h1{text-align:left;margin:14px 0;text-transform:none}p{margin:20px 0;overflow-wrap:anywhere}.test-note{color:#b6c4d9;font-size:.85rem}.actions{display:flex;align-items:center;gap:22px;flex-wrap:wrap}a{color:#89cff0}button{background:#0096ff;border:0;border-radius:7px;padding:12px 20px;color:white;font:inherit;cursor:pointer}button:disabled{opacity:.6}button:focus-visible,a:focus-visible{outline:2px solid #89cff0;outline-offset:4px}
+</style>
