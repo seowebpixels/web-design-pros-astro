@@ -1,4 +1,4 @@
-export {};
+import { clearPaidDomains } from '../lib/payments/cart';
 const params = new URLSearchParams(location.search);
 const attempt = params.get('attempt');
 const outcome = params.get('outcome');
@@ -24,8 +24,15 @@ async function check() {
     document.getElementById('result-reference')!.textContent = `Reference: ${result.reference}`;
     if (result.status === 'paid') {
       title.textContent = 'Test payment confirmed';
-      message.textContent = `The payment provider confirmed ${new Intl.NumberFormat('en-ZA',{style:'currency',currency:'ZAR'}).format(result.amount/100)}. Your cart is kept so you can test again.`;
-      button.hidden = true; saved.completed = true; sessionStorage.setItem('wdp_payment_attempt',JSON.stringify(saved));
+      message.textContent = `The payment provider confirmed ${new Intl.NumberFormat('en-ZA',{style:'currency',currency:'ZAR'}).format(result.amount/100)}. Your paid items have been removed from the cart.`;
+      saved.completed = true;
+      try {
+        clearPaidDomains(result,saved,localStorage,sessionStorage,()=>window.dispatchEvent(new Event('cart-updated')));
+        button.hidden = true;
+      } catch {
+        message.textContent = 'Your test payment is confirmed, but the browser could not update your cart. Allow browser storage and click Check again. Do not pay again.';
+        button.hidden = false;
+      }
     } else if (result.status === 'failed') {
       title.textContent = 'Payment unsuccessful'; message.textContent = 'Your cart is unchanged. Return to checkout to try again.';
       saved.completed = true; sessionStorage.setItem('wdp_payment_attempt',JSON.stringify(saved));

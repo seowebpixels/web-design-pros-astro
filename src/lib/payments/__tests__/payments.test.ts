@@ -86,6 +86,8 @@ describe('sandbox payment engine',()=>{
     expect((await paymentWebhook({request:await signed(event),env})).status).toBe(200);
     await paymentWebhook({request:await signed({...event,type:'payment.failed',payload:{...event.payload,status:'failed'}}),env});
     expect(sql.prepare('SELECT status FROM payment_tests').get()!.status).toBe('paid');
+    const verified = await (await paymentStatus({request:new Request(`https://wdp.test/api/payments/status?attempt=${attemptId}`,{headers:{Authorization:`Bearer ${accessToken}`}}),env})).json();
+    expect(verified.paidDomains).toEqual(['example.co.za']);
     expect((await createPayment({request:createRequest(),env})).status).toBe(409);
   });
   it('requests redelivery if webhook beats checkout persistence',async()=>{

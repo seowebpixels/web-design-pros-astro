@@ -1,6 +1,6 @@
 # WDP test payments
 
-This is a sandbox integration for exploring the real hosted payment journey. It cannot accept live keys or live webhook events. It creates **test-payment attempts**, not customer accounts, registrations, invoices, hosting or fulfilment tasks. Billing details/passwords are not sent to the payment API or saved. The existing browser cart is retained.
+This is a sandbox integration for exploring the real hosted payment journey. It cannot accept live keys or live webhook events. It creates **test-payment attempts**, not customer accounts, registrations, invoices, hosting or fulfilment tasks. Billing details/passwords are not sent to the payment API or saved. Paid domains are removed from the browser cart only after verified payment; unpaid and newly added domains remain.
 
 ## Cloudflare Pages setup
 
@@ -23,7 +23,7 @@ node scripts/register-yoco-test-webhook.mjs
 
 Search for a priced domain, open checkout, select **new customer**, enter sample details, accept the terms and continue to payment. Use the current test-card instructions shown in Yoco's account/developer testing guide, never a real card. The gateway is initially shown without custom branding so we can inspect its actual supported experience.
 
-Try success, decline and cancel. Return URLs all go to `/payment/result/`, but success is shown only after a signed, matching **test** webhook. The browser polls for up to 30 seconds, then offers Check again. A pending result is not proof of failure; do not pay again until resolved. The cart is retained. Unsaved form entries do not persist across navigation. Account sign-in remains unavailable until authentication is implemented.
+Try success, decline and cancel. Return URLs all go to `/payment/result/`, but success is shown only after a signed, matching **test** webhook. The browser polls for up to 30 seconds, then offers Check again. A pending result is not proof of failure; do not pay again until resolved. Paid domains are removed after verified payment. Cancelled, failed and pending attempts keep their cart. Unsaved form entries do not persist across navigation. Account sign-in remains unavailable until authentication is implemented.
 
 On success, D1 should show `status = 'paid'`, the expected amount in cents and the provider payment ID. Repeat notifications do not cause fulfilment or duplicate updates. Amount/currency mismatches, stale/forged signatures and live-mode events are rejected. Unknown checkout events return 503 to allow redelivery if notification beats persistence.
 

@@ -218,6 +218,10 @@ const services = [
 
   // Listen for real-time updates from domain additions
   window.addEventListener('cart-updated', updateHeaderCart);
+  window.addEventListener('storage', event => {
+    if (event.key === 'cart_domains' || event.key === null) updateHeaderCart();
+  });
+  window.addEventListener('pageshow', updateHeaderCart);
 
   // Mobile hamburger toggle
   toggleBtn?.addEventListener('click', () => {

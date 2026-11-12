@@ -41,7 +41,7 @@ export async function paymentStatus({request,env}: Context) {
     if (!uuid(id) || !uuid(token)) throw new PaymentError(404,'Payment attempt not found.');
     const order = await db.prepare('SELECT * FROM payment_tests WHERE id=? AND access_hash=?').bind(id,await hash(token)).first<Row>();
     if (!order) throw new PaymentError(404,'Payment attempt not found.');
-    return json({status:order.status,amount:order.amount,currency:'ZAR',mode:'test',reference:order.id});
+    return json({status:order.status,amount:order.amount,currency:'ZAR',mode:'test',reference:order.id,paidDomains:order.status === 'paid' ? JSON.parse(order.cart_json).domains.map((item: {domain:string}) => item.domain) : []});
   } catch(error) { return failure(error); }
 }
 export async function paymentWebhook({request,env}: Context) {
