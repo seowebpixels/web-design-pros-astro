@@ -3,14 +3,11 @@ const byId = <T extends HTMLElement = HTMLElement>(id: string) => document.getEl
 const money = (value: number) => new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' }).format(value);
 const status = byId('checkout-status');
 let cart: CartItem[] = [];
-let signedIn = false;
-let paymentOpen = false;
 const form = byId<HTMLFormElement>('checkout-form');
 const dialog = byId<HTMLDialogElement>('yoco');
 const hosting = byId<HTMLInputElement>('hosting');
-const emailService = byId<HTMLInputElement>('email-service');
 const account = () => form.querySelector<HTMLInputElement>('input[name="account"]:checked')!.value;
-const extras = () => (hosting.checked ? 49 : 0) + (emailService.checked ? 29 : 0);
+const extras = () => hosting.checked ? 60 : 0;
 const total = () => cart.reduce((sum, item) => sum + item.registrationPrice, 0) + extras();
 function loadCart() {
   try {
@@ -47,15 +44,14 @@ function render() {
     const price = document.createElement('strong'); price.textContent = money(item.registrationPrice);
     row.append(description, price); items.append(row); summary.append(summaryRow(item.domain, item.registrationPrice));
   });
-  if (hosting.checked) summary.append(summaryRow('Starter hosting · first month', 49));
-  if (emailService.checked) summary.append(summaryRow('Business email · first month', 29));
+  if (hosting.checked) summary.append(summaryRow('Starter hosting with email · first month', 60));
   byId('total').textContent = money(total());
 }
-hosting.addEventListener('change', render); emailService.addEventListener('change', render);
+hosting.addEventListener('change', render);
 form.querySelectorAll<HTMLInputElement>('input[name="account"]').forEach(radio => radio.addEventListener('change', () => {
-  signedIn = false; byId('login-status').textContent = '';
+  byId('login-status').textContent = '';
   const existing = account() === 'existing';
-  byId('demo-login').hidden = !existing;
+  byId('account-login').hidden = !existing;
   const billingFields = byId<HTMLFieldSetElement>('billing-fields');
   billingFields.hidden = existing;
   billingFields.disabled = existing;
@@ -65,15 +61,15 @@ form.querySelectorAll<HTMLInputElement>('input[name="account"]').forEach(radio =
     ? 'Use my saved account details for the domain owner'
     : 'Use my billing details for the domain owner';
   const password = byId<HTMLInputElement>('password'); password.minLength = existing ? 1 : 8; password.autocomplete = existing ? 'current-password' : 'new-password'; password.value = '';
-  byId('password-help').textContent = existing ? 'Sample password only' : 'At least 8 characters · preview only';
-  byId('account-note').textContent = existing ? 'Sign in to use your saved account details.' : 'Create your account as part of checkout. Use a made-up password for this preview.';
+  byId('password-help').textContent = existing ? '' : 'At least 8 characters';
+  byId('account-note').textContent = existing ? 'Sign in to use your saved account details.' : 'Create your account as part of checkout.';
 }));
-form.querySelectorAll('input[type="email"], #password').forEach(input => input.addEventListener('input', () => { signedIn = false; byId('login-status').textContent = ''; }));
-byId('demo-login').addEventListener('click', () => {
+form.querySelectorAll('input[type="email"], #password').forEach(input => input.addEventListener('input', () => { byId('login-status').textContent = ''; }));
+byId('account-login').addEventListener('click', () => {
   const email = form.elements.namedItem('email') as HTMLInputElement;
   const password = byId<HTMLInputElement>('password');
   if (!email.reportValidity() || !password.reportValidity()) return;
-  signedIn = true; byId('login-status').textContent = 'Demo login complete. In the live checkout, your saved account details will be used.';
+  byId('login-status').textContent = 'Account sign-in is not available yet. Please contact WDP for help with your account.';
 });
 byId<HTMLInputElement>('same-owner').addEventListener('change', event => {
   const same = (event.target as HTMLInputElement).checked;
@@ -82,25 +78,14 @@ byId<HTMLInputElement>('same-owner').addEventListener('change', event => {
 form.addEventListener('submit', event => {
   event.preventDefault();
   if (!cart.length || !form.reportValidity()) return;
-  if (account() === 'existing' && !signedIn) { status.textContent = 'Please log in before continuing.'; byId('demo-login').focus(); return; }
-  status.textContent = ''; paymentOpen = true;
-  byId('payment-total').textContent = `Demo total: ${money(total())}`;
+  if (account() === 'existing') { status.textContent = 'Account sign-in is not available yet. Please contact WDP to continue with your order.'; byId('account-login').focus(); return; }
+  status.textContent = '';
   dialog.showModal();
 });
-function closePayment(message: string) { paymentOpen = false; dialog.close(); status.textContent = message; }
-byId('failure').addEventListener('click', () => closePayment('Mock payment failed. Your cart and details are still here; you can try again.'));
-byId('cancel').addEventListener('click', () => closePayment('Mock payment cancelled. You can continue whenever you are ready.'));
-dialog.addEventListener('close', () => { if (paymentOpen) { paymentOpen = false; status.textContent = 'Mock payment cancelled. Your cart is unchanged.'; } });
-byId('success').addEventListener('click', () => {
-  closePayment(''); byId('checkout-body').hidden = true;
-  byId('confirmation-detail').textContent = `${cart.length} domain${cart.length === 1 ? '' : 's'} · ${money(total())} · Simulated payment received; registration would be pending.`;
-  byId('confirmation').hidden = false; byId('confirmation').focus();
-  byId<HTMLInputElement>('password').value = ''; signedIn = false;
-});
-byId('restart').addEventListener('click', () => { byId('confirmation').hidden = true; render(); form.querySelector<HTMLInputElement>('input[type="email"]')?.focus(); });
 window.addEventListener('storage', event => {
   if (event.key !== 'cart_domains' && event.key !== null) return;
-  if (dialog.open) closePayment('Your cart changed in another tab. Please review your order again.');
-  byId('confirmation').hidden = true; loadCart(); render();
+  if (dialog.open) dialog.close();
+  status.textContent = 'Your cart changed in another tab. Please review your order again.';
+  loadCart(); render();
 });
 loadCart(); render();
