@@ -1,5 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { DatabaseSync } from 'node:sqlite';
+import { runInNewContext } from 'node:vm';
+import { stripTypeScriptTypes } from 'node:module';
+import { clearPaidDomains } from '../cart';
 import { readFileSync } from 'node:fs';
 import { quote, requireTest, verifyWebhook, type PaymentEnv } from '../core';
 import { createPayment, paymentStatus, paymentWebhook } from '../handlers';
@@ -27,7 +30,7 @@ async function signed(body: any, age = 0) {
 }
 const event = {type:'payment.succeeded',id:'evt_1',payload:{mode:'test',status:'succeeded',id:'payment_1',currency:'ZAR',amount:13500,metadata:{checkoutId:'checkout_1'}}};
 function provider() { return vi.spyOn(globalThis,'fetch').mockResolvedValue(new Response(JSON.stringify({id:'checkout_1',processingMode:'test',redirectUrl:'https://c.yoco.com/checkout/test'}))); }
-afterEach(()=>vi.restoreAllMocks());
+afterEach(()=>{vi.restoreAllMocks();vi.unstubAllGlobals();});
 describe('sandbox payment engine',()=>{
   it('calculates prices from server catalogue and refuses tampered/duplicate carts',()=>{
     expect(quote(input).amount).toBe(13500);
@@ -92,5 +95,50 @@ describe('sandbox payment engine',()=>{
   });
   it('requests redelivery if webhook beats checkout persistence',async()=>{
     const {env}=setup();expect((await paymentWebhook({request:await signed(event),env})).status).toBe(503);
+  });
+});
+
+
+describe('simulated provider decline (local only)',()=>{
+  async function decline() {
+    const {env,sql}=setup(); const fetch=provider();
+    expect((await createPayment({request:createRequest(),env})).status).toBe(200);
+    const failure={...event,type:'payment.failed',payload:{...event.payload,status:'failed'}};
+    expect((await paymentWebhook({request:await signed(failure),env})).status).toBe(200);
+    const statusResponse=await paymentStatus({request:new Request(`https://wdp.test/api/payments/status?attempt=${attemptId}`,{headers:{Authorization:`Bearer ${accessToken}`}}),env});
+    const result=await statusResponse.json();
+    return {env,sql,fetch,result};
+  }
+  it('records a signed decline as failed and allows a new payment attempt without marking it paid',async()=>{
+    const {env,sql,fetch,result}=await decline();
+    expect(result.status).toBe('failed');expect(result.paidDomains).toEqual([]);
+    expect(sql.prepare('SELECT payment_id FROM payment_tests').get()!.payment_id).toBeNull();
+    fetch.mockResolvedValueOnce(new Response(JSON.stringify({id:'checkout_retry',processingMode:'test',redirectUrl:'https://c.yoco.com/checkout/retry'})));
+    const retry={...input,attemptId:crypto.randomUUID(),accessToken:crypto.randomUUID()};
+    expect((await createPayment({request:createRequest(retry),env})).status).toBe(200);
+    expect(sql.prepare('SELECT status FROM payment_tests WHERE id=?').get(attemptId)!.status).toBe('failed');
+    expect(sql.prepare('SELECT status FROM payment_tests WHERE id=?').get(retry.attemptId)!.status).toBe('pending');
+  });
+  it('runs the actual return-page script against the failed result: shows an error, retains cart and permits retry',async()=>{
+    const {fetch,result}=await decline();
+    const cart=JSON.stringify([{domain:'example.co.za',registrationPrice:75}]);
+    const localValues=new Map([['cart_domains',cart]]);
+    const sessionValues=new Map([['wdp_payment_attempt',JSON.stringify({attemptId,accessToken})]]);
+    const makeStorage=(values:Map<string,string>)=>({getItem:(key:string)=>values.get(key)??null,setItem:(key:string,value:string)=>values.set(key,value)});
+    const elements=new Map<string,any>();
+    for (const id of ['result-title','result-message','check-payment','result-reference']) elements.set(id,{textContent:'',hidden:false,disabled:false,addEventListener:vi.fn()});
+    vi.stubGlobal('document',{getElementById:(id:string)=>elements.get(id)});
+    vi.stubGlobal('location',{search:`?attempt=${attemptId}&outcome=failure`});
+    vi.stubGlobal('window',{addEventListener:vi.fn(),dispatchEvent:vi.fn()});
+    vi.stubGlobal('localStorage',makeStorage(localValues));
+    vi.stubGlobal('sessionStorage',makeStorage(sessionValues));
+    fetch.mockResolvedValueOnce(new Response(JSON.stringify(result)));
+    const source=readFileSync('src/scripts/payment-result.ts','utf8').replace(/^import .*;\r?\n/,'');
+    runInNewContext(stripTypeScriptTypes(source),{clearPaidDomains,URLSearchParams,AbortSignal,Intl,JSON,Error,setTimeout,clearTimeout,fetch,document:globalThis.document,location:globalThis.location,window:globalThis.window,localStorage:globalThis.localStorage,sessionStorage:globalThis.sessionStorage});
+    await vi.waitFor(()=>expect(elements.get('result-title').textContent).toBe('Payment unsuccessful'));
+    expect(elements.get('result-message').textContent).toContain('Return to checkout to try again');
+    expect(localValues.get('cart_domains')).toBe(cart);
+    expect(JSON.parse(sessionValues.get('wdp_payment_attempt')!).completed).toBe(true);
+    expect(elements.get('check-payment').disabled).toBe(false);
   });
 });

@@ -1,0 +1,53 @@
+---
+export const prerender = true;
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="Your account | Web Design Pros">
+  <section class="account-page">
+    <span class="eyebrow">WEB DESIGN PROS · YOUR ACCOUNT</span><h1>Welcome back.</h1>
+    <p id="account-message" role="status" aria-live="polite"></p>
+    <div class="modes"><button type="button" data-mode="login">Login</button><button type="button" data-mode="register">Create account</button><button type="button" data-mode="forgot">Forgot password?</button></div>
+    <form id="account-form">
+      <label id="name-label" hidden>Full name<input id="name" autocomplete="name" maxlength="160" /></label>
+      <label id="email-label">Email address<input id="email" type="email" autocomplete="email" required /></label>
+      <label id="password-label">Password<input id="account-password" type="password" autocomplete="current-password" required maxlength="128" /></label>
+      <p id="password-tip" hidden>Use at least 12 characters.</p>
+      <button id="account-submit" type="submit">Login</button>
+    </form>
+    <a href="/checkout/">Return to checkout →</a>
+  </section>
+</Layout>
+<script>
+  import {accountRequest} from '../scripts/account-client';
+  const element=<T extends HTMLElement=HTMLElement>(id:string)=>document.getElementById(id) as T;
+  const form=element<HTMLFormElement>('account-form');
+  const email=element<HTMLInputElement>('email'),password=element<HTMLInputElement>('account-password'),name=element<HTMLInputElement>('name');
+  const message=element('account-message'),submit=element<HTMLButtonElement>('account-submit');
+  const params=new URLSearchParams(location.search);
+  const next=params.get('next')==='dashboard'?'/dashboard/':'/checkout/';
+  let mode=params.has('token')?'reset':'login'; let busy=false;
+  function display(){
+    element('name-label').hidden=mode!=='register';name.required=mode==='register';
+    element('password-label').hidden=mode==='forgot';password.required=mode!=='forgot';password.minLength=mode==='login'?1:12;
+    password.autocomplete=mode==='login'?'current-password':'new-password';password.value='';
+    element('email-label').hidden=mode==='reset';email.required=mode!=='reset';
+    element('password-tip').hidden=!['register','reset'].includes(mode);
+    submit.textContent=({login:'Login',register:'Create account',forgot:'Send reset link',reset:'Set new password'} as Record<string,string>)[mode];
+  }
+  document.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach(button=>button.addEventListener('click',()=>{mode=button.dataset.mode!;message.textContent='';display();}));
+  form.addEventListener('submit',async event=>{
+    event.preventDefault();if(busy || !form.reportValidity())return;busy=true;submit.disabled=true;message.textContent='Please wait…';
+    try {
+      if(mode==='login') {await accountRequest('/api/auth/sign-in/email',{email:email.value,password:password.value,callbackURL:next});location.assign(next);}
+      else if(mode==='register') {await accountRequest('/api/auth/sign-up/email',{name:name.value,email:email.value,password:password.value,callbackURL:next});password.value='';message.textContent='Check your inbox for the verification link. If you already have an account, use Login or Forgot password.';}
+      else if(mode==='forgot') {await accountRequest('/api/auth/request-password-reset',{email:email.value,redirectTo:location.origin+'/account/?next='+ (next==='/dashboard/'?'dashboard':'checkout')});message.textContent='If an account exists for that address, a reset link will be sent. Check your inbox and spam folder.';}
+      else {await accountRequest('/api/auth/reset-password',{token:params.get('token'),newPassword:password.value});history.replaceState(null,'','/account/');mode='login';display();message.textContent='Password updated. Please log in.';}
+    } catch(error){message.textContent=error instanceof Error?error.message:'Unable to complete request.';}
+    finally{busy=false;submit.disabled=false;}
+  });
+  if(params.has('error'))message.textContent='This link is invalid or has expired. Please request a new verification or reset email.';
+  display();
+</script>
+<style>
+  .account-page{max-width:640px;margin:auto;padding:150px 24px 80px}.eyebrow{font-size:.75rem;letter-spacing:2px;color:#89cff0}h1{text-align:left;margin:14px 0;text-transform:none}.modes{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0}button{border:1px solid #426085;background:#1b3150;color:white;border-radius:7px;padding:12px 18px;font:inherit;cursor:pointer}button[type=submit]{background:#0096ff;border-color:#0096ff;margin:10px 0 24px}label{display:flex;flex-direction:column;gap:8px;margin:20px 0}input{background:#111d34;color:white;border:1px solid #4b5a74;border-radius:5px;padding:12px;font:inherit}a{color:#89cff0}p{margin:18px 0}button:disabled{opacity:.6}input:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid #89cff0;outline-offset:3px}[hidden]{display:none!important}
+</style>

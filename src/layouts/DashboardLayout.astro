@@ -91,12 +91,18 @@ const {
 
     <div class="user-pill">
       <span style="width: 10px; height: 10px; background: #10B981; border-radius: 50%;"></span>
-      <span style="font-size: 0.9rem;">{userName}</span>
+      <span id="dashboard-customer" style="font-size: 0.9rem;">{userName}</span><button id="dashboard-logout" type="button">Sign out</button>
     </div>
   </header>
 
   <main class="container">
+    <p id="dashboard-status" role="status"></p>
     <slot />
   </main>
-</body>
+<script>
+    import {accountRequest} from '../scripts/account-client';
+    const status=document.getElementById('dashboard-status')!;
+    void accountRequest('/api/customer/profile').then(data=>{document.getElementById('dashboard-customer')!.textContent=data.user.name;}).catch(()=>location.assign('/account/?next=dashboard'));
+    document.getElementById('dashboard-logout')!.addEventListener('click',async()=>{try{await accountRequest('/api/auth/sign-out',{});location.assign('/account/');}catch{status.textContent='Unable to sign out. Please try again.';}});
+  </script></body>
 </html>

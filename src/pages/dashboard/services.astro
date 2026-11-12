@@ -1,32 +1,7 @@
 ---
+export const prerender = true;
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
-
-interface Service {
-  id: string;
-  user_id: string;
-  product_name: string;
-  domain_name: string;
-  pricing: string;
-  billing_cycle: string;
-  next_due_date: string;
-  status: string;
-}
-
-let services: Service[] = [];
-
-try {
-  const DB = Astro.locals.runtime?.env?.DB;
-
-  if (DB) {
-    const { results } = await DB.prepare(
-      "SELECT * FROM services WHERE user_id = 'usr_01' ORDER BY product_name ASC"
-    ).all();
-
-    services = (results as unknown as Service[]) || [];
-  }
-} catch (e) {
-  console.error('D1 Query Error (Services):', e);
-}
+const services: any[] = [];
 ---
 
 <DashboardLayout title="My Services - Web Design Pros" activeNav="services">

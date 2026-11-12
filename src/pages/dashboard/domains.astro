@@ -1,30 +1,7 @@
 ---
+export const prerender = true;
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
-
-interface Domain {
-  id: string;
-  user_id: string;
-  domain_name: string;
-  status: string;
-  next_due_date: string;
-  auto_renew: number;
-}
-
-let domains: Domain[] = [];
-
-try {
-  const DB = Astro.locals.runtime?.env?.DB;
-
-  if (DB) {
-    const { results } = await DB.prepare(
-      "SELECT * FROM domains WHERE user_id = 'usr_01' ORDER BY domain_name ASC"
-    ).all();
-
-    domains = (results as unknown as Domain[]) || [];
-  }
-} catch (e) {
-  console.error('D1 Query Error (Domains):', e);
-}
+const domains: any[] = [];
 ---
 
 <DashboardLayout title="My Domains - Web Design Pros" activeNav="domains">

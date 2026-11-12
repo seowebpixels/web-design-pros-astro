@@ -1,3 +1,4 @@
+import {ensureCheckoutAccount,loadCheckoutAccount} from './checkout-account';
 type CartItem = { domain: string; registrationPrice: number; renewalPrice: number | null; selectedYears: number };
 const byId = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
 const money = (value: number) => new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' }).format(value);
@@ -60,17 +61,10 @@ form.querySelectorAll<HTMLInputElement>('input[name="account"]').forEach(radio =
   byId('owner-source').textContent = existing
     ? 'Use my saved account details for the domain owner'
     : 'Use my billing details for the domain owner';
-  const password = byId<HTMLInputElement>('password'); password.minLength = existing ? 1 : 8; password.autocomplete = existing ? 'current-password' : 'new-password'; password.value = '';
-  byId('password-help').textContent = existing ? '' : 'At least 8 characters';
+  const password = byId<HTMLInputElement>('password'); password.minLength = existing ? 1 : 12; password.autocomplete = existing ? 'current-password' : 'new-password'; password.value = '';
+  byId('password-help').textContent = existing ? '' : 'At least 12 characters';
   byId('account-note').textContent = existing ? 'Sign in to use your saved account details.' : 'Create your account as part of checkout.';
 }));
-form.querySelectorAll('input[type="email"], #password').forEach(input => input.addEventListener('input', () => { byId('login-status').textContent = ''; }));
-byId('account-login').addEventListener('click', () => {
-  const email = form.elements.namedItem('email') as HTMLInputElement;
-  const password = byId<HTMLInputElement>('password');
-  if (!email.reportValidity() || !password.reportValidity()) return;
-  byId('login-status').textContent = 'Account sign-in is not available yet. Please contact WDP for help with your account.';
-});
 byId<HTMLInputElement>('same-owner').addEventListener('change', event => {
   const same = (event.target as HTMLInputElement).checked;
   const fields = byId<HTMLFieldSetElement>('owner-fields'); fields.hidden = same; fields.disabled = same;
@@ -78,10 +72,10 @@ byId<HTMLInputElement>('same-owner').addEventListener('change', event => {
 form.addEventListener('submit', async event => {
   event.preventDefault();
   if (paymentBusy || !cart.length || !form.reportValidity()) return;
-  if (account() === 'existing') { status.textContent = 'Account sign-in is not available yet. Use the new-customer option with sample details to test the payment journey.'; byId('account-login').focus(); return; }
   const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
   paymentBusy = true; submit.disabled = true; status.textContent = 'Preparing secure payment…';
   try {
+    await ensureCheckoutAccount();
     const payload = {domains:cart.map(item=>item.domain), hosting:hosting.checked, termsAccepted:byId<HTMLInputElement>('terms').checked, quotedAmount:Math.round(total()*100)};
     const fingerprint = JSON.stringify(payload);
     let saved;
@@ -110,3 +104,5 @@ window.addEventListener('storage', event => {
   loadCart(); render();
 });
 loadCart(); render();
+
+void loadCheckoutAccount();

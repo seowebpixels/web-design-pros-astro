@@ -1,27 +1,7 @@
 ---
+export const prerender = true;
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
-
-let servicesCount = 0;
-let domainsCount = 0;
-let unpaidInvoicesCount = 0;
-let userProfile = { name: 'Marlan Pather', address: '15 Madge Avenue, Northcliff' };
-
-try {
-  // Access Cloudflare D1 from Astro runtime
-  const DB = Astro.locals.runtime?.env?.DB;
-
-  if (DB) {
-    const servicesRes = await DB.prepare("SELECT COUNT(*) as count FROM services WHERE user_id = 'usr_01'").first();
-    const domainsRes = await DB.prepare("SELECT COUNT(*) as count FROM domains WHERE user_id = 'usr_01'").first();
-    const invoicesRes = await DB.prepare("SELECT COUNT(*) as count FROM invoices WHERE user_id = 'usr_01' AND status = 'unpaid'").first();
-
-    servicesCount = (servicesRes?.count as number) || 0;
-    domainsCount = (domainsRes?.count as number) || 0;
-    unpaidInvoicesCount = (invoicesRes?.count as number) || 0;
-  }
-} catch (e) {
-  console.error('D1 Query Error:', e);
-}
+const servicesCount=0,domainsCount=0,unpaidInvoicesCount=0;
 ---
 
 <DashboardLayout title="My Dashboard - Web Design Pros" activeNav="dashboard">

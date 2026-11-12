@@ -16,6 +16,7 @@
     "@astrojs/sitemap": "^3.7.4",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.3.3",
+    "better-auth": "1.7.22",
     "tailwindcss": "^4.3.3",
     "tldts": "^7.4.11",
     "wrangler": "^4.149.0"

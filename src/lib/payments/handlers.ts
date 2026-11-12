@@ -1,13 +1,15 @@
+import {AccountError,requireCustomer} from '../accounts/auth';
 import { PaymentError, hash, json, paymentRedirect, quote, readBody, requireTest, uuid, verifyWebhook, type PaymentEnv } from './core';
 
 type Context = {request:Request; env:PaymentEnv};
 type Row = {id:string; access_hash:string; cart_json:string; amount:number; checkout_id:string|null; redirect_url:string|null; status:string};
 function failure(error: unknown) {
-  return error instanceof PaymentError ? json({error:error.message},error.status) : json({error:'Payment service unavailable. Please retry shortly.'},503);
+  return error instanceof PaymentError || error instanceof AccountError ? json({error:error.message},error.status) : json({error:'Payment service unavailable. Please retry shortly.'},503);
 }
 export async function createPayment({request,env}: Context) {
   try {
     const db = requireTest(env);
+    if (env.WDP_ACCOUNTS_ENABLED === 'true') await requireCustomer(request,env,()=>{});
     if (request.headers.get('origin') !== new URL(request.url).origin) throw new PaymentError(403,'Request not permitted.');
     if (!request.headers.get('content-type')?.includes('application/json')) throw new PaymentError(415,'JSON required.');
     let input: any;
