@@ -129,7 +129,7 @@ const services = [
             <div class="panel-footer">
               <div class="subtotal-row">
                 <span>Subtotal</span>
-                <span id="hoverSubtotalPrice" class="subtotal-price">R 0.00</span>
+                <span id="hoverSubtotalPrice" class="subtotal-price">R0</span>
               </div>
               <a href="/checkout" class="checkout-link-btn">
                 Review → <br />
@@ -145,6 +145,7 @@ const services = [
 </header>
 
 <script>
+  import {cartTermCents,rand} from '../lib/domains/catalogue';
   const toggleBtn = document.getElementById('menuToggle');
   const navMenu = document.getElementById('navMenu');
   const dropdownToggle = document.querySelector('.dropdown-toggle');
@@ -175,7 +176,8 @@ const services = [
   function updateHeaderCart() {
     if (!cartBtn || !cartBadge) return;
 
-    const cart = JSON.parse(localStorage.getItem('cart_domains') || '[]');
+    let cart:any[]=[];
+    try{const value=JSON.parse(localStorage.getItem('cart_domains')||'[]');if(Array.isArray(value))cart=value.filter(item=>item&&typeof item.domain==='string');}catch{/* A corrupt browser cart must not break navigation. */}
     const count = cart.length;
 
     if (count > 0) {
@@ -184,13 +186,9 @@ const services = [
 
       // Calculate subtotal
       let subtotal = 0;
-      cart.forEach((item: any) => {
-        const price = Number(item.registrationPrice) || 0;
-        const years = Number(item.selectedYears) || 1;
-        subtotal += price * years;
-      });
+      cart.forEach((item: any) => {subtotal+=cartTermCents(item);});
 
-      const formattedTotal = `R${subtotal.toFixed(2)}`;
+      const formattedTotal = rand(subtotal);
 
       // Update badge header price
       if (cartTotalValue) cartTotalValue.textContent = formattedTotal;
@@ -201,12 +199,8 @@ const services = [
 
       // Render items in hover panel
       if (cartHoverItemList) {
-        cartHoverItemList.innerHTML = cart.map((item: any) => `
-          <div class="cart-hover-item">
-            <span class="item-domain">${item.domain}</span>
-            <span class="item-price">R${(Number(item.registrationPrice) || 0).toFixed(2)}</span>
-          </div>
-        `).join('');
+        cartHoverItemList.replaceChildren();
+        for(const item of cart){const row=document.createElement('div');row.className='cart-hover-item';const name=document.createElement('span');name.className='item-domain';name.textContent=item.domain;const price=document.createElement('span');price.className='item-price';price.textContent=rand(cartTermCents(item));row.append(name,price);cartHoverItemList.append(row);}
       }
     } else {
       cartBtn.classList.add('hidden');

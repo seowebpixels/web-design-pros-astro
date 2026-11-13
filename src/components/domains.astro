@@ -14,7 +14,7 @@ import {domainCatalogue,rand} from '../lib/domains/catalogue';
           Register Your Domain Name Today
         </h1>
         <p class="hero-subtitle">
-          From as low as R75 / year <span class="hero-subtext">(Hurry, limited-time offer!)</span>
+          From as low as {rand(domainCatalogue[0].registrationCents)} / year <span class="hero-subtext">(Hurry, limited-time offer!)</span>
         </p>
 
         <form id="domain-search-form" class="hero-search-form">
@@ -95,11 +95,11 @@ import {domainCatalogue,rand} from '../lib/domains/catalogue';
                 <tr>
                   <th>Domain Extension</th>
                   <th>Category</th>
-                  <th>New price</th><th>Transfer</th><th>Renewal</th>
+                  <th>New price</th><th>Transfer</th><th>Renewal · Year 2</th><th>Year 3</th><th>Year 4</th><th>Year 5</th>
                 </tr>
               </thead>
               <tbody>
-                {domainCatalogue.map(price=><tr><td class="font-bold text-white flex-cell">.{price.tld} {price.hot&&<span class="badge-hot">Hot!</span>}</td><td>{price.category}</td><td class="price-highlight">{rand(price.registrationCents)}<small>1 year</small></td><td>{rand(price.transferCents)}<small>1 year</small></td><td>{rand(price.renewalCents)}<small>1 year</small></td></tr>)}
+                {domainCatalogue.map(price=><tr><td class="font-bold text-white flex-cell">.{price.tld} {price.hot&&<span class="badge-hot">Hot!</span>}</td><td>{price.category}</td><td class="price-highlight">{rand(price.registrationCents)}<small>1 year</small></td><td>{rand(price.transferCents)}<small>1 year</small></td>{price.yearlyPricesCents.slice(1).map(amount=><td>{rand(amount)}<small>1 year</small></td>)}</tr>)}
               </tbody>
             </table>
           </div>

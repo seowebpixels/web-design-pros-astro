@@ -1,15 +1,16 @@
+import {rand} from '../lib/domains/catalogue';
 const byId=(id:string)=>document.getElementById(id)!;
 const list=byId('orders-list'),detail=byId('order-detail'),status=byId('orders-status');
 const refresh=byId('orders-refresh') as HTMLButtonElement,more=byId('orders-more') as HTMLButtonElement;
 const id=new URLSearchParams(location.search).get('order');
 let nextBefore:number|null=null,busy=false;
-const money=(cents:number)=>new Intl.NumberFormat('en-ZA',{style:'currency',currency:'ZAR'}).format(cents/100);
+const money=(cents:number)=>rand(cents);
 function node(tag:string,text:string,className=''){const el=document.createElement(tag);el.textContent=text;if(className)el.className=className;return el;}
 function date(value:string){return new Intl.DateTimeFormat('en-ZA',{dateStyle:'medium',timeStyle:'short'}).format(new Date(value.replace(' ','T')+'Z'));}
 function state(order:any){return order.paymentStatus==='paid'?'Test payment confirmed':order.paymentStatus==='failed'?'Payment unsuccessful':'Awaiting payment confirmation';}
 function items(order:any){
   const ul=document.createElement('ul');
-  for(const item of order.items.domains)ul.append(node('li',`${item.domain} · 1 year registration · ${money(item.cents)}`));
+  for(const item of order.items.domains)ul.append(node('li',`${item.domain} · ${item.years??1} ${(item.years??1)===1?'year':'years'} registration · ${money(item.cents)}`));
   if(order.items.hosting)ul.append(node('li','Starter hosting with email · first month R60.00 · R60.00 monthly thereafter'));
   return ul;
 }

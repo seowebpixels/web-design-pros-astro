@@ -1,13 +1,14 @@
+import {rand} from '../lib/domains/catalogue';
 const body=document.getElementById('services-body')!,status=document.getElementById('services-status')!;
 const more=document.getElementById('services-more') as HTMLButtonElement,refresh=document.getElementById('services-refresh') as HTMLButtonElement;
 let nextBefore:number|null=null,busy=false;
-const money=(cents:number)=>new Intl.NumberFormat('en-ZA',{style:'currency',currency:'ZAR'}).format(cents/100);
+const money=(cents:number)=>rand(cents);
 function cell(text:string,className=''){const td=document.createElement('td');td.textContent=text;if(className)td.className=className;return td;}
 function small(parent:HTMLElement,text:string){const el=document.createElement('small');el.textContent=text;parent.append(el);}
 function row(service:any){
   const tr=document.createElement('tr'),product=cell(service.product,'product-name');small(product,service.reference);
   const domain=cell(service.domain,'domain-link'),price=cell(service.recurringCents===null?'To be confirmed':`${money(service.recurringCents)} / ${service.cycle==='Annual'?'year':'month'}`,'price-val');
-  small(price,service.product==='Domain Registration'?`Paid ${money(service.paidCents)} · first year`:`Paid ${money(service.paidCents)} · first month`);
+  small(price,service.product==='Domain Registration'?`Paid ${money(service.paidCents)} · ${(service.years??1)===1?'first year':`${service.years} years`}`:`Paid ${money(service.paidCents)} · first month`);
   if(service.priceSource==='current_catalogue')small(price,'Current renewal price');
   const due=cell(service.nextDueDate?new Intl.DateTimeFormat('en-ZA',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(service.nextDueDate+'T12:00:00Z')):'Date unavailable');
   const state=cell(''),badge=document.createElement('span');badge.className='status-badge pending';badge.textContent=service.status==='test_purchase'?'Test purchase':service.status==='pending_registration'?'Pending registration':'Pending setup';state.append(badge);

@@ -29,7 +29,7 @@ export async function saveTestOrder(env:AccountEnv,user:{id:string;email:string}
   if(!saved)throw new PaymentError(400,'Please save your billing details before payment.');
   const billing={...validateProfile(JSON.parse(saved.profile_json)),email:user.email};
   const billingJson=JSON.stringify(billing),registrantJson=JSON.stringify(registrantDetails(input.registrant,billing));
-  const priceSnapshot=JSON.stringify(JSON.parse(priced.cart).domains.map((item:{domain:string;cents:number})=>({domain:item.domain,registrationCents:item.cents,renewalCents:priceForHostname(item.domain)?.renewalCents??null,transferCents:priceForHostname(item.domain)?.transferCents??null,years:1})));
+  const priceSnapshot=JSON.stringify(JSON.parse(priced.cart).domains.map((item:{domain:string;cents:number;years?:number})=>{const price=priceForHostname(item.domain),years=item.years??1;return {domain:item.domain,registrationCents:item.cents,renewalCents:price?.yearlyPricesCents[years]??null,transferCents:price?.transferCents??null,years,yearlyPricesCents:price?.yearlyPricesCents??[]};}));
   // D1 executes the batch transactionally. Concurrent requests cannot share a number;
   // repeating the same order ID does not advance the counter or create another order.
   await db.batch([

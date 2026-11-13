@@ -1,6 +1,6 @@
 import type { AccountEnv } from '../accounts/auth';
 import { validateDomain } from '../domains/validateDomain';
-import {priceForHostname} from '../domains/catalogue';
+import {priceForHostname,termPriceCents,validYears} from '../domains/catalogue';
 
 export interface PaymentEnv extends AccountEnv {
   WDP_PAYMENT_TEST_ENABLED?: string;
@@ -42,13 +42,16 @@ export const uuid = (value: unknown): value is string => typeof value === 'strin
 export function quote(input: any) {
   if (!Array.isArray(input.domains) || input.domains.length < 1 || input.domains.length > 10 || typeof input.hosting !== 'boolean' || input.termsAccepted !== true)
     throw new PaymentError(400, 'Select 1–10 domains and accept the Terms of Service.');
-  const domains = input.domains.map((domain: unknown) => {
+  const domains = input.domains.map((entry: unknown) => {
+    const domain=typeof entry==='string'?entry:(entry as any)?.domain;
+    const years=typeof entry==='string'?1:(entry as any)?.years;
+    if(!validYears(years))throw new PaymentError(400,'Choose a registration period between 1 and 5 years.');
     if (typeof domain !== 'string') throw new PaymentError(400, 'Invalid domain.');
     const result = validateDomain(domain.toLowerCase());
     if (!result.valid || !result.hostname) throw new PaymentError(400, 'Invalid domain.');
     const price=priceForHostname(result.hostname);
     if (!price) throw new PaymentError(400, 'Pricing for this domain extension is not available for checkout yet. Please contact WDP.');
-    return {domain:result.hostname, cents:price.registrationCents};
+    return {domain:result.hostname, cents:termPriceCents(price,years),years};
   }).sort((a: any,b: any) => a.domain.localeCompare(b.domain));
   if (new Set(domains.map((d: any) => d.domain)).size !== domains.length) throw new PaymentError(400, 'Remove duplicate domains.');
   const amount = domains.reduce((sum: number,d: any) => sum+d.cents, input.hosting ? 6000 : 0);

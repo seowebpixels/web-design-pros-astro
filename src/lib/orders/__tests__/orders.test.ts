@@ -39,10 +39,10 @@ function setup(){
     sql.prepare('INSERT INTO wdp_customer_profiles(auth_user_id,profile_json) VALUES (?,?)').run(user.id,JSON.stringify(profile));
     return {user,cookie};
   }
-  const input=(id=crypto.randomUUID())=>({attemptId:id,accessToken:crypto.randomUUID(),domains:['example.co.za'],hosting:true,quotedAmount:13500,termsAccepted:true,registrant:{sameAsBilling:true}});
+  const input=(id=crypto.randomUUID())=>({attemptId:id,accessToken:crypto.randomUUID(),domains:['example.co.za'],hosting:true,quotedAmount:15500,termsAccepted:true,registrant:{sameAsBilling:true}});
   const request=(input:any,cookie:string)=>new Request('https://wdp.test/api/payments/create',{method:'POST',headers:{Cookie:cookie,Origin:'https://wdp.test','Content-Type':'application/json'},body:JSON.stringify(input)});
   const context=(request:Request)=>({request,env,waitUntil}) as any;
-  async function webhook(input:any,status='succeeded',amount=13500){
+  async function webhook(input:any,status='succeeded',amount=15500){
     const raw=JSON.stringify({type:'payment.'+status,payload:{mode:'test',status,id:'payment_'+input.attemptId,currency:'ZAR',amount,metadata:{checkoutId:'checkout_'+input.attemptId}}});
     const timestamp=String(Math.floor(Date.now()/1000)),id='event_test';
     const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(signing),{name:'HMAC',hash:'SHA-256'},false,['sign']);
@@ -105,13 +105,13 @@ describe('customer test orders',()=>{
     fail=false;expect((await app.webhook(input)).status).toBe(200);expect(app.sql.prepare('SELECT payment_status FROM wdp_orders').get()!.payment_status).toBe('paid');expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_orders').get()!.n).toBe(1);
   });
   it('allocates distinct numbers for concurrent new orders and only one number for concurrent retries',async()=>{
-    const app=setup(),customer=await app.customer(),first=app.input(),second=app.input(),priced={cart:JSON.stringify({domains:[{domain:'example.co.za',cents:7500}],hosting:true}),amount:13500};
+    const app=setup(),customer=await app.customer(),first=app.input(),second=app.input(),priced={cart:JSON.stringify({domains:[{domain:'example.co.za',cents:9500}],hosting:true}),amount:15500};
     const result=await Promise.all([saveTestOrder(app.env,customer.user,first,priced,'hash1'),saveTestOrder(app.env,customer.user,second,priced,'hash2'),saveTestOrder(app.env,customer.user,first,priced,'hash1')]);
     expect(result.map(order=>order.sequence)).toEqual([1,2,1]);expect(app.sql.prepare("SELECT next_value FROM wdp_order_sequences WHERE mode='test'").get()!.next_value).toBe(3);
   });
   it('paginates only the signed-in customer orders without leaking private payment access data',async()=>{
     const app=setup(),customer=await app.customer(),other=await app.customer('second@example.com');
-    const priced={cart:JSON.stringify({domains:[{domain:'example.co.za',cents:7500}],hosting:true}),amount:13500};
+    const priced={cart:JSON.stringify({domains:[{domain:'example.co.za',cents:9500}],hosting:true}),amount:15500};
     for(let i=0;i<27;i++)await saveTestOrder(app.env,customer.user,app.input(),priced,'private-hash');
     await saveTestOrder(app.env,other.user,app.input(),priced,'other-private-hash');
     const get=(query='')=>ordersEndpoint(app.context(new Request('https://wdp.test/api/customer/orders'+query,{headers:{Cookie:customer.cookie}})));
@@ -129,13 +129,27 @@ describe('customer test orders',()=>{
     await app.webhook(input);
     app.sql.prepare('UPDATE wdp_orders SET paid_at=? WHERE id=?').run('2026-11-13 10:00:00',input.attemptId);
     const response=await get(customer.cookie),result=await response.json();expect(response.headers.get('cache-control')).toBe('no-store');
-    expect(result.serviceCount).toBe(2);expect(result.services[0]).toMatchObject({product:'Domain Registration',domain:'example.co.za',recurringCents:12500,paidCents:7500,status:'test_purchase',nextDueDate:'2027-11-13',priceSource:'purchase'});
+    expect(result.serviceCount).toBe(2);expect(result.services[0]).toMatchObject({product:'Domain Registration',domain:'example.co.za',recurringCents:17000,paidCents:9500,status:'test_purchase',nextDueDate:'2027-11-13',priceSource:'purchase'});
     expect(result.services[1]).toMatchObject({product:'Starter Hosting',recurringCents:6000,cycle:'Monthly',status:'test_purchase',nextDueDate:'2026-12-13'});
     expect(JSON.stringify(result)).not.toContain('access_hash');expect((await (await get(other.cookie)).json()).services).toHaveLength(0);expect((await get('')).status).toBe(401);
     const prices=JSON.parse(app.sql.prepare('SELECT prices_json FROM wdp_order_prices WHERE order_id=?').get(input.attemptId)!.prices_json as string);prices[0].renewalCents=14000;
     app.sql.prepare('UPDATE wdp_order_prices SET prices_json=? WHERE order_id=?').run(JSON.stringify(prices),input.attemptId);
     expect((await (await get(customer.cookie)).json()).services[0].recurringCents).toBe(14000);
     app.sql.prepare('DELETE FROM wdp_order_prices WHERE order_id=?').run(input.attemptId);
-    expect((await (await get(customer.cookie)).json()).services[0]).toMatchObject({recurringCents:12500,priceSource:'current_catalogue'});
+    expect((await (await get(customer.cookie)).json()).services[0]).toMatchObject({recurringCents:17000,priceSource:'current_catalogue'});
+  });
+  it('charges a prepaid term once, keeps its years and moves renewal to the end of that term',async()=>{
+    const app=setup(),customer=await app.customer();
+    const input={...app.input(),domains:[{domain:'example.com',years:2}],hosting:false,quotedAmount:67000};
+    expect((await createPayment(app.context(app.request(input,customer.cookie)))).status).toBe(200);
+    expect(app.checkouts[0].amount).toBe(67000);
+    const saved=app.sql.prepare('SELECT * FROM wdp_orders WHERE id=?').get(input.attemptId)!;
+    expect(JSON.parse(saved.cart_json as string).domains[0]).toMatchObject({years:2,cents:67000});
+    await app.webhook(input,'succeeded',67000);app.sql.prepare('UPDATE wdp_orders SET paid_at=? WHERE id=?').run('2026-11-13 10:00:00',input.attemptId);
+    const get=()=>servicesEndpoint(app.context(new Request('https://wdp.test/api/customer/services',{headers:{Cookie:customer.cookie}})));
+    expect((await (await get()).json()).services[0]).toMatchObject({years:2,paidCents:67000,recurringCents:73000,nextDueDate:'2028-11-13'});
+    const five={...app.input(),domains:[{domain:'example.com',years:5}],hosting:false,quotedAmount:355000};
+    await createPayment(app.context(app.request(five,customer.cookie)));await app.webhook(five,'succeeded',355000);app.sql.prepare('UPDATE wdp_orders SET paid_at=? WHERE id=?').run('2026-11-13 10:00:00',five.attemptId);
+    expect((await (await get()).json()).services[0]).toMatchObject({years:5,paidCents:355000,recurringCents:null,nextDueDate:'2031-11-13'});
   });
 });

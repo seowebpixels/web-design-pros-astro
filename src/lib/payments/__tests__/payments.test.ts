@@ -10,7 +10,7 @@ import { createPayment, paymentStatus, paymentWebhook } from '../handlers';
 const secret = 'whsec_' + btoa('a-test-webhook-signing-secret-only');
 const attemptId = 'c837fdac-9b10-4ac0-a848-f74e2f955abc';
 const accessToken = 'f6895d08-6025-434b-a20c-4bd691c50a47';
-const input = {domains:['example.co.za'],hosting:true,termsAccepted:true,quotedAmount:13500,attemptId,accessToken};
+const input = {domains:['example.co.za'],hosting:true,termsAccepted:true,quotedAmount:15500,attemptId,accessToken};
 function setup() {
   const sql = new DatabaseSync(':memory:');
   sql.exec(readFileSync('migrations/0001_payment_tests.sql','utf8'));
@@ -28,12 +28,12 @@ async function signed(body: any, age = 0) {
   const signature = await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(`evt_1.${timestamp}.${raw}`));
   return new Request('https://wdp.test/api/payments/webhook',{method:'POST',headers:{'webhook-id':'evt_1','webhook-timestamp':timestamp,'webhook-signature':'v1,'+btoa(String.fromCharCode(...new Uint8Array(signature)))},body:raw});
 }
-const event = {type:'payment.succeeded',id:'evt_1',payload:{mode:'test',status:'succeeded',id:'payment_1',currency:'ZAR',amount:13500,metadata:{checkoutId:'checkout_1'}}};
+const event = {type:'payment.succeeded',id:'evt_1',payload:{mode:'test',status:'succeeded',id:'payment_1',currency:'ZAR',amount:15500,metadata:{checkoutId:'checkout_1'}}};
 function provider() { return vi.spyOn(globalThis,'fetch').mockResolvedValue(new Response(JSON.stringify({id:'checkout_1',processingMode:'test',redirectUrl:'https://c.yoco.com/checkout/test'}))); }
 afterEach(()=>{vi.restoreAllMocks();vi.unstubAllGlobals();});
 describe('sandbox payment engine',()=>{
   it('calculates prices from server catalogue and refuses tampered/duplicate carts',()=>{
-    expect(quote(input).amount).toBe(13500);
+    expect(quote(input).amount).toBe(15500);
     expect(()=>quote({...input,quotedAmount:1})).toThrow('prices have changed');
     expect(()=>quote({...input,domains:['example.co.za','example.co.za']})).toThrow('duplicate');
     expect(()=>quote({...input,domains:['example.co.za.evil.com/path']})).toThrow('Invalid domain');
@@ -53,14 +53,14 @@ describe('sandbox payment engine',()=>{
     const {env}=setup(); const fetch=provider();
     expect((await createPayment({request:createRequest(),env})).status).toBe(200);
     const payload=JSON.parse(fetch.mock.calls[0][1]!.body as string);
-    expect(payload.amount).toBe(13500); expect(payload.successUrl).toContain('/payment/result/');
+    expect(payload.amount).toBe(15500); expect(payload.successUrl).toContain('/payment/result/');
     expect(payload).not.toHaveProperty('password');
     expect((await createPayment({request:createRequest(),env})).status).toBe(200);
     expect(fetch).toHaveBeenCalledTimes(1);
     const statusRequest=new Request(`https://wdp.test/api/payments/status?attempt=${attemptId}`,{headers:{Authorization:`Bearer ${accessToken}`}});
     expect((await (await paymentStatus({request:statusRequest,env})).json()).status).toBe('pending');
     expect((await paymentStatus({request:new Request(`https://wdp.test/api/payments/status?attempt=${attemptId}`),env})).status).toBe(404);
-    expect((await createPayment({request:createRequest({...input,hosting:false,quotedAmount:7500}),env})).status).toBe(409);
+    expect((await createPayment({request:createRequest({...input,hosting:false,quotedAmount:9500}),env})).status).toBe(409);
   });
   it('retries uncertain creation using the same provider idempotency key',async()=>{
     const {env}=setup(); const fetch=vi.spyOn(globalThis,'fetch').mockRejectedValueOnce(new Error('timeout')).mockResolvedValueOnce(new Response(JSON.stringify({id:'checkout_1',processingMode:'test',redirectUrl:'https://c.yoco.com/checkout/test'})));
