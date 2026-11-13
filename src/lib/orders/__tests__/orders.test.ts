@@ -121,15 +121,16 @@ describe('customer test orders',()=>{
     expect(new Set([...first.orders,...second.orders].map(order=>order.id)).size).toBe(27);
     expect((await get('?before=invalid')).status).toBe(400);
   });
-  it('shows only paid customer services, preserves quoted renewal prices and never invents registration or due dates',async()=>{
+  it('shows only paid customer services with saved prices and purchase-based billing dates',async()=>{
     const app=setup(),customer=await app.customer(),other=await app.customer('second@example.com'),input=app.input();
     await createPayment(app.context(app.request(input,customer.cookie)));
     const get=(cookie:string)=>servicesEndpoint(app.context(new Request('https://wdp.test/api/customer/services',{headers:{Cookie:cookie}})));
     expect((await (await get(customer.cookie)).json()).services).toHaveLength(0);
     await app.webhook(input);
+    app.sql.prepare('UPDATE wdp_orders SET paid_at=? WHERE id=?').run('2026-11-13 10:00:00',input.attemptId);
     const response=await get(customer.cookie),result=await response.json();expect(response.headers.get('cache-control')).toBe('no-store');
-    expect(result.serviceCount).toBe(2);expect(result.services[0]).toMatchObject({product:'Domain Registration',domain:'example.co.za',recurringCents:12500,paidCents:7500,status:'test_purchase',nextDueDate:null,priceSource:'purchase'});
-    expect(result.services[1]).toMatchObject({product:'Starter Hosting',recurringCents:6000,cycle:'Monthly',status:'test_purchase',nextDueDate:null});
+    expect(result.serviceCount).toBe(2);expect(result.services[0]).toMatchObject({product:'Domain Registration',domain:'example.co.za',recurringCents:12500,paidCents:7500,status:'test_purchase',nextDueDate:'2027-11-13',priceSource:'purchase'});
+    expect(result.services[1]).toMatchObject({product:'Starter Hosting',recurringCents:6000,cycle:'Monthly',status:'test_purchase',nextDueDate:'2026-12-13'});
     expect(JSON.stringify(result)).not.toContain('access_hash');expect((await (await get(other.cookie)).json()).services).toHaveLength(0);expect((await get('')).status).toBe(401);
     const prices=JSON.parse(app.sql.prepare('SELECT prices_json FROM wdp_order_prices WHERE order_id=?').get(input.attemptId)!.prices_json as string);prices[0].renewalCents=14000;
     app.sql.prepare('UPDATE wdp_order_prices SET prices_json=? WHERE order_id=?').run(JSON.stringify(prices),input.attemptId);

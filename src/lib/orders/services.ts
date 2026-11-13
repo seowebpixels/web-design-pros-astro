@@ -1,13 +1,25 @@
 import {priceForHostname} from '../domains/catalogue';
 import {orderReference,type OrderRow} from './core';
+export function nextBillingDate(purchasedAt:string,cycle:'Annual'|'Monthly'){
+  // Stored order timestamps are UTC. Billing follows the South African purchase date.
+  const normalized=purchasedAt.replace(' ','T'),instant=new Date(/(?:Z|[+-]\d{2}:?\d{2})$/i.test(normalized)?normalized:normalized+'Z');
+  if(!Number.isFinite(instant.getTime()))return null;
+  const parts=new Intl.DateTimeFormat('en-ZA',{timeZone:'Africa/Johannesburg',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(instant);
+  const part=(type:string)=>Number(parts.find(value=>value.type===type)!.value);
+  const target=new Date(Date.UTC(part('year'),part('month')-1+(cycle==='Annual'?12:1),1));
+  const lastDay=new Date(Date.UTC(target.getUTCFullYear(),target.getUTCMonth()+1,0)).getUTCDate();
+  target.setUTCDate(Math.min(part('day'),lastDay));
+  return target.toISOString().slice(0,10);
+}
 export function purchasedServices(order:OrderRow&{prices_json?:string|null}){
   if(order.payment_status!=='paid')return [];
   const cart=JSON.parse(order.cart_json),prices=order.prices_json?JSON.parse(order.prices_json):[];
-  const base={orderId:order.id,reference:orderReference(order),mode:order.mode,status:order.mode==='test'?'test_purchase':'pending_setup',nextDueDate:null};
+  const purchasedAt=order.paid_at??order.created_at;
+  const base={orderId:order.id,reference:orderReference(order),mode:order.mode,status:order.mode==='test'?'test_purchase':'pending_setup'};
   const services=cart.domains.map((item:{domain:string;cents:number})=>{
     const snapshot=prices.find((price:any)=>price.domain===item.domain),catalogue=priceForHostname(item.domain);
-    return {...base,id:order.id+':'+item.domain,product:'Domain Registration',domain:item.domain,paidCents:item.cents,recurringCents:snapshot?snapshot.renewalCents:catalogue?.renewalCents??null,priceSource:snapshot?'purchase':'current_catalogue',cycle:'Annual',status:order.mode==='test'?'test_purchase':'pending_registration'};
+    return {...base,id:order.id+':'+item.domain,product:'Domain Registration',domain:item.domain,paidCents:item.cents,recurringCents:snapshot?snapshot.renewalCents:catalogue?.renewalCents??null,priceSource:snapshot?'purchase':'current_catalogue',cycle:'Annual',nextDueDate:nextBillingDate(purchasedAt,'Annual'),status:order.mode==='test'?'test_purchase':'pending_registration'};
   });
-  if(cart.hosting)services.push({...base,id:order.id+':hosting',product:'Starter Hosting',domain:cart.domains.length===1?cart.domains[0].domain:'To be assigned',paidCents:6000,recurringCents:6000,priceSource:'purchase',cycle:'Monthly'});
+  if(cart.hosting)services.push({...base,id:order.id+':hosting',product:'Starter Hosting',domain:cart.domains.length===1?cart.domains[0].domain:'To be assigned',paidCents:6000,recurringCents:6000,priceSource:'purchase',cycle:'Monthly',nextDueDate:nextBillingDate(purchasedAt,'Monthly')});
   return services;
 }
