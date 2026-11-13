@@ -1,0 +1,21 @@
+---
+export const prerender=true;
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+const fields=[{name:'firstName',label:'First name',autocomplete:'given-name'},{name:'lastName',label:'Last name',autocomplete:'family-name'},{name:'phone',label:'Phone number',autocomplete:'tel'},{name:'company',label:'Company (optional)',autocomplete:'organization'},{name:'address',label:'Street address',autocomplete:'street-address'},{name:'city',label:'City',autocomplete:'address-level2'},{name:'province',label:'Province / region',autocomplete:'address-level1'},{name:'postalCode',label:'Postal code',autocomplete:'postal-code'},{name:'country',label:'Country',autocomplete:'country-name'}];
+---
+<DashboardLayout title="Your details | Web Design Pros" activeNav="dashboard">
+  <a href="/dashboard/">← My dashboard</a><h1>Your details</h1><p class="intro">Keep your contact and billing details up to date.</p>
+  <form id="profile-form"><div class="profile-fields">{fields.map(field=><label class:list={{wide:field.name==='address'}}>{field.label}<input name={field.name} autocomplete={field.autocomplete} type={field.name==='phone'?'tel':'text'} maxlength="200" required={field.name!=='company'} /></label>)}</div><p id="profile-status" role="status" aria-live="polite">Loading your details…</p><button id="profile-save" type="submit" disabled>Save details</button></form>
+</DashboardLayout>
+<script>
+  import {accountRequest} from '../../scripts/account-client';
+  const form=document.getElementById('profile-form') as HTMLFormElement,status=document.getElementById('profile-status')!,button=document.getElementById('profile-save') as HTMLButtonElement;
+  const fields=['firstName','lastName','phone','company','address','city','province','postalCode','country'];
+  void accountRequest('/api/customer/profile').then(data=>{for(const key of fields)(form.elements.namedItem(key) as HTMLInputElement).value=data.profile?.[key]??(key==='country'?'South Africa':'');status.textContent='';button.disabled=false;}).catch(()=>{status.textContent='Unable to load your details. Please refresh and try again.';});
+  form.addEventListener('submit',async event=>{event.preventDefault();if(button.disabled||!form.reportValidity())return;button.disabled=true;status.textContent='Saving…';
+    try{const response=await fetch('/api/customer/profile',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},signal:AbortSignal.timeout(15000),body:JSON.stringify(Object.fromEntries(fields.map(key=>[key,(form.elements.namedItem(key) as HTMLInputElement).value])))});const value=await response.json();if(!response.ok)throw new Error(value.error||'Unable to save your details.');status.textContent='Your details have been saved.';}catch(error){status.textContent=error instanceof Error?error.message:'Unable to save your details.';}finally{button.disabled=false;}
+  });
+</script>
+<style>
+  h1{margin-bottom:16px}.intro{color:var(--text-muted);margin-bottom:30px}form{max-width:850px;padding:30px;background:var(--bg-card);border:1px solid var(--border-color);border-radius:10px}.profile-fields{display:grid;grid-template-columns:1fr 1fr;gap:22px}.profile-fields label{display:flex;flex-direction:column;gap:9px;font-size:.85rem}.wide{grid-column:1/-1}input{width:100%;min-width:0;padding:12px;background:#111d34;color:#fff;border:1px solid #4b5a74;border-radius:5px}button{background:#0096ff;border:0;border-radius:7px;color:white;padding:12px 20px;cursor:pointer}button:disabled{opacity:.5}#profile-status{color:var(--accent-cyan);margin:24px 0}@media(max-width:550px){form{padding:22px}.profile-fields{grid-template-columns:1fr}}
+</style>

@@ -15,6 +15,7 @@ export const onRequestGet:PagesFunction<AccountEnv>=async context=>{
     if(before!==null&&(!/^\d{1,10}$/.test(before)||Number(before)<1))throw new AccountError(400,'Invalid order page.');
     const rows=await context.env.DB!.prepare("SELECT * FROM wdp_orders WHERE customer_id=? AND mode='test' AND sequence<? ORDER BY sequence DESC LIMIT 26").bind(session.user.id,before?Number(before):Number.MAX_SAFE_INTEGER).all<OrderRow>();
     const orders=rows.results.slice(0,25);
-    return accountJson({orders:orders.map(order=>publicOrder(order)),nextBefore:rows.results.length>25?orders.at(-1)!.sequence:null});
+    const count=await context.env.DB!.prepare("SELECT COUNT(*) AS total FROM wdp_orders WHERE customer_id=? AND mode='test'").bind(session.user.id).first<{total:number}>();
+    return accountJson({orders:orders.map(order=>publicOrder(order)),orderCount:count?.total??0,nextBefore:rows.results.length>25?orders.at(-1)!.sequence:null});
   }catch(error){return accountFailure(error);}
 };

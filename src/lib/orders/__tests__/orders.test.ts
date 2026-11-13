@@ -114,7 +114,7 @@ describe('customer test orders',()=>{
     for(let i=0;i<27;i++)await saveTestOrder(app.env,customer.user,app.input(),priced,'private-hash');
     await saveTestOrder(app.env,other.user,app.input(),priced,'other-private-hash');
     const get=(query='')=>ordersEndpoint(app.context(new Request('https://wdp.test/api/customer/orders'+query,{headers:{Cookie:customer.cookie}})));
-    const first=await (await get()).json();expect(first.orders).toHaveLength(25);expect(first.nextBefore).toBe(3);
+    const first=await (await get()).json();expect(first.orders).toHaveLength(25);expect(first.nextBefore).toBe(3);expect(first.orderCount).toBe(27);
     expect(JSON.stringify(first)).not.toContain('private-hash');expect(first.orders[0]).not.toHaveProperty('billing');
     const second=await (await get('?before='+first.nextBefore)).json();expect(second.orders).toHaveLength(2);expect(second.nextBefore).toBeNull();
     expect(new Set([...first.orders,...second.orders].map(order=>order.id)).size).toBe(27);

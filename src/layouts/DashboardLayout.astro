@@ -1,112 +1,38 @@
 ---
+import logoImage from '../assets/wdp-logo-new-design-one.avif';
 interface Props {
   title?: string;
   activeNav?: 'dashboard' | 'orders' | 'services' | 'domains' | 'billing';
   userName?: string;
 }
-
-const { 
-  title = 'Client Portal - Web Design Pros', 
-  activeNav = 'dashboard',
-  userName = 'My Account'
-} = Astro.props;
+const {title='Client Portal | Web Design Pros',activeNav='dashboard',userName='My account'}=Astro.props;
+const links=[['dashboard','Dashboard','/dashboard/'],['orders','Orders','/dashboard/orders/'],['services','Services','/dashboard/services/'],['domains','Domains','/dashboard/domains/'],['billing','Billing','/dashboard/billing/']];
 ---
-
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{title}</title>
-  <style>
-    :root {
-      --bg-dark: #001437;
-      --bg-card: #001f54;
-      --accent-cyan: #00E5FF;
-      --text-main: #FFFFFF;
-      --text-muted: #94A3B8;
-      --border-color: #1E293B;
-    }
-
-    body {
-      margin: 0;
-      background-color: var(--bg-dark);
-      color: var(--text-main);
-      font-family: system-ui, -apple-system, sans-serif;
-    }
-
-    .nav-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      background-color: #000f2B;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .nav-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1.5rem;
-      align-items: center;
-    }
-
-    .nav-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-weight: 500;
-      padding-bottom: 0.25rem;
-    }
-
-    .nav-links a.active {
-      color: var(--accent-cyan);
-      border-bottom: 2px solid var(--accent-cyan);
-    }
-
-    .user-pill {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      background-color: var(--bg-card);
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      border: 1px solid var(--border-color);
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
-  </style>
-</head>
-<body>
-  <header class="nav-bar">
-    <div class="nav-links">
-      <strong style="color: var(--accent-cyan); font-size: 1.2rem; margin-right: 1rem;">Web Design Pros</strong>
-      <a href="/dashboard" class={activeNav === 'dashboard' ? 'active' : ''}>Dashboard</a>
-      <a href="/dashboard/orders/" class={activeNav === 'orders' ? 'active' : ''}>Orders</a>
-      <a href="/dashboard/services" class={activeNav === 'services' ? 'active' : ''}>Services</a>
-      <a href="/dashboard/domains" class={activeNav === 'domains' ? 'active' : ''}>Domains</a>
-      <a href="/dashboard/billing" class={activeNav === 'billing' ? 'active' : ''}>Billing</a>
-    </div>
-
-    <div class="user-pill">
-      <span style="width: 10px; height: 10px; background: #10B981; border-radius: 50%;"></span>
-      <span id="dashboard-customer" style="font-size: 0.9rem;">{userName}</span><button id="dashboard-logout" type="button">Sign out</button>
-    </div>
-  </header>
-
-  <main class="container">
-    <p id="dashboard-status" role="status"></p>
-    <slot />
-  </main>
-<script>
-    import {accountRequest} from '../scripts/account-client';
-    const status=document.getElementById('dashboard-status')!;
-    void accountRequest('/api/customer/profile').then(data=>{document.getElementById('dashboard-customer')!.textContent=data.user.name;}).catch(()=>location.assign('/account/?next=dashboard'));
-    document.getElementById('dashboard-logout')!.addEventListener('click',async()=>{try{await accountRequest('/api/auth/sign-out',{});location.assign('/account/');}catch{status.textContent='Unable to sign out. Please try again.';}});
-  </script></body>
+<html lang="en-ZA">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{title}</title>
+    <style is:global>
+      @import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800,700,500,400&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+      :root{--bg-dark:#16213e;--bg-card:#1b2946;--accent-cyan:#89cfff;--text-main:#f7f9ff;--text-muted:#b3c1d7;--border-color:#33435f;--font-heading:'Cabinet Grotesk',sans-serif;--font-body:'Plus Jakarta Sans',sans-serif}
+      *,*::before,*::after{box-sizing:border-box}body{margin:0;background:var(--bg-dark);color:var(--text-main);font:15px/1.65 var(--font-body)}h1,h2,h3{font-family:var(--font-heading);line-height:1.15}h1{font-size:clamp(2.2rem,4vw,3rem);letter-spacing:-1px}a{color:var(--accent-cyan);text-underline-offset:4px}button,input{font:inherit}button,a,input{touch-action:manipulation}button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #89cfff;outline-offset:4px}[hidden]{display:none!important}
+      .portal-header{background:#000000;border-bottom:1px solid #202737;position:sticky;top:0;z-index:20}.portal-header-inner{max-width:1440px;min-height:180px;margin:auto;padding:18px 32px;display:flex;align-items:center;justify-content:space-between;gap:32px}.portal-brand{position:relative;display:block;width:340px;height:110px;overflow:hidden;flex-shrink:0}.portal-brand img{position:absolute;width:380px;max-width:none;height:auto;left:-20px;top:-70px}.portal-nav{display:flex;align-items:center;gap:25px;flex-wrap:wrap}.portal-nav a{color:#d5dce8;text-decoration:none;font-weight:600;padding:13px 0;border-bottom:2px solid transparent}.portal-nav a:hover,.portal-nav a.active{color:#89cfff}.portal-nav a.active{border-color:#0096ff}.portal-user{display:flex;align-items:center;gap:12px;min-width:0}.portal-user-name{display:flex;align-items:center;gap:9px;max-width:160px;overflow-wrap:anywhere;font-size:.85rem}.portal-user-dot{width:8px;height:8px;border-radius:50%;background:#27d6a3;flex-shrink:0}.portal-logout{border:1px solid #3c4a60;background:transparent;color:#f5f7ff;border-radius:7px;padding:9px 13px;cursor:pointer;font-size:.8rem;white-space:nowrap}.portal-logout:hover{background:#192743}.container{max-width:1440px;margin:auto;padding:44px 32px 72px;min-width:0}#dashboard-status:empty{display:none}#dashboard-status{padding:12px 16px;border:1px solid var(--border-color);border-radius:8px}#dashboard-logout-status:empty{display:none}#dashboard-logout-status{padding:12px;border:1px solid var(--border-color);border-radius:8px}.portal-footer{max-width:1440px;margin:auto;padding:24px 32px;border-top:1px solid var(--border-color);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;color:var(--text-muted);font-size:.78rem}.portal-footer a{color:var(--text-muted);text-decoration:none}
+      @media(max-width:1250px){.portal-header-inner{display:grid;grid-template-columns:1fr auto;gap:2px 24px;padding-top:12px;padding-bottom:12px;min-height:180px}.portal-nav{grid-column:1/-1;grid-row:2;gap:30px}.portal-user{grid-column:2;grid-row:1}.portal-brand{height:100px}.portal-nav a{padding:8px 0}}
+      @media(max-width:650px){.portal-header{position:relative}.portal-header-inner{padding:8px 20px 12px;gap:4px;grid-template-columns:1fr;min-height:0}.portal-brand{width:275px;height:85px}.portal-brand img{width:310px;left:-17px;top:-57px}.portal-user{grid-column:1;grid-row:2;justify-content:space-between}.portal-user-name{max-width:none}.portal-nav{grid-row:3;gap:8px 14px;flex-wrap:wrap;overflow-x:visible;font-size:.8rem;margin-top:10px}.portal-nav a{flex-shrink:0}.container{padding:28px 20px 48px}.portal-footer{padding:22px 20px}}
+    </style>
+  </head>
+  <body>
+    <header class="portal-header"><div class="portal-header-inner">
+      <a class="portal-brand" href="/" aria-label="Web Design Pros home"><img src={logoImage.src} width={logoImage.width} height={logoImage.height} alt="Web Design Pros" loading="eager" /></a>
+      <nav class="portal-nav" aria-label="Customer menu">{links.map(([key,label,href])=><a href={href} class:list={{active:activeNav===key}} aria-current={activeNav===key?'page':undefined}>{label}</a>)}</nav>
+      <div class="portal-user"><span class="portal-user-name"><span class="portal-user-dot" aria-hidden="true"></span><span id="dashboard-customer">{userName}</span></span><button class="portal-logout" id="dashboard-logout" data-dashboard-logout type="button">Sign out</button></div>
+    </div></header>
+    <main class="container"><p id="dashboard-status" role="status" aria-live="polite"></p><slot /><p id="dashboard-logout-status" role="status" aria-live="polite"></p></main>
+    <footer class="portal-footer"><span>© {new Date().getFullYear()} Web Design Pros. All rights reserved.</span><a href="/contact/">Need a hand? Talk to WDP →</a></footer>
+    <script>import '../scripts/dashboard';</script>
+  </body>
 </html>
