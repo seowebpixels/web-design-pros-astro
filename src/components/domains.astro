@@ -1,6 +1,7 @@
 ---
 // src/pages/domains.astro
 import Layout from '../layouts/Layout.astro';
+import {domainCatalogue,rand} from '../lib/domains/catalogue';
 ---
 
 <Layout title="Domain Registration & Pricing | WebDesignPros">
@@ -41,7 +42,7 @@ import Layout from '../layouts/Layout.astro';
           <div>
             <span id="result-badge" class="badge-available">Available</span>
             <h3 id="result-domain-name" class="result-domain-title">example.co.za</h3>
-            <p id="result-domain-sub" class="result-domain-sub">Renews at R85.00/yr</p>
+            <p id="result-domain-sub" class="result-domain-sub">Renewal price shown at checkout</p>
             <p id="result-disclosure" class="result-disclosure hidden"></p>
           </div>
           
@@ -83,7 +84,7 @@ import Layout from '../layouts/Layout.astro';
               class="table-search-input"
             />
             <div class="table-entries-count">
-              Showing 1 to 4 entries
+              Showing {domainCatalogue.length} extensions
             </div>
           </div>
 
@@ -94,48 +95,11 @@ import Layout from '../layouts/Layout.astro';
                 <tr>
                   <th>Domain Extension</th>
                   <th>Category</th>
-                  <th>Register</th>
-                  <th>Renew</th>
-                  <th>Transfer</th>
+                  <th>New price</th><th>Transfer</th><th>Renewal</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td class="font-bold text-white flex-cell">
-                    .co.za <span class="badge-hot">Hot</span>
-                  </td>
-                  <td>Popular</td>
-                  <td class="price-highlight">R75</td>
-                  <td>R85</td>
-                  <td>R85</td>
-                </tr>
-                <tr>
-                  <td class="font-bold text-white flex-cell">
-                    .com <span class="badge-hot">Hot</span>
-                  </td>
-                  <td>Popular</td>
-                  <td class="price-highlight">R200</td>
-                  <td>R270</td>
-                  <td>R255</td>
-                </tr>
-                <tr>
-                  <td class="font-bold text-white flex-cell">
-                    .org.za <span class="badge-sale">Sale</span>
-                  </td>
-                  <td>Popular</td>
-                  <td class="price-highlight">R95</td>
-                  <td>R110</td>
-                  <td>R110</td>
-                </tr>
-                <tr>
-                  <td class="font-bold text-white flex-cell">
-                    .net <span class="badge-hot">Hot</span>
-                  </td>
-                  <td>Popular</td>
-                  <td class="price-highlight">R200</td>
-                  <td>R284</td>
-                  <td>R284</td>
-                </tr>
+                {domainCatalogue.map(price=><tr><td class="font-bold text-white flex-cell">.{price.tld} {price.hot&&<span class="badge-hot">Hot!</span>}</td><td>{price.category}</td><td class="price-highlight">{rand(price.registrationCents)}<small>1 year</small></td><td>{rand(price.transferCents)}<small>1 year</small></td><td>{rand(price.renewalCents)}<small>1 year</small></td></tr>)}
               </tbody>
             </table>
           </div>
@@ -291,7 +255,7 @@ import Layout from '../layouts/Layout.astro';
             <details class="faq-accordion-item">
               <summary class="faq-question-btn">How much does a .co.za domain cost?</summary>
               <div class="faq-answer-content">
-                <p>Standard annual pricing in South Africa generally ranges from R75 to R250. Through our active promotional rates, first-year registrations start at R75. Ongoing annual renewals typically range between R135 and R400 depending on TLD category adjustments.</p>
+                <p>.co.za registration is {rand(domainCatalogue[0].registrationCents)} for the first year, with renewal at {rand(domainCatalogue[0].renewalCents)} per year. .com registration is {rand(domainCatalogue[1].registrationCents)}, with renewal at {rand(domainCatalogue[1].renewalCents)} per year.</p>
               </div>
             </details>
 
@@ -503,6 +467,7 @@ import Layout from '../layouts/Layout.astro';
 </script>
 
 <style>
+  .domain-pricing-table small{display:block;color:#94a3b8;font-size:.72rem;margin-top:4px}
   /* Dedicated Page Layout Styles — bypasses Tailwind utility spacing interference */
   #domains-page-container {
     width: 100%;

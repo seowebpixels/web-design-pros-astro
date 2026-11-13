@@ -1,17 +1,17 @@
 ---
 export const prerender = true;
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
-const services: any[] = [];
+
 ---
 
 <DashboardLayout title="My Services - Web Design Pros" activeNav="services">
   <div class="page-header">
     <div>
       <h1>My Services</h1>
-      <p class="subtitle">Manage active hosting packages, WaaS subscriptions, and maintenance plans</p>
+      <p class="subtitle">Manage your domain purchases, hosting and website services</p>
     </div>
     <div class="actions">
-      <a href="/#pricing" class="btn-primary">+ Order New Service</a>
+      <a href="/pricing/" class="btn-primary">+ Order New Service</a>
     </div>
   </div>
 
@@ -20,59 +20,34 @@ const services: any[] = [];
     <aside class="sidebar-card">
       <h3 class="sidebar-title">Service Actions</h3>
       <nav class="sidebar-nav">
-        <a href="/dashboard/services" class="sidebar-link active">Active Services</a>
-        <a href="/#pricing" class="sidebar-link">Browse Plans</a>
+        <a href="/dashboard/services" class="sidebar-link active">My Services</a>
+        <a href="/pricing/" class="sidebar-link">Browse Plans</a>
       </nav>
     </aside>
 
     <!-- Main Content: Services Table -->
-    <main class="main-content">
+    <section class="main-content" aria-label="Your services">
       <div class="table-container">
         <table>
           <thead>
             <tr>
               <th>Product / Service</th>
               <th>Domain</th>
-              <th>Pricing / Cycle</th>
+              <th>Price / Billing cycle</th>
               <th>Next Due Date</th>
               <th>Status</th>
               <th style="text-align: right;">Action</th>
             </tr>
           </thead>
-          <tbody>
-            {services.length > 0 ? (
-              services.map((service) => (
-                <tr>
-                  <td class="product-name">{service.product_name}</td>
-                  <td class="domain-link">{service.domain_name || '—'}</td>
-                  <td>
-                    <span class="price-val">{service.pricing}</span>
-                    <span class="cycle-val">/ {service.billing_cycle}</span>
-                  </td>
-                  <td>{service.next_due_date}</td>
-                  <td>
-                    <span class={`status-badge ${service.status}`}>
-                      {service.status.toUpperCase()}
-                    </span>
-                  </td>
-                  <td style="text-align: right;">
-                    <button class="table-manage-btn">Manage</button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colspan="6" class="empty-state">No services found.</td>
-              </tr>
-            )}
-          </tbody>
+          <tbody id="services-body"><tr><td colspan="6" class="empty-state">Loading your services…</td></tr></tbody>
         </table>
       </div>
-    </main>
+    </section>
   </div>
-</DashboardLayout>
+<p id="services-status" role="status" aria-live="polite"></p><div class="service-controls"><button id="services-refresh" type="button" class="table-manage-btn">Refresh services</button><button id="services-more" type="button" class="table-manage-btn" hidden>Load more services</button></div></DashboardLayout>
+<script>import '../../scripts/services';</script>
 
-<style>
+<style is:global>
   .page-header {
     display: flex;
     justify-content: space-between;
@@ -107,7 +82,7 @@ const services: any[] = [];
 
   .services-grid {
     display: grid;
-    grid-template-columns: 260px 1fr;
+    grid-template-columns: 260px minmax(0,1fr);
     gap: 1.5rem;
     align-items: start;
   }
@@ -243,4 +218,4 @@ const services: any[] = [];
     color: var(--text-muted);
     padding: 2rem;
   }
-</style>
+small {display:block;color:var(--text-muted);font-size:.72rem;font-weight:400;margin-top:6px} .service-action{text-align:right} .table-manage-btn{text-decoration:none;display:inline-block} .status-badge.pending{background:#fbbf2412;color:#f8d286;border:1px solid #9b793d} .service-controls{display:flex;gap:14px;margin-top:20px} #services-status{color:var(--accent-cyan)} #services-status:empty{display:none}</style>

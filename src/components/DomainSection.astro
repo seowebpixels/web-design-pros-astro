@@ -1,38 +1,11 @@
 ---
-/* 1. Primary Featured Domains (Top Row) */
-const primaryDomains = [
-  {
-    tld: '.co.za',
-    category: 'SOUTH AFRICAN ENTITY',
-    oldPrice: 'R95',
-    price: 'R75',
-    period: '/year',
-    badge: 'GREAT DEAL'
-  },
-  {
-    tld: '.com',
-    category: 'GLOBAL CHOICE',
-    oldPrice: 'R280',
-    price: 'R200',
-    period: '/year',
-    badge: 'GREAT DEAL'
-  }
-];
-
-/* 2. Secondary Domains (Bottom Row) */
-const secondaryDomains = [
-  { tld: '.org.za', category: 'SOUTH AFRICAN ORGANISATIONS', price: 'R95/yr' },
-  { tld: '.org', category: 'ORGANISATIONS', price: 'R200/yr' },
-  { tld: '.net', category: 'ORGANISATIONS', price: 'R200/yr' },
-  { tld: '.shop', category: 'ONLINE SHOPS', price: 'R250/yr' },
-  { tld: '.online', category: 'DIGITAL BRANDS', price: 'R100/yr' },
-  { tld: '.site', category: 'DIGITAL BRANDS', price: 'R105/yr' }
-];
+import {domainCatalogue,rand} from '../lib/domains/catalogue';
+const primaryDomains=domainCatalogue.map(price=>({tld:'.'+price.tld,category:price.category.toUpperCase(),price:rand(price.registrationCents),period:'/ first year',badge:price.hot?'HOT!':''}));
 ---
 
 <section class="domain-section">
   <div class="container">
-    
+
     <!-- Header Block -->
     <div class="domain-header">
       <div class="header-text">
@@ -47,8 +20,8 @@ const secondaryDomains = [
     <div class="deal-bar">
       <div class="deal-info">
         <span>CO.ZA domains start from</span>
-        <span class="old-price">R95</span>
-        <span class="highlight-price">R 75.00</span>
+
+        <span class="highlight-price">{rand(domainCatalogue[0].registrationCents)}</span>
         <span class="deal-badge">GREAT DEAL</span>
         <span class="period">/ first year</span>
       </div>
@@ -66,7 +39,7 @@ const secondaryDomains = [
           <h3 class="tld-title">{item.tld}</h3>
           <div class="pricing-row">
             <span class="label">From</span>
-            <span class="old-price">{item.oldPrice}</span>
+
             <span class="price">{item.price}</span>
             <span class="deal-badge">{item.badge}</span>
             <span class="period">{item.period}</span>
@@ -75,21 +48,10 @@ const secondaryDomains = [
       ))}
     </div>
 
-    <!-- Bottom Grid: 6 Smaller Cards -->
-    <div class="secondary-grid">
-      {secondaryDomains.map((item) => (
-        <a href={`/domains?tld=${item.tld}`} class="glass-card secondary-card">
-          <h4 class="tld-title-sm">{item.tld}</h4>
-          <span class="sub-category">{item.category}</span>
-          <div class="price-sm">{item.price}</div>
-        </a>
-      ))}
-    </div>
-
     <!-- Bottom Action Area -->
     <div class="actions-wrapper">
       <a href="/domains" class="btn-action">Check a domain</a>
-      <button type="button" id="show-more-btn" class="btn-action">Show more</button>
+
     </div>
 
   </div>

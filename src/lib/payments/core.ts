@@ -1,5 +1,6 @@
 import type { AccountEnv } from '../accounts/auth';
 import { validateDomain } from '../domains/validateDomain';
+import {priceForHostname} from '../domains/catalogue';
 
 export interface PaymentEnv extends AccountEnv {
   WDP_PAYMENT_TEST_ENABLED?: string;
@@ -38,7 +39,6 @@ export async function hash(value: string) {
   return Array.from(new Uint8Array(bytes), b => b.toString(16).padStart(2,'0')).join('');
 }
 export const uuid = (value: unknown): value is string => typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
-const prices: Record<string, number> = {'co.za':7500,'org.za':9500,'com':20000,'org':20000,'net':20000,'shop':20000,'info':20000,'biz':20000,'co.uk':20000,'io':20000};
 export function quote(input: any) {
   if (!Array.isArray(input.domains) || input.domains.length < 1 || input.domains.length > 10 || typeof input.hosting !== 'boolean' || input.termsAccepted !== true)
     throw new PaymentError(400, 'Select 1–10 domains and accept the Terms of Service.');
@@ -46,9 +46,9 @@ export function quote(input: any) {
     if (typeof domain !== 'string') throw new PaymentError(400, 'Invalid domain.');
     const result = validateDomain(domain.toLowerCase());
     if (!result.valid || !result.hostname) throw new PaymentError(400, 'Invalid domain.');
-    const suffix = Object.keys(prices).sort((a,b) => b.length-a.length).find(s => result.hostname!.endsWith(`.${s}`));
-    if (!suffix) throw new PaymentError(400, 'This domain extension is not available for checkout.');
-    return {domain:result.hostname, cents:prices[suffix]};
+    const price=priceForHostname(result.hostname);
+    if (!price) throw new PaymentError(400, 'Pricing for this domain extension is not available for checkout yet. Please contact WDP.');
+    return {domain:result.hostname, cents:price.registrationCents};
   }).sort((a: any,b: any) => a.domain.localeCompare(b.domain));
   if (new Set(domains.map((d: any) => d.domain)).size !== domains.length) throw new PaymentError(400, 'Remove duplicate domains.');
   const amount = domains.reduce((sum: number,d: any) => sum+d.cents, input.hosting ? 6000 : 0);

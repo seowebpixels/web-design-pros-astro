@@ -5,6 +5,7 @@ import {createAuth} from '../../accounts/auth';
 import {createPayment,paymentStatus,paymentWebhook} from '../../payments/handlers';
 import {saveTestOrder,orderReference} from '../core';
 import {onRequestGet as ordersEndpoint} from '../../../../functions/api/customer/orders';
+import {onRequestGet as servicesEndpoint} from '../../../../functions/api/customer/services';
 import type {PaymentEnv} from '../../payments/core';
 
 const signing='test-order-webhook-secret',secret='whsec_'+btoa(signing);
@@ -18,7 +19,7 @@ function database(sql:DatabaseSync){
 }
 function setup(){
   const sql=new DatabaseSync(':memory:'),payments=new DatabaseSync(':memory:');
-  sql.exec(readFileSync('migrations/0002_customer_accounts.sql','utf8'));sql.exec(readFileSync('migrations/0003_customer_orders.sql','utf8'));
+  sql.exec(readFileSync('migrations/0002_customer_accounts.sql','utf8'));sql.exec(readFileSync('migrations/0003_customer_orders.sql','utf8'));sql.exec(readFileSync('migrations/0004_order_price_snapshots.sql','utf8'));
   payments.exec(readFileSync('migrations/0001_payment_tests.sql','utf8'));
   const env={DB:database(sql),WDP_PAYMENT_DB:database(payments),WDP_ACCOUNTS_ENABLED:'true',AUTH_SECRET:'test-only-account-secret-at-least-thirty-two-characters',AUTH_BASE_URL:'https://wdp.test',AUTH_FROM_EMAIL:'WDP <accounts@example.com>',RESEND_API_KEY:'test-only',WDP_PAYMENT_TEST_ENABLED:'true',YOCO_TEST_SECRET_KEY:'sk_test_only',YOCO_TEST_WEBHOOK_SECRET:secret} as PaymentEnv;
   const tasks:Promise<unknown>[]=[];const waitUntil=(task:Promise<unknown>)=>tasks.push(task),mail:any[]=[],checkouts:any[]=[];
@@ -119,5 +120,21 @@ describe('customer test orders',()=>{
     const second=await (await get('?before='+first.nextBefore)).json();expect(second.orders).toHaveLength(2);expect(second.nextBefore).toBeNull();
     expect(new Set([...first.orders,...second.orders].map(order=>order.id)).size).toBe(27);
     expect((await get('?before=invalid')).status).toBe(400);
+  });
+  it('shows only paid customer services, preserves quoted renewal prices and never invents registration or due dates',async()=>{
+    const app=setup(),customer=await app.customer(),other=await app.customer('second@example.com'),input=app.input();
+    await createPayment(app.context(app.request(input,customer.cookie)));
+    const get=(cookie:string)=>servicesEndpoint(app.context(new Request('https://wdp.test/api/customer/services',{headers:{Cookie:cookie}})));
+    expect((await (await get(customer.cookie)).json()).services).toHaveLength(0);
+    await app.webhook(input);
+    const response=await get(customer.cookie),result=await response.json();expect(response.headers.get('cache-control')).toBe('no-store');
+    expect(result.serviceCount).toBe(2);expect(result.services[0]).toMatchObject({product:'Domain Registration',domain:'example.co.za',recurringCents:12500,paidCents:7500,status:'test_purchase',nextDueDate:null,priceSource:'purchase'});
+    expect(result.services[1]).toMatchObject({product:'Starter Hosting',recurringCents:6000,cycle:'Monthly',status:'test_purchase',nextDueDate:null});
+    expect(JSON.stringify(result)).not.toContain('access_hash');expect((await (await get(other.cookie)).json()).services).toHaveLength(0);expect((await get('')).status).toBe(401);
+    const prices=JSON.parse(app.sql.prepare('SELECT prices_json FROM wdp_order_prices WHERE order_id=?').get(input.attemptId)!.prices_json as string);prices[0].renewalCents=14000;
+    app.sql.prepare('UPDATE wdp_order_prices SET prices_json=? WHERE order_id=?').run(JSON.stringify(prices),input.attemptId);
+    expect((await (await get(customer.cookie)).json()).services[0].recurringCents).toBe(14000);
+    app.sql.prepare('DELETE FROM wdp_order_prices WHERE order_id=?').run(input.attemptId);
+    expect((await (await get(customer.cookie)).json()).services[0]).toMatchObject({recurringCents:12500,priceSource:'current_catalogue'});
   });
 });

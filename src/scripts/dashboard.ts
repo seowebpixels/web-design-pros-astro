@@ -13,3 +13,5 @@ document.querySelectorAll<HTMLButtonElement>('[data-dashboard-logout]').forEach(
 }));
 const orderCount=document.getElementById('dashboard-order-count');
 if(orderCount)void accountRequest('/api/customer/orders').then(data=>{orderCount.textContent=String(data.orderCount);}).catch(()=>{orderCount.textContent='—';status.textContent='Your order count could not be loaded. You can retry from Orders.';});
+const serviceCount=document.getElementById('dashboard-service-count');
+if(serviceCount)void accountRequest('/api/customer/services').then(data=>{serviceCount.textContent=String(data.serviceCount);}).catch(()=>{serviceCount.textContent='—';status.textContent='Your service count could not be loaded. You can retry from Services.';});

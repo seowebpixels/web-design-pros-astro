@@ -1,6 +1,7 @@
 import {AccountError,type AccountEnv} from '../accounts/auth';
 import {validateProfile} from '../accounts/profile';
 import {PaymentError} from '../payments/core';
+import {priceForHostname} from '../domains/catalogue';
 
 export interface OrderRow {
   id:string;customer_id:string;mode:'test'|'live';sequence:number;access_hash:string;
@@ -28,10 +29,12 @@ export async function saveTestOrder(env:AccountEnv,user:{id:string;email:string}
   if(!saved)throw new PaymentError(400,'Please save your billing details before payment.');
   const billing={...validateProfile(JSON.parse(saved.profile_json)),email:user.email};
   const billingJson=JSON.stringify(billing),registrantJson=JSON.stringify(registrantDetails(input.registrant,billing));
+  const priceSnapshot=JSON.stringify(JSON.parse(priced.cart).domains.map((item:{domain:string;cents:number})=>({domain:item.domain,registrationCents:item.cents,renewalCents:priceForHostname(item.domain)?.renewalCents??null,transferCents:priceForHostname(item.domain)?.transferCents??null,years:1})));
   // D1 executes the batch transactionally. Concurrent requests cannot share a number;
   // repeating the same order ID does not advance the counter or create another order.
   await db.batch([
     db.prepare("INSERT INTO wdp_orders (id,customer_id,mode,sequence,access_hash,cart_json,billing_json,registrant_json,amount,terms_url) SELECT ?,?,'test',next_value,?,?,?,?,?,? FROM wdp_order_sequences WHERE mode='test' ON CONFLICT(id) DO NOTHING").bind(input.attemptId,user.id,accessHash,priced.cart,billingJson,registrantJson,priced.amount,termsUrl),
+    db.prepare("INSERT OR IGNORE INTO wdp_order_prices (order_id,prices_json) SELECT id,? FROM wdp_orders WHERE id=? AND customer_id=? AND mode='test' AND sequence=(SELECT next_value FROM wdp_order_sequences WHERE mode='test')").bind(priceSnapshot,input.attemptId,user.id),
     db.prepare("UPDATE wdp_order_sequences SET next_value=next_value+1 WHERE mode='test' AND EXISTS (SELECT 1 FROM wdp_orders WHERE id=? AND mode='test' AND sequence=wdp_order_sequences.next_value)").bind(input.attemptId)
   ]);
   const order=await db.prepare('SELECT * FROM wdp_orders WHERE id=?').bind(input.attemptId).first<OrderRow>();

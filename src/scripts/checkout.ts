@@ -1,4 +1,5 @@
 import {ensureCheckoutAccount,loadCheckoutAccount} from './checkout-account';
+import {priceForHostname} from '../lib/domains/catalogue';
 type CartItem = { domain: string; registrationPrice: number; renewalPrice: number | null; selectedYears: number };
 const byId = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
 const money = (value: number) => new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' }).format(value);
@@ -14,7 +15,7 @@ function loadCart() {
   try {
     const value = JSON.parse(localStorage.getItem('cart_domains') || '[]');
     if (!Array.isArray(value)) throw new Error('Invalid cart');
-    cart = value.filter(item => item && typeof item.domain === 'string' && /^[a-z0-9.-]+$/i.test(item.domain) && Number.isFinite(item.registrationPrice) && item.registrationPrice > 0).map(item => ({...item, selectedYears: 1, renewalPrice: Number.isFinite(item.renewalPrice) && item.renewalPrice > 0 ? item.renewalPrice : null}));
+    cart = value.filter(item => item && typeof item.domain === 'string' && /^[a-z0-9.-]+$/i.test(item.domain) && Number.isFinite(item.registrationPrice) && item.registrationPrice > 0).map(item => {const price=priceForHostname(item.domain);return {...item, selectedYears:1,registrationPrice:price?price.registrationCents/100:item.registrationPrice,renewalPrice:price?price.renewalCents/100:null};});
     if (cart.length !== value.length) status.textContent = 'Some cart items could not be read. Please search for those domains again.';
   } catch { cart = []; status.textContent = 'Your saved cart could not be read. Please add your domains again.'; }
 }
@@ -76,6 +77,7 @@ form.addEventListener('submit', async event => {
   const paymentStatus=byId('payment-status');
   paymentBusy = true; submit.disabled = true; paymentStatus.textContent = 'Checking your account…';
   try {
+    if(cart.some(item=>!priceForHostname(item.domain)))throw new Error('Pricing is currently available for .co.za and .com only. Remove unpriced domains or contact WDP before continuing.');
     const billingProfile=await ensureCheckoutAccount();
     paymentStatus.textContent = 'Preparing secure payment…';
     const ownerField=(name:string)=>(form.elements.namedItem(name) as HTMLInputElement).value;
