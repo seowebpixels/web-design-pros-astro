@@ -7,7 +7,7 @@ function cell(text:string,className=''){const td=document.createElement('td');td
 function small(parent:HTMLElement,text:string){const el=document.createElement('small');el.textContent=text;parent.append(el);}
 function row(service:any){
   const tr=document.createElement('tr'),product=cell(service.product,'product-name');small(product,service.reference);
-  const domain=cell(service.domain,'domain-link'),price=cell(service.recurringCents===null?'To be confirmed':`${money(service.recurringCents)} / ${service.cycle==='Annual'?'year':'month'}`,'price-val');
+  const domain=cell(service.domain,'domain-link'),price=cell(service.recurringCents===null?'To be confirmed':`${money(service.recurringCents)} / ${service.cycle==='Annual'?((service.renewalYears??1)===1?'year':`${service.renewalYears} years`):'month'}`,'price-val');
   small(price,service.product==='Domain Registration'?`Paid ${money(service.paidCents)} · ${(service.years??1)===1?'first year':`${service.years} years`}`:`Paid ${money(service.paidCents)} · first month`);
   if(service.priceSource==='current_catalogue')small(price,'Current renewal price');
   const due=cell(service.nextDueDate?new Intl.DateTimeFormat('en-ZA',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(service.nextDueDate+'T12:00:00Z')):'Date unavailable');

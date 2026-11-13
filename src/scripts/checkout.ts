@@ -1,5 +1,5 @@
 import {ensureCheckoutAccount,loadCheckoutAccount} from './checkout-account';
-import {priceForHostname,termPriceCents,validYears,rand} from '../lib/domains/catalogue';
+import {priceForHostname,termPriceCents,validYears,rand,renewalPriceCents} from '../lib/domains/catalogue';
 type CartItem = { domain: string; registrationPrice: number; renewalPrice: number | null; selectedYears: number };
 const byId = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
 const money = (value:number)=>rand(Math.round(value*100));
@@ -15,7 +15,7 @@ function loadCart() {
   try {
     const value = JSON.parse(localStorage.getItem('cart_domains') || '[]');
     if (!Array.isArray(value)) throw new Error('Invalid cart');
-    cart = value.filter(item => item && typeof item.domain === 'string' && /^[a-z0-9.-]+$/i.test(item.domain) && Number.isFinite(item.registrationPrice) && item.registrationPrice > 0).map(item => {const price=priceForHostname(item.domain),years=validYears(item.selectedYears)?item.selectedYears:1;return {...item,selectedYears:years,registrationPrice:price?termPriceCents(price,years)/100:item.registrationPrice,renewalPrice:price?price.renewalCents/100:null};});
+    cart = value.filter(item => item && typeof item.domain === 'string' && /^[a-z0-9.-]+$/i.test(item.domain) && Number.isFinite(item.registrationPrice) && item.registrationPrice > 0).map(item => {const price=priceForHostname(item.domain),years=validYears(item.selectedYears)?item.selectedYears:1;return {...item,selectedYears:years,registrationPrice:price?termPriceCents(price,years)/100:item.registrationPrice,renewalPrice:price?renewalPriceCents(price,years)/100:null};});
     if (cart.length !== value.length) status.textContent = 'Some cart items could not be read. Please search for those domains again.';
     else if(JSON.stringify(cart)!==JSON.stringify(value)){try{localStorage.setItem('cart_domains',JSON.stringify(cart));window.dispatchEvent(new Event('cart-updated'));}catch{status.textContent='Updated prices are shown below, but your browser could not save the cart.';}}
   } catch { cart = []; status.textContent = 'Your saved cart could not be read. Please add your domains again.'; }
@@ -51,12 +51,11 @@ function render() {
     select.addEventListener('change',()=>{
       if(!catalogue||paymentBusy)return;
       const years=Number(select.value);if(!validYears(years))return;
-      const next=cart.map((value,i)=>i===index?{...value,selectedYears:years,registrationPrice:termPriceCents(catalogue,years)/100}:value);
+      const next=cart.map((value,i)=>i===index?{...value,selectedYears:years,registrationPrice:termPriceCents(catalogue,years)/100,renewalPrice:renewalPriceCents(catalogue,years)/100}:value);
       if(!saveCart(next))render();
       byId('cart-items').querySelectorAll('select')[index]?.focus();
     });
-    const renewal=document.createElement('small');renewal.textContent=catalogue?`Year 2 renewal: ${money(catalogue.renewalCents/100)} / year`:'Renewal price to be confirmed';price.append(select,renewal);
-    if(item.selectedYears>1){const included=document.createElement('small');included.className='term-included';included.textContent='Year 2 is included in this total';price.append(included);}
+    const renewal=document.createElement('small');renewal.textContent=catalogue?`Renewal ${money(renewalPriceCents(catalogue,item.selectedYears)/100)}/${item.selectedYears}${item.selectedYears===1?'yr':'yrs'}`:'Renewal price to be confirmed';price.append(select,renewal);
     const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'remove';remove.disabled=paymentBusy;remove.title='Remove domain';remove.setAttribute('aria-label', `Remove ${item.domain}`);remove.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7M14 10v7"/></svg>';
     remove.addEventListener('click', () => {
       if(paymentBusy||!saveCart(cart.filter((_,i)=>i!==index)))return;

@@ -99,7 +99,7 @@ import {domainCatalogue,rand} from '../lib/domains/catalogue';
                 </tr>
               </thead>
               <tbody>
-                {domainCatalogue.map(price=><tr><td class="font-bold text-white flex-cell">.{price.tld} {price.hot&&<span class="badge-hot">Hot!</span>}</td><td>{price.category}</td><td class="price-highlight">{rand(price.registrationCents)}<small>1 year</small></td><td>{rand(price.transferCents)}<small>1 year</small></td>{price.yearlyPricesCents.slice(1).map(amount=><td>{rand(amount)}<small>1 year</small></td>)}</tr>)}
+                {domainCatalogue.map(price=><tr><td class="font-bold text-white flex-cell">.{price.tld} {price.hot&&<span class="badge-hot">Hot!</span>}</td><td>{price.category}</td><td class="price-highlight">{rand(price.registrationCents)}<small>1 year</small></td><td>{rand(price.transferCents)}<small>1 year</small></td>{price.yearlyPricesCents.slice(1).map((amount,index)=><td>{rand(amount)}<small>{index+2} years</small></td>)}</tr>)}
               </tbody>
             </table>
           </div>

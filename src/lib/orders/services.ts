@@ -1,4 +1,4 @@
-import {priceForHostname} from '../domains/catalogue';
+import {priceForHostname,renewalPriceCents} from '../domains/catalogue';
 import {orderReference,type OrderRow} from './core';
 export function nextBillingDate(purchasedAt:string,cycle:'Annual'|'Monthly',years=1){
   // Stored order timestamps are UTC. Billing follows the South African purchase date.
@@ -19,7 +19,7 @@ export function purchasedServices(order:OrderRow&{prices_json?:string|null}){
   const services=cart.domains.map((item:{domain:string;cents:number;years?:number})=>{
     const snapshot=prices.find((price:any)=>price.domain===item.domain),catalogue=priceForHostname(item.domain);
     const years=item.years??snapshot?.years??1;
-    return {...base,id:order.id+':'+item.domain,product:'Domain Registration',domain:item.domain,years,paidCents:item.cents,recurringCents:snapshot?snapshot.renewalCents:catalogue?.yearlyPricesCents[years]??null,priceSource:snapshot?'purchase':'current_catalogue',cycle:'Annual',nextDueDate:nextBillingDate(purchasedAt,'Annual',years),status:order.mode==='test'?'test_purchase':'pending_registration'};
+    return {...base,id:order.id+':'+item.domain,product:'Domain Registration',domain:item.domain,years,paidCents:item.cents,recurringCents:snapshot?snapshot.renewalCents:catalogue?renewalPriceCents(catalogue,years):null,renewalYears:snapshot?(snapshot.renewalYears??1):years,priceSource:snapshot?'purchase':'current_catalogue',cycle:'Annual',nextDueDate:nextBillingDate(purchasedAt,'Annual',years),status:order.mode==='test'?'test_purchase':'pending_registration'};
   });
   if(cart.hosting)services.push({...base,id:order.id+':hosting',product:'Starter Hosting',domain:cart.domains.length===1?cart.domains[0].domain:'To be assigned',paidCents:6000,recurringCents:6000,priceSource:'purchase',cycle:'Monthly',nextDueDate:nextBillingDate(purchasedAt,'Monthly')});
   return services;

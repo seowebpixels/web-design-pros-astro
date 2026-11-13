@@ -140,16 +140,16 @@ describe('customer test orders',()=>{
   });
   it('charges a prepaid term once, keeps its years and moves renewal to the end of that term',async()=>{
     const app=setup(),customer=await app.customer();
-    const input={...app.input(),domains:[{domain:'example.com',years:2}],hosting:false,quotedAmount:67000};
+    const input={...app.input(),domains:[{domain:'example.com',years:2}],hosting:false,quotedAmount:46000};
     expect((await createPayment(app.context(app.request(input,customer.cookie)))).status).toBe(200);
-    expect(app.checkouts[0].amount).toBe(67000);
+    expect(app.checkouts[0].amount).toBe(46000);
     const saved=app.sql.prepare('SELECT * FROM wdp_orders WHERE id=?').get(input.attemptId)!;
-    expect(JSON.parse(saved.cart_json as string).domains[0]).toMatchObject({years:2,cents:67000});
-    await app.webhook(input,'succeeded',67000);app.sql.prepare('UPDATE wdp_orders SET paid_at=? WHERE id=?').run('2026-11-13 10:00:00',input.attemptId);
+    expect(JSON.parse(saved.cart_json as string).domains[0]).toMatchObject({years:2,cents:46000});
+    await app.webhook(input,'succeeded',46000);app.sql.prepare('UPDATE wdp_orders SET paid_at=? WHERE id=?').run('2026-11-13 10:00:00',input.attemptId);
     const get=()=>servicesEndpoint(app.context(new Request('https://wdp.test/api/customer/services',{headers:{Cookie:customer.cookie}})));
-    expect((await (await get()).json()).services[0]).toMatchObject({years:2,paidCents:67000,recurringCents:73000,nextDueDate:'2028-11-13'});
-    const five={...app.input(),domains:[{domain:'example.com',years:5}],hosting:false,quotedAmount:355000};
-    await createPayment(app.context(app.request(five,customer.cookie)));await app.webhook(five,'succeeded',355000);app.sql.prepare('UPDATE wdp_orders SET paid_at=? WHERE id=?').run('2026-11-13 10:00:00',five.attemptId);
-    expect((await (await get()).json()).services[0]).toMatchObject({years:5,paidCents:355000,recurringCents:null,nextDueDate:'2031-11-13'});
+    expect((await (await get()).json()).services[0]).toMatchObject({years:2,paidCents:46000,recurringCents:46000,renewalYears:2,nextDueDate:'2028-11-13'});
+    const five={...app.input(),domains:[{domain:'example.com',years:5}],hosting:false,quotedAmount:120000};
+    await createPayment(app.context(app.request(five,customer.cookie)));await app.webhook(five,'succeeded',120000);app.sql.prepare('UPDATE wdp_orders SET paid_at=? WHERE id=?').run('2026-11-13 10:00:00',five.attemptId);
+    expect((await (await get()).json()).services[0]).toMatchObject({years:5,paidCents:120000,recurringCents:120000,renewalYears:5,nextDueDate:'2031-11-13'});
   });
 });

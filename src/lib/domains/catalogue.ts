@@ -13,7 +13,11 @@ export const rand=(cents:number)=>`R${(cents/100).toFixed(cents%100?2:0)}`;
 export const validYears=(value:unknown):value is number=>typeof value==='number'&&Number.isInteger(value)&&value>=1&&value<=5;
 export function termPriceCents(price:DomainPrice,years:number){
   if(!validYears(years))throw new RangeError('Choose a registration period between 1 and 5 years.');
-  return price.yearlyPricesCents.slice(0,years).reduce((sum,amount)=>sum+amount,0);
+  return price.yearlyPricesCents[years-1];
+}
+// Multi-year entries are complete term prices, never a sum of the other entries.
+export function renewalPriceCents(price:DomainPrice,years:number){
+  return years===1?price.renewalCents:termPriceCents(price,years);
 }
 export function cartTermCents(item:{domain:string;selectedYears?:unknown;registrationPrice?:unknown}){
   const price=priceForHostname(item.domain),years=validYears(item.selectedYears)?item.selectedYears:1;
