@@ -1,0 +1,18 @@
+---
+export const prerender=true;
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+---
+<DashboardLayout title="My Orders | Web Design Pros" activeNav="orders">
+  <header class="orders-heading"><div><p class="eyebrow">YOUR PURCHASES, IN ONE PLACE</p><h1>My orders</h1></div><a class="button" href="/domains">Find a domain →</a></header>
+  <p class="test-note">Test orders only. No money is charged, no domain is registered and no hosting is provisioned.</p>
+  <p id="orders-status" role="status" aria-live="polite">Loading your orders…</p>
+  <div id="orders-list" class="orders-list"></div>
+  <section id="order-detail" class="order-card" hidden aria-label="Order details"></section>
+  <div class="order-actions"><button id="orders-refresh" type="button">Refresh status</button><button id="orders-more" type="button" hidden>Load more orders</button><a id="orders-back" href="/dashboard/orders/" hidden>← All orders</a></div>
+</DashboardLayout>
+<script>import '../../scripts/orders';</script>
+<style>
+  .orders-heading{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}h1{font-size:2rem;margin:10px 0 22px}.eyebrow{font-size:.75rem;letter-spacing:2px;color:#94a3b8}.test-note{color:#b6c4d9;line-height:1.6;margin-bottom:28px}.orders-list{display:grid;gap:16px}.order-actions{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin:24px 0}a{color:#00e5ff}button,.button{font:inherit;padding:12px 18px;color:#fff;border:1px solid #35516e;border-radius:7px;background:#003d77;cursor:pointer;text-decoration:none}button:disabled{opacity:.6}button:focus-visible,a:focus-visible{outline:2px solid #00e5ff;outline-offset:4px}[hidden]{display:none!important}
+  :global(.order-card){padding:24px;border:1px solid #294564;border-radius:10px;background:#001f54;overflow-wrap:anywhere}:global(.order-card h2){margin:0 0 14px;font-size:1.2rem}:global(.order-card h3){margin:24px 0 12px;font-size:1rem}:global(.order-card p){margin:10px 0;line-height:1.6}:global(.order-card ul){padding-left:22px;line-height:1.9}:global(.order-card .order-meta){display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:#b6c4d9}:global(.order-card .order-state){color:#89cff0;font-weight:600}:global(.order-card .order-contacts){display:grid;grid-template-columns:1fr 1fr;gap:24px}:global(.order-card dl){margin:0}:global(.order-card dt){color:#94a3b8;font-size:.8rem;margin-top:12px}:global(.order-card dd){margin:5px 0 0;white-space:pre-line}
+  @media(max-width:650px){:global(.order-card .order-contacts){grid-template-columns:1fr}:global(.order-card){padding:18px}}
+</style>

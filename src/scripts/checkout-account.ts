@@ -52,6 +52,7 @@ export async function ensureCheckoutAccount(){
   const response=await fetch('/api/customer/profile',{method:'PUT',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.fromEntries(profileKeys.map(key=>[key,field(key).value])))});
   const value=await response.json();if(!response.ok)throw new Error(value.error || 'Unable to save billing details.');
   sessionStorage.removeItem('wdp_billing_draft');
+  return value.profile as Record<string,string>;
 }
 // Verification links may open another tab. Refresh the session when returning here.
 window.addEventListener('focus',()=>{if(!customer)void loadCheckoutAccount();});

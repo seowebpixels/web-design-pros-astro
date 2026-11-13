@@ -76,15 +76,19 @@ form.addEventListener('submit', async event => {
   const paymentStatus=byId('payment-status');
   paymentBusy = true; submit.disabled = true; paymentStatus.textContent = 'Checking your account…';
   try {
-    await ensureCheckoutAccount();
+    const billingProfile=await ensureCheckoutAccount();
     paymentStatus.textContent = 'Preparing secure payment…';
-    const payload = {domains:cart.map(item=>item.domain), hosting:hosting.checked, termsAccepted:byId<HTMLInputElement>('terms').checked, quotedAmount:Math.round(total()*100)};
-    const fingerprint = JSON.stringify(payload);
+    const ownerField=(name:string)=>(form.elements.namedItem(name) as HTMLInputElement).value;
+    const registrant=byId<HTMLInputElement>('same-owner').checked?{sameAsBilling:true}:{sameAsBilling:false,name:ownerField('ownerName'),email:ownerField('ownerEmail'),phone:ownerField('ownerPhone'),company:ownerField('ownerCompany'),address:ownerField('ownerAddress'),city:ownerField('ownerCity'),province:ownerField('ownerProvince'),postalCode:ownerField('ownerPostalCode'),country:ownerField('ownerCountry')};
+    const payload = {domains:cart.map(item=>item.domain), hosting:hosting.checked, termsAccepted:byId<HTMLInputElement>('terms').checked, quotedAmount:Math.round(total()*100),registrant};
+    // Include purchase details in retry identity without retaining personal data in session storage.
+    const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify({payload,billingProfile})));
+    const fingerprint = Array.from(new Uint8Array(digest),byte=>byte.toString(16).padStart(2,'0')).join('');
     let saved;
     try { saved = JSON.parse(sessionStorage.getItem('wdp_payment_attempt') || 'null'); } catch { saved = null; }
     if (!saved || saved.fingerprint !== fingerprint || saved.completed) saved = {attemptId:crypto.randomUUID(), accessToken:crypto.randomUUID(), fingerprint};
     sessionStorage.setItem('wdp_payment_attempt',JSON.stringify(saved));
-    // Send only the cart and a private status-access token. No password, card or personal data.
+    // WDP saves the cart and registrant snapshot; passwords/card details are never sent here.
     const response = await fetch('/api/payments/create', {
       method:'POST', headers:{'Content-Type':'application/json'}, signal:AbortSignal.timeout(20000),
       body:JSON.stringify({...payload, attemptId:saved.attemptId, accessToken:saved.accessToken})

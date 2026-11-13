@@ -1,7 +1,7 @@
 ---
 interface Props {
   title?: string;
-  activeNav?: 'dashboard' | 'services' | 'domains' | 'billing';
+  activeNav?: 'dashboard' | 'orders' | 'services' | 'domains' | 'billing';
   userName?: string;
 }
 
@@ -37,6 +37,8 @@ const {
 
     .nav-bar {
       display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
       justify-content: space-between;
       align-items: center;
       padding: 1rem 2rem;
@@ -46,6 +48,7 @@ const {
 
     .nav-links {
       display: flex;
+      flex-wrap: wrap;
       gap: 1.5rem;
       align-items: center;
     }
@@ -84,6 +87,7 @@ const {
     <div class="nav-links">
       <strong style="color: var(--accent-cyan); font-size: 1.2rem; margin-right: 1rem;">Web Design Pros</strong>
       <a href="/dashboard" class={activeNav === 'dashboard' ? 'active' : ''}>Dashboard</a>
+      <a href="/dashboard/orders/" class={activeNav === 'orders' ? 'active' : ''}>Orders</a>
       <a href="/dashboard/services" class={activeNav === 'services' ? 'active' : ''}>Services</a>
       <a href="/dashboard/domains" class={activeNav === 'domains' ? 'active' : ''}>Domains</a>
       <a href="/dashboard/billing" class={activeNav === 'billing' ? 'active' : ''}>Billing</a>
