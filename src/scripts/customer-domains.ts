@@ -1,5 +1,7 @@
 const body=document.getElementById('domains-body')!,status=document.getElementById('domains-status')!,mode=document.getElementById('domains-mode') as HTMLSelectElement,refresh=document.getElementById('domains-refresh') as HTMLButtonElement,more=document.getElementById('domains-more') as HTMLButtonElement;
 let busy=false,nextBefore:number|null=null;
+const requestedMode=new URLSearchParams(location.search).get('mode');
+if(requestedMode==='live'||requestedMode==='test')mode.value=requestedMode;
 function cell(text:string){const td=document.createElement('td');td.textContent=text;return td;}
 function date(value:string|null){return value?new Intl.DateTimeFormat('en-ZA',{dateStyle:'long',timeZone:'UTC'}).format(new Date(value+'T12:00:00Z')):'—';}
 async function load(append=false){

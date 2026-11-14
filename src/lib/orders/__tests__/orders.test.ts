@@ -229,6 +229,8 @@ describe('private manual registration queue',()=>{
     await app.webhook(input,'succeeded',30500);const initial=await (await queue(app,admin.cookie)).json();expect(initial.items).toHaveLength(2);expect(initial.items[0].registrant.address).toBe('Original street');
     const calls=app.provider.mock.calls.length;
     expect((await update(app,admin.cookie,record(input.attemptId))).status).toBe(200);
+    const partial=await (await domainsEndpoint(app.context(new Request('https://wdp.test/api/customer/domains',{headers:{Cookie:customer.cookie}})))).json();
+    expect(partial).toMatchObject({domainCount:0,testDomainCount:1});
     expect(app.sql.prepare('SELECT fulfilment_status FROM wdp_orders').get()!.fulfilment_status).toBe('test_registration_pending');
     expect((await update(app,admin.cookie,record(input.attemptId))).status).toBe(409);
     expect((await update(app,admin.cookie,record(input.attemptId,'example.com'))).status).toBe(200);
@@ -237,6 +239,8 @@ describe('private manual registration queue',()=>{
     expect((await (await queue(app,admin.cookie,'?status=registered')).json()).items).toHaveLength(2);expect((await (await queue(app,admin.cookie)).json()).items).toHaveLength(0);
     const getDomains=(cookie:string)=>domainsEndpoint(app.context(new Request('https://wdp.test/api/customer/domains',{headers:{Cookie:cookie}})));
     const domains=await (await getDomains(customer.cookie)).json();expect(domains.domains).toHaveLength(2);expect(domains.domainCount).toBe(0);expect(domains.domains[0]).toMatchObject({mode:'test',status:'registered',registeredOn:'2026-11-13',expiresOn:'2027-11-13'});expect(domains.domains[0]).not.toHaveProperty('notes');expect(domains.domains[0]).not.toHaveProperty('providerReference');expect((await (await getDomains(other.cookie)).json()).domains).toHaveLength(0);
+    expect(domains.testDomainCount).toBe(2);
+    expect(await (await getDomains(other.cookie)).json()).toMatchObject({domainCount:0,testDomainCount:0});
     const services=await (await servicesEndpoint(app.context(new Request('https://wdp.test/api/customer/services',{headers:{Cookie:customer.cookie}})))).json();expect(services.services[0]).toMatchObject({status:'test_recorded',expiresOn:'2027-11-13'});
     expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_registration_audit').get()!.n).toBe(2);
     expect((await update(app,admin.cookie,{...record(input.attemptId,'example.com',1),notes:'Corrected notes'})).status).toBe(200);expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_registration_audit').get()!.n).toBe(3);

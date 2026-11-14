@@ -18,4 +18,10 @@ const serviceCount=document.getElementById('dashboard-service-count');
 if(serviceCount)void accountRequest('/api/customer/services').then(data=>{serviceCount.textContent=String(data.serviceCount);}).catch(()=>{serviceCount.textContent='—';status.textContent='Your service count could not be loaded. You can retry from Services.';});
 
 const domainCount=document.getElementById('dashboard-domain-count');
-if(domainCount)void accountRequest('/api/customer/domains').then(data=>{domainCount.textContent=String(data.domainCount);}).catch(()=>{domainCount.textContent='—';});
+if(domainCount)void accountRequest('/api/customer/domains').then(data=>{
+  const showTestRecords=data.domainCount===0&&data.testDomainCount>0;
+  domainCount.textContent=String(showTestRecords?data.testDomainCount:data.domainCount);
+  const note=document.getElementById('dashboard-domain-note');
+  if(note){note.hidden=!showTestRecords;note.textContent='Test registrations';}
+  domainCount.closest('a')?.setAttribute('href','/dashboard/domains/?mode='+(showTestRecords?'test':'live'));
+}).catch(()=>{domainCount.textContent='—';});
