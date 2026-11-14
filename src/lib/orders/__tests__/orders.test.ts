@@ -195,6 +195,34 @@ describe('paid-order owner alerts',()=>{
     telegramFail=false;app.sql.exec('UPDATE wdp_order_alerts SET next_attempt_at=0');
     expect(await deliverOrderAlerts(app.env)).toBe(true);expect(counts).toEqual({email:1,telegram:2});
   });
+  it.each([
+    ['timeout','request_timeout'],['network','network_error'],['aborted','request_aborted'],['body','response_unreadable'],['http','http_403']
+  ])('reports a safe %s diagnostic without exposing Telegram credentials',async(kind,reason)=>{
+    const app=setup(),customer=await app.customer(),input=app.input();enable(app);await createPayment(app.context(app.request(input,customer.cookie)));
+    const sensitive='https://api.telegram.org/bot'+app.env.WDP_TELEGRAM_BOT_TOKEN+'/sendMessage';
+    app.provider.mockImplementation(async(url)=>{
+      if(!String(url).includes('telegram.org'))return new Response('{"id":"email_order"}');
+      if(kind==='timeout')throw new DOMException(sensitive,'TimeoutError');
+      if(kind==='network')throw new TypeError(sensitive);
+      if(kind==='aborted')throw new DOMException(sensitive,'AbortError');
+      return kind==='body'?new Response(sensitive):new Response(sensitive,{status:403});
+    });
+    expect((await app.webhook(input)).status).toBe(503);
+    expect(app.sql.prepare("SELECT status,last_error FROM wdp_order_alerts WHERE channel='telegram'").get()).toMatchObject({status:'pending',last_error:reason});
+    const request=(token:string)=>app.context(new Request('https://wdp.test/api/internal/order-alerts',{method:'POST',headers:{Authorization:`Bearer ${token}`}}));
+    expect((await retryAlerts(request('wrong'))).status).toBe(403);
+    const response=await retryAlerts(request(app.env.WDP_ORDER_ALERT_RETRY_SECRET!)),result=await response.json();
+    expect(result.pendingAlerts).toEqual([{reference:'WDP-TEST-0000001',channel:'telegram',attempts:1,error:reason}]);
+    expect(JSON.stringify(result)).not.toContain(app.env.WDP_TELEGRAM_BOT_TOKEN);expect(JSON.stringify(result)).not.toContain(customer.user.email);
+    expect(app.sql.prepare("SELECT status FROM wdp_order_alerts WHERE channel='email'").get()!.status).toBe('sent');
+  });
+  it('distinguishes acceptance followed by a delivery-record failure',async()=>{
+    const app=setup(),customer=await app.customer(),input=app.input();enable(app);await createPayment(app.context(app.request(input,customer.cookie)));
+    app.sql.exec("CREATE TRIGGER reject_telegram_sent BEFORE UPDATE OF status ON wdp_order_alerts WHEN NEW.channel='telegram' AND NEW.status='sent' BEGIN SELECT RAISE(ABORT,'private database error'); END;");
+    app.provider.mockImplementation(async(url)=>new Response(String(url).includes('telegram.org')?'{"ok":true,"result":{"message_id":42}}':'{"id":"email_order"}'));
+    expect((await app.webhook(input)).status).toBe(503);
+    expect(app.sql.prepare("SELECT status,last_error FROM wdp_order_alerts WHERE channel='telegram'").get()).toMatchObject({status:'pending',last_error:'delivery_record_failed'});
+  });
   it('does not alert on failed payments, disabled test alerts, or forged webhooks',async()=>{
     const app=setup(),customer=await app.customer(),input=app.input();enable(app);await createPayment(app.context(app.request(input,customer.cookie)));
     app.provider.mockClear();expect((await app.webhook(input,'failed')).status).toBe(200);expect(app.provider).not.toHaveBeenCalled();

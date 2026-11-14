@@ -13,6 +13,23 @@ export interface AlertEnv extends AccountEnv {
 }
 type Channel='email'|'telegram';
 type AlertRow={order_id:string;channel:Channel;payload_json:string;status:string;attempts:number;created_at:string};
+const safeError=/^(http_\d{3}|configuration|invalid_response|manual_review|request_timeout|request_aborted|network_error|response_unreadable|delivery_record_failed|delivery_uncertain)$/;
+// Only fixed labels leave this module; exception messages may contain the bot URL/token.
+function failureReason(error:unknown,phase:'setup'|'request'|'response'|'record'){
+  if(phase==='record')return 'delivery_record_failed';
+  if(error instanceof Error&&safeError.test(error.message))return error.message;
+  const name=error&&typeof error==='object'&&'name' in error?error.name:null;
+  if(name==='TimeoutError')return 'request_timeout';
+  if(name==='AbortError')return 'request_aborted';
+  if(phase==='request'&&name==='TypeError')return 'network_error';
+  if(phase==='response')return 'response_unreadable';
+  return 'delivery_uncertain';
+}
+export async function pendingAlertIssues(env:AlertEnv){
+  if(!env.DB)return [];
+  const rows=await env.DB.prepare("SELECT o.mode,o.sequence,a.channel,a.attempts,a.last_error FROM wdp_order_alerts a JOIN wdp_orders o ON o.id=a.order_id WHERE a.status!='sent' AND o.payment_status='paid' ORDER BY a.created_at DESC LIMIT 20").all<{mode:'test'|'live';sequence:number;channel:string;attempts:number;last_error:string|null}>();
+  return rows.results.map(row=>({reference:orderReference(row),channel:row.channel==='telegram'?'telegram':'email',attempts:row.attempts,error:row.last_error&&safeError.test(row.last_error)?row.last_error:'delivery_uncertain'}));
+}
 export function enabledChannels(env:AlertEnv):Channel[]{
   return [...(env.WDP_ORDER_EMAIL_ENABLED==='true'?['email' as const]:[]),...(env.WDP_ORDER_TELEGRAM_ENABLED==='true'?['telegram' as const]:[])];
 }
@@ -48,6 +65,7 @@ async function deliver(env:AlertEnv,row:AlertRow){
   const db=env.DB!,now=Date.now(),lease=crypto.randomUUID();
   const claim=await db.prepare("UPDATE wdp_order_alerts SET status='sending',lease_token=?,lease_until=?,attempts=attempts+1 WHERE order_id=? AND channel=? AND status!='sent' AND lease_until<=? AND next_attempt_at<=?").bind(lease,now+60000,row.order_id,row.channel,now,now).run();
   if(!claim.meta.changes)return false;
+  let phase:'setup'|'request'|'response'|'record'='setup';
   try{
     // Resend retains idempotency keys for 24h. Stop ambiguous old retries for review.
     const created=Date.parse(row.created_at.replace(' ','T')+'Z');
@@ -61,16 +79,19 @@ async function deliver(env:AlertEnv,row:AlertRow){
       if(!/^\d+:[A-Za-z0-9_-]+$/.test(env.WDP_TELEGRAM_BOT_TOKEN??''))throw new Error('configuration');
       url=`https://api.telegram.org/bot${env.WDP_TELEGRAM_BOT_TOKEN}/sendMessage`;
     }
+    phase='request';
     const response=await fetch(url,{method:'POST',headers,body:row.payload_json,signal:AbortSignal.timeout(8000)});
     if(!response.ok)throw new Error(`http_${response.status}`);
+    phase='response';
     const result=await response.json() as any;
     const id=row.channel==='email'?result.id:result.ok===true?result.result?.message_id:null;
     if(id===null||id===undefined||id==='')throw new Error('invalid_response');
+    phase='record';
     await db.prepare("UPDATE wdp_order_alerts SET status='sent',sent_at=CURRENT_TIMESTAMP,provider_id=?,last_error=NULL,lease_token=NULL,lease_until=0 WHERE order_id=? AND channel=? AND lease_token=?").bind(String(id),row.order_id,row.channel,lease).run();
     return true;
   }catch(error){
     // Never persist provider bodies, tokens, request URLs or personal details in errors.
-    const reason=error instanceof Error&&/^(http_\d{3}|configuration|invalid_response|manual_review)$/.test(error.message)?error.message:'delivery_uncertain';
+    const reason=failureReason(error,phase);
     await db.prepare("UPDATE wdp_order_alerts SET status='pending',next_attempt_at=?,last_error=?,lease_token=NULL,lease_until=0 WHERE order_id=? AND channel=? AND lease_token=?").bind(Date.now()+60000,reason,row.order_id,row.channel,lease).run();
     return false;
   }
