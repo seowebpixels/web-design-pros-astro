@@ -10,8 +10,8 @@ async function load(){
   try{
     const {invoice}=await accountRequest('/api/customer/invoices?invoice='+encodeURIComponent(id)),test=invoice.mode==='test';
     set('invoice-title',test?'Test invoice':'Invoice');set('invoice-reference',invoice.reference);set('invoice-paid',test?'Test payment confirmed':'Paid');element('invoice-test-note').hidden=!test;
-    set('invoice-seller',invoice.seller.name);set('invoice-company-registration','Registration number: '+invoice.seller.registrationNumber);
-    set('invoice-seller-contact',[invoice.seller.address,invoice.seller.email,invoice.seller.phone,invoice.seller.website].join('\n'));
+    set('invoice-seller',invoice.seller.name);set('invoice-company-registration',invoice.seller.name+' · Company registration: '+invoice.seller.registrationNumber);
+    set('invoice-seller-contact',[invoice.seller.email,invoice.seller.website].join('\n'));
     const billing=invoice.billing;set('invoice-customer',[billing.firstName,billing.lastName].filter(Boolean).join(' '));set('invoice-customer-company',billing.company);
     set('invoice-customer-contact',[billing.address,[billing.city,billing.province,billing.postalCode].filter(Boolean).join(', '),billing.country,billing.email,billing.phone].filter(Boolean).join('\n'));
     set('invoice-issued',date(invoice.issuedAt));set('invoice-payment-date',date(invoice.paidAt));

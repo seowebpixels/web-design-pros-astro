@@ -138,4 +138,12 @@ describe('customer accounts',()=>{
     const response=await createPayment({request:new Request('https://wdp.test/api/payments/create',{method:'POST',headers:{Origin:'https://wdp.test','Content-Type':'application/json'},body:'{}'}),env} as any);
     expect(response.status).toBe(401);expect(app.mail).toHaveLength(0);
   });
+  it('allows a verified customer to sign in after the shared rate-limit window expires',async()=>{
+    const app=setup();await app.register('verified@example.com');await app.verify('verified@example.com');
+    for(let i=0;i<5;i++)await createAuth(app.env,app.waitUntil).handler(app.request('sign-in/email',{email:'missing@example.com',password:'incorrect-password-long'}));
+    const credentials={email:'verified@example.com',password:'test-password-long-enough',callbackURL:'/dashboard/'};
+    expect((await createAuth(app.env,app.waitUntil).handler(app.request('sign-in/email',credentials))).status).toBe(429);
+    const now=Date.now();vi.spyOn(Date,'now').mockImplementation(()=>now+61000);
+    expect((await createAuth(app.env,app.waitUntil).handler(app.request('sign-in/email',credentials))).status).toBe(200);
+  });
 });
