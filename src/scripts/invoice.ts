@@ -7,7 +7,10 @@ async function load(){
   const id=new URLSearchParams(location.search).get('invoice');
   if(!id){status.textContent='Choose an invoice from Billing.';return;}
   try{
-    const {invoice}=await accountRequest('/api/customer/invoices?invoice='+encodeURIComponent(id));
+    const {invoice,pdfAvailable}=await accountRequest('/api/customer/invoices?invoice='+encodeURIComponent(id));
+    const download=element('invoice-download') as HTMLAnchorElement;
+    download.href='/api/customer/invoices?invoice='+encodeURIComponent(id)+'&download=pdf';download.hidden=!pdfAvailable;
+    element('invoice-download-note').hidden=!!pdfAvailable;
     const view=invoiceView(invoice);
     for(const [id,value] of Object.entries(view.text))set(id,value);
     element('invoice-test-note').hidden=!view.test;

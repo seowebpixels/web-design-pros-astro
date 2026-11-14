@@ -305,6 +305,38 @@ describe('private manual registration queue',()=>{
   });
   const confirmations=(app:ReturnType<typeof setup>)=>app.provider.mock.calls.filter(([,options])=>JSON.parse(options!.body as string).subject?.startsWith('TEST registration confirmation:'));
   const enableEmails=(app:ReturnType<typeof setup>)=>Object.assign(app.env,{WDP_REGISTRATION_EMAIL_ENABLED:'true',WDP_REGISTRATION_TEST_EMAILS_ENABLED:'true'});
+  it('downloads the identical emailed PDF for every included order without sending or rendering again',async()=>{
+    const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com');enable(app);enableEmails(app);
+    const inputs=[app.input(),app.input()];
+    const get=(id:string,cookie=customer.cookie,download=true)=>invoicesEndpoint(app.context(new Request('https://wdp.test/api/customer/invoices?invoice='+id+(download?'&download=pdf':''),{headers:{Cookie:cookie}})));
+    for(const input of inputs){await createPayment(app.context(app.request(input,customer.cookie)));await app.webhook(input);}
+    expect((await get(inputs[0].attemptId)).status).toBe(409);
+    expect(await (await get(inputs[0].attemptId,customer.cookie,false)).json()).toMatchObject({pdfAvailable:false});
+    for(const input of inputs)await update(app,admin.cookie,record(input.attemptId));
+    const sent=JSON.parse(confirmations(app)[0][1]!.body as string),calls=app.provider.mock.calls.length;
+    for(const input of inputs){
+      const response=await get(input.attemptId);expect(response.status).toBe(200);
+      expect(response.headers.get('content-type')).toBe('application/pdf');expect(response.headers.get('content-disposition')).toBe('attachment; filename="WDP-TEST-0000001.pdf"');expect(response.headers.get('cache-control')).toContain('no-store');expect(response.headers.get('x-content-type-options')).toBe('nosniff');
+      expect(await response.text()).toBe(atob(sent.attachments[0].content));
+      const details=await (await get(input.attemptId,customer.cookie,false)).json();expect(details.pdfAvailable).toBe(true);expect(details).not.toHaveProperty('email');expect(details).not.toHaveProperty('attachments');
+    }
+    const list=await (await invoicesEndpoint(app.context(new Request('https://wdp.test/api/customer/invoices',{headers:{Cookie:customer.cookie}})))).json();
+    expect(list.invoices).toHaveLength(1);expect(list.invoices[0].pdfAvailable).toBe(true);expect(JSON.stringify(list)).not.toContain(sent.attachments[0].content);
+    expect(app.provider.mock.calls).toHaveLength(calls);
+    expect((await get(inputs[0].attemptId,'')).status).toBe(401);expect((await get(inputs[0].attemptId,admin.cookie)).status).toBe(404);
+    const pending=app.input();await createPayment(app.context(app.request(pending,customer.cookie)));expect((await get(pending.attemptId)).status).toBe(404);
+  });
+  it('rejects a damaged stored PDF without regenerating or returning private delivery data',async()=>{
+    const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com'),input=app.input();enable(app);enableEmails(app);
+    await createPayment(app.context(app.request(input,customer.cookie)));await app.webhook(input);await update(app,admin.cookie,record(input.attemptId));
+    const envelope=JSON.parse(app.sql.prepare('SELECT payload_json FROM wdp_registration_emails').get()!.payload_json as string),calls=app.provider.mock.calls.length;
+    for(const change of [{content:btoa('not a PDF')},{filename:'bad\r\nheader.pdf'},{content:'*invalid*'},{content:btoa('%PDF-'+ 'a'.repeat(900000))}]){
+      const damaged=structuredClone(envelope);Object.assign(damaged.email.attachments[0],change);app.sql.prepare('UPDATE wdp_registration_emails SET payload_json=?').run(JSON.stringify(damaged));
+      const response=await invoicesEndpoint(app.context(new Request('https://wdp.test/api/customer/invoices?invoice='+input.attemptId+'&download=pdf',{headers:{Cookie:customer.cookie}})));
+      expect(response.status).toBe(503);expect(await response.json()).toEqual({error:'Your invoice PDF is unavailable. Please contact WDP.'});
+    }
+    expect(app.provider.mock.calls).toHaveLength(calls);
+  });
   it('waits for every domain in the order, then sends one confirmation and unchanged invoice',async()=>{
     const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com');enable(app);enableEmails(app);
     const input={...app.input(),domains:['example.co.za','example.com'],hosting:false,quotedAmount:30500};await createPayment(app.context(app.request(input,customer.cookie)));await app.webhook(input,'succeeded',30500);
@@ -328,13 +360,77 @@ describe('private manual registration queue',()=>{
     expect(confirmations(app)).toHaveLength(1);const sent=JSON.parse(confirmations(app)[0][1]!.body as string);expect(sent.text).toContain('Domain: example.co.za');expect(sent.text).toContain('Domain: example.com');expect(sent.text).toContain('12 November 2026');expect(sent.text).toContain('13 November 2026');expect(sent.attachments).toHaveLength(1);
     expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_registration_emails').get()!.n).toBe(1);
   });
-  it('waits for issue domains but does not let another purchase in the same account block a completed order',async()=>{
+  it('waits for every paid order for the same client, including issue domains',async()=>{
     const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com');enable(app);enableEmails(app);
     const first={...app.input(),domains:['example.co.za','example.com'],hosting:false,quotedAmount:30500},second=app.input();
     await createPayment(app.context(app.request(first,customer.cookie)));await app.webhook(first,'succeeded',30500);await createPayment(app.context(app.request(second,customer.cookie)));await app.webhook(second);
     await update(app,admin.cookie,record(first.attemptId));await update(app,admin.cookie,{...record(first.attemptId,'example.com'),status:'issue',notes:'Checking ownership'});expect(confirmations(app)).toHaveLength(0);
-    await update(app,admin.cookie,record(second.attemptId));expect(confirmations(app)).toHaveLength(1);expect(JSON.parse(confirmations(app)[0][1]!.body as string).text).toContain('WDP-TEST-0000002');
-    await update(app,admin.cookie,record(first.attemptId,'example.com',1));expect(confirmations(app)).toHaveLength(2);expect(JSON.parse(confirmations(app)[1][1]!.body as string).text).toContain('WDP-TEST-0000001');
+    expect(await (await update(app,admin.cookie,record(second.attemptId))).json()).toMatchObject({emailStatus:'waiting'});expect(confirmations(app)).toHaveLength(0);
+    await update(app,admin.cookie,record(first.attemptId,'example.com',1));expect(confirmations(app)).toHaveLength(1);const message=JSON.parse(confirmations(app)[0][1]!.body as string);expect(message.text).toContain('WDP-TEST-0000001');expect(message.text).toContain('WDP-TEST-0000002');expect(message.attachments).toHaveLength(1);
+  });
+  it('groups four old and new orders for a client and starts a new group for later purchases',async()=>{
+    const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com');enable(app);enableEmails(app);
+    const inputs=Array.from({length:4},()=>app.input());for(const input of inputs){await createPayment(app.context(app.request(input,customer.cookie)));await app.webhook(input);}
+    app.sql.prepare("UPDATE wdp_orders SET created_at='2026-01-01 10:00:00' WHERE id=?").run(inputs[0].attemptId);
+    for(const input of inputs.slice(0,3)){expect(await (await update(app,admin.cookie,record(input.attemptId))).json()).toMatchObject({emailStatus:'waiting'});expect(confirmations(app)).toHaveLength(0);}
+    expect(await (await update(app,admin.cookie,record(inputs[3].attemptId))).json()).toMatchObject({emailStatus:'sent'});
+    const sent=JSON.parse(confirmations(app)[0][1]!.body as string);expect(sent.attachments).toHaveLength(1);expect(sent.attachments[0].filename).toBe('WDP-TEST-0000001.pdf');
+    for(let i=1;i<=4;i++)expect(sent.text).toContain('WDP-TEST-000000'+i);
+    const bill=await (await invoicesEndpoint(app.context(new Request('https://wdp.test/api/customer/invoices',{headers:{Cookie:customer.cookie}})))).json();expect(bill).toMatchObject({invoiceCount:1,totalPaid:62000});expect(bill.invoices).toHaveLength(1);expect(bill.invoices[0].amount).toBe(62000);
+    const frozen=JSON.parse(app.sql.prepare('SELECT payload_json FROM wdp_registration_emails').get()!.payload_json as string).invoice;
+    expect(frozen).toMatchObject({orderCount:4,total:62000,amountPaid:62000,balanceDue:0,seller:{name:'Web Design Pros (Pty) Ltd'}});expect(frozen.lines).toHaveLength(8);
+    for(const input of inputs){const invoice=(await (await invoicesEndpoint(app.context(new Request('https://wdp.test/api/customer/invoices?invoice='+input.attemptId,{headers:{Cookie:customer.cookie}})))).json()).invoice;expect(invoice).toEqual(frozen);}
+    const html=JSON.parse(app.provider.mock.calls.find(([url])=>String(url).startsWith('https://api.cloudflare.com/'))![1]!.body as string).html;
+    expect(html).toContain('R620');expect(html.match(/Web Design Pros \(Pty\) Ltd/g)).toHaveLength(2);for(let i=1;i<=4;i++)expect(html).toContain('WDP-TEST-000000'+i);
+
+    expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_registration_emails').get()!.n).toBe(1);
+    for(const input of inputs)await update(app,admin.cookie,record(input.attemptId,'example.co.za',1));expect(confirmations(app)).toHaveLength(1);
+    const next=app.input();await createPayment(app.context(app.request(next,customer.cookie)));await app.webhook(next);await update(app,admin.cookie,record(next.attemptId));
+    expect(confirmations(app)).toHaveLength(2);const later=JSON.parse(confirmations(app)[1][1]!.body as string);expect(later.attachments).toHaveLength(1);expect(later.text).toContain('WDP-TEST-0000005');expect(later.text).not.toContain('WDP-TEST-0000001');
+    const after=await (await invoicesEndpoint(app.context(new Request('https://wdp.test/api/customer/invoices',{headers:{Cookie:customer.cookie}})))).json();expect(after).toMatchObject({invoiceCount:2,totalPaid:77500});expect(after.invoices).toHaveLength(2);
+    const other=await app.customer('other@example.com');expect((await invoicesEndpoint(app.context(new Request('https://wdp.test/api/customer/invoices?invoice='+inputs[0].attemptId,{headers:{Cookie:other.cookie}})))).status).toBe(404);
+    const priced={cart:JSON.stringify({domains:[{domain:'pending-bulk.com',cents:21000}],hosting:false}),amount:21000};for(let i=0;i<26;i++)await saveTestOrder(app.env,customer.user,app.input(),priced,'private-hash');app.sql.exec("UPDATE wdp_orders SET payment_status='paid',paid_at=COALESCE(paid_at,'2026-11-14 10:00:00')");
+    const page=async(query='')=>(await (await invoicesEndpoint(app.context(new Request('https://wdp.test/api/customer/invoices'+query,{headers:{Cookie:customer.cookie}})))).json());
+    const one=await page(),two=await page('?before='+one.nextBefore);expect(one).toMatchObject({invoiceCount:28,totalPaid:623500});expect(one.invoices).toHaveLength(25);expect(two.invoices).toHaveLength(3);expect(new Set([...one.invoices,...two.invoices].map((invoice:any)=>invoice.id)).size).toBe(28);expect(two.invoices.find((invoice:any)=>invoice.id===inputs[0].attemptId).amount).toBe(62000);
+
+
+  });
+  it('does not mix customers or let another customer hold up a ready client',async()=>{
+    const app=setup(),customer=await app.customer(),other=await app.customer('second@example.com'),admin=await app.customer('admin@example.com');enable(app);enableEmails(app);
+    const waiting=app.input(),ready=app.input();await createPayment(app.context(app.request(waiting,customer.cookie)));await app.webhook(waiting);await createPayment(app.context(app.request(ready,other.cookie)));await app.webhook(ready);
+    await update(app,admin.cookie,record(ready.attemptId));expect(confirmations(app)).toHaveLength(1);const sent=JSON.parse(confirmations(app)[0][1]!.body as string);expect(sent.to).toEqual(['second@example.com']);expect(sent.text).toContain('WDP-TEST-0000002');expect(sent.text).not.toContain('WDP-TEST-0000001');expect(sent.attachments).toHaveLength(1);
+  });
+  it('handles simultaneous final registrations across separate orders as one client email',async()=>{
+    const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com');enable(app);enableEmails(app);
+    const first=app.input(),second=app.input();for(const input of [first,second]){await createPayment(app.context(app.request(input,customer.cookie)));await app.webhook(input);}
+    const results=await Promise.all([update(app,admin.cookie,record(first.attemptId)),update(app,admin.cookie,record(second.attemptId))]);expect(results.map(result=>result.status)).toEqual([200,200]);await deliverRegistrationEmails(app.env);
+    expect(confirmations(app)).toHaveLength(1);expect(JSON.parse(confirmations(app)[0][1]!.body as string).attachments).toHaveLength(1);expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_registration_emails').get()!.n).toBe(1);
+  });
+  it('folds a newly paid order into an unsent client batch and reuses its already generated invoice',async()=>{
+    const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com'),first=app.input(),second=app.input();enable(app);enableEmails(app);await createPayment(app.context(app.request(first,customer.cookie)));await app.webhook(first);
+    const original=app.provider.getMockImplementation()!;let injected=false;app.provider.mockImplementation(async(url,options)=>{if(String(url).startsWith('https://api.cloudflare.com/')&&!injected){injected=true;await createPayment(app.context(app.request(second,customer.cookie)));await app.webhook(second);}return original(url,options);});
+    await update(app,admin.cookie,record(first.attemptId));expect(confirmations(app)).toHaveLength(0);expect(app.sql.prepare('SELECT first_attempt_at FROM wdp_registration_emails').get()!.first_attempt_at).toBeNull();
+    app.sql.exec('UPDATE wdp_registration_emails SET next_attempt_at=0');await update(app,admin.cookie,record(second.attemptId));expect(confirmations(app)).toHaveLength(1);expect(JSON.parse(confirmations(app)[0][1]!.body as string).attachments).toHaveLength(1);expect(app.provider.mock.calls.filter(([url])=>String(url).startsWith('https://api.cloudflare.com/'))).toHaveLength(2);
+  });
+  it('rechecks and sends once if a new order completes while the earlier invoice is rendering',async()=>{
+    const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com'),first=app.input(),second=app.input();enable(app);enableEmails(app);await createPayment(app.context(app.request(first,customer.cookie)));await app.webhook(first);
+    const original=app.provider.getMockImplementation()!;let injected=false;app.provider.mockImplementation(async(url,options)=>{if(String(url).startsWith('https://api.cloudflare.com/')&&!injected){injected=true;await createPayment(app.context(app.request(second,customer.cookie)));await app.webhook(second);await update(app,admin.cookie,record(second.attemptId));}return original(url,options);});
+    await update(app,admin.cookie,record(first.attemptId));expect(confirmations(app)).toHaveLength(1);expect(JSON.parse(confirmations(app)[0][1]!.body as string).attachments).toHaveLength(1);expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_registration_emails').get()!.n).toBe(1);
+  });
+  it('keeps test/live pools separate and ignores unpaid checkout attempts',async()=>{
+    const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com');enable(app);enableEmails(app);
+    const live=app.input(),unpaid=app.input(),ready=app.input();await createPayment(app.context(app.request(live,customer.cookie)));await app.webhook(live);
+    app.sql.prepare("UPDATE wdp_orders SET mode='live',sequence=2412 WHERE id=?").run(live.attemptId);
+    await createPayment(app.context(app.request(unpaid,customer.cookie)));await createPayment(app.context(app.request(ready,customer.cookie)));await app.webhook(ready);
+    await update(app,admin.cookie,record(ready.attemptId));expect(confirmations(app)).toHaveLength(1);const sent=JSON.parse(confirmations(app)[0][1]!.body as string);expect(sent.attachments).toHaveLength(1);expect(sent.text).toContain('WDP-TEST-0000003');expect(sent.text).not.toContain('WDP-0002412');expect(sent.text).not.toContain('WDP-TEST-0000002');
+  });
+  it('retries a failed consolidated PDF without emailing separate invoices',async()=>{
+    const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com');enable(app);enableEmails(app);
+    const inputs=[app.input(),app.input()];for(const input of inputs){await createPayment(app.context(app.request(input,customer.cookie)));await app.webhook(input);}
+    const original=app.provider.getMockImplementation()!;let renders=0;app.provider.mockImplementation(async(url,options)=>{if(String(url).startsWith('https://api.cloudflare.com/')&&++renders===1)return new Response('{}',{status:503});return original(url,options);});
+    await update(app,admin.cookie,record(inputs[0].attemptId));expect(await (await update(app,admin.cookie,record(inputs[1].attemptId))).json()).toMatchObject({saved:true,emailStatus:'pending'});
+    expect(confirmations(app)).toHaveLength(0);expect(app.sql.prepare('SELECT first_attempt_at FROM wdp_registration_emails').get()!.first_attempt_at).toBeNull();
+    app.sql.exec('UPDATE wdp_registration_emails SET next_attempt_at=0');await deliverRegistrationEmails(app.env);expect(confirmations(app)).toHaveLength(1);expect(JSON.parse(confirmations(app)[0][1]!.body as string).attachments).toHaveLength(1);expect(renders).toBe(2);
   });
   it('does not send a second invoice for a historical order already notified per domain',async()=>{
     const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com');enable(app);enableEmails(app);
@@ -402,7 +498,7 @@ describe('private manual registration queue',()=>{
     expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_domain_registrations').get()!.n).toBe(0);expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_registration_audit').get()!.n).toBe(0);expect(confirmations(app)).toHaveLength(0);
   });
   it('uses the production WDP reference and actual dates in live confirmation wording',()=>{
-    const result=registrationMessage({mode:'live',sequence:2412} as any,{domain:'example.com',status:'registered',registeredOn:'2026-11-14',expiresOn:'2029-11-14'},'https://webdesignpros.co.za');
-    expect(result.subject).toContain('WDP-0002412');expect(result.text).toContain('Your domain registration is complete.');expect(result.text).toContain('14 November 2029');expect(result.text).not.toContain('TEST');
+    const result=registrationMessage([{mode:'live',sequence:2412,registrations:[{domain:'example.com',status:'registered',registeredOn:'2026-11-14',expiresOn:'2029-11-14'}]}] as any,'https://webdesignpros.co.za');
+    expect(result.subject).toBe('Your domain registrations are complete');expect(result.text).toContain('WDP-0002412');expect(result.text).toContain('Your domain registrations are complete.');expect(result.text).toContain('14 November 2029');expect(result.text).not.toContain('TEST');
   });
 });

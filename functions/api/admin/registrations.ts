@@ -29,8 +29,8 @@ export const onRequestPut:PagesFunction<AccountEnv>=async context=>{
     if(registration.status==='registered'&&context.env.WDP_REGISTRATION_EMAIL_ENABLED==='true'){
       try{
         await deliverRegistrationEmails(context.env,registration.order_id);
-        const email=await context.env.DB!.prepare("SELECT status,last_error,json_extract(payload_json,'$.scope') AS scope FROM wdp_registration_emails WHERE order_id=? ORDER BY CASE WHEN status='sent' THEN 0 ELSE 1 END LIMIT 1").bind(registration.order_id).first<{status:string;last_error:string|null;scope:string|null}>();
-        emailStatus=!email?'waiting':email.status==='sent'?'sent':email.last_error==='manual_review'||email.scope!=='order'?'manual_review':email.status;
+        const email=await context.env.DB!.prepare("SELECT e.status,e.last_error,json_extract(e.payload_json,'$.scope') AS scope FROM wdp_registration_emails e JOIN wdp_orders anchor ON anchor.id=e.order_id JOIN wdp_orders requested ON requested.id=? AND requested.customer_id=anchor.customer_id AND requested.mode=anchor.mode WHERE (e.order_id=requested.id OR (json_extract(e.payload_json,'$.scope')='client' AND (e.status!='sent' OR EXISTS(SELECT 1 FROM json_each(e.payload_json,'$.orders') member WHERE json_extract(member.value,'$.id')=requested.id)))) ORDER BY CASE WHEN json_extract(e.payload_json,'$.scope')='client' THEN 0 ELSE 1 END,CASE WHEN e.status='sent' THEN 1 ELSE 0 END LIMIT 1").bind(registration.order_id).first<{status:string;last_error:string|null;scope:string|null}>();
+        emailStatus=!email?'waiting':email.status==='sent'?'sent':email.last_error==='manual_review'||email.scope!=='client'?'manual_review':email.status;
       }catch{emailStatus='pending';}
     }
     return accountJson({saved:true,version:registration.version,emailStatus});

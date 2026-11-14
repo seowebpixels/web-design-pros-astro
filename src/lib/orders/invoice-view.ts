@@ -11,7 +11,7 @@ export function invoiceView(invoice:InvoiceDetail){
     'invoice-seller-contact':[invoice.seller.email,invoice.seller.website].join('\n'),
     'invoice-customer':[billing.firstName,billing.lastName].filter(Boolean).join(' '),'invoice-customer-company':billing.company,
     'invoice-customer-contact':[billing.address,[billing.city,billing.province,billing.postalCode].filter(Boolean).join(', '),billing.country,billing.email,billing.phone].filter(Boolean).join('\n'),
-    'invoice-issued':date(invoice.issuedAt),'invoice-payment-date':date(invoice.paidAt),'invoice-total':rand(invoice.total),
+    'invoice-payment-label':invoice.orderCount>1?'Payments confirmed through':'Payment confirmed','invoice-issued':date(invoice.issuedAt),'invoice-payment-date':date(invoice.paidAt),'invoice-total':rand(invoice.total),
     'invoice-amount-paid-label':test?'Test amount confirmed':'Amount paid','invoice-amount-paid':rand(invoice.amountPaid),'invoice-balance':rand(invoice.balanceDue)
   },lines:invoice.lines.map(item=>[item.description,item.period,rand(item.amount)])};
 }

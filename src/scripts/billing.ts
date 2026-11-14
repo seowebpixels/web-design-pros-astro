@@ -14,7 +14,9 @@ async function load(append=false){
     for(const invoice of data.invoices){
       const tr=document.createElement('tr'),reference=cell(''),link=document.createElement('a');link.href='/dashboard/invoice/?invoice='+encodeURIComponent(invoice.id);link.textContent=invoice.reference;reference.append(link);
       const state=cell(''),badge=document.createElement('span');badge.className='invoice-paid';badge.textContent=invoice.mode==='test'?'Test payment confirmed':'Paid';state.append(badge);
-      const action=cell(''),view=document.createElement('a');view.href=link.href;view.textContent='View invoice';action.append(view);tr.append(reference,cell(date(invoice.issuedAt)),cell(rand(invoice.amount)),state,action);body.append(tr);
+      const action=cell(''),view=document.createElement('a');view.href=link.href;view.textContent='View invoice';action.append(view);
+      if(invoice.pdfAvailable){const download=document.createElement('a');download.href='/api/customer/invoices?invoice='+encodeURIComponent(invoice.id)+'&download=pdf';download.textContent='Download PDF';action.append(document.createElement('br'),download);}
+      tr.append(reference,cell(date(invoice.issuedAt)),cell(rand(invoice.amount)),state,action);body.append(tr);
     }
     document.getElementById('billing-count')!.textContent=String(data.invoiceCount);document.getElementById('billing-paid')!.textContent=rand(data.totalPaid);
     document.getElementById('billing-paid-label')!.textContent=mode.value==='test'?'Test payments confirmed':'Payments confirmed';

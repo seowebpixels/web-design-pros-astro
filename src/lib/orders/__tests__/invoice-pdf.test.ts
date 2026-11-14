@@ -12,7 +12,7 @@ afterEach(()=>vi.restoreAllMocks());
 describe('existing invoice PDF attachment',()=>{
   it('uses the original invoice and safe text, preserving styles, dates, totals and company footer',async()=>{
     const env=environment(),html=await invoiceHtml(env,invoice());
-    expect(html).toContain('WDP-TEST-0000001');expect(html).toContain('Domain registration: example.com');expect(html).toContain('3 years');expect(html).toContain('R730');expect(html).toContain('14 November 2026');expect(html).toContain('2026/282129/07');expect(html).toContain('background:#000000');expect(html).toContain('@media print');expect(html).toContain('data:image/avif;base64,');
+    expect(html).toContain('WDP-TEST-0000001');expect(html).toContain('Domain registration: example.com');expect(html).toContain('3 years');expect(html).toContain('R730');expect(html).toContain('14 November 2026');expect(html).toContain('2026/282129/07');expect(html.match(/Web Design Pros \(Pty\) Ltd/g)).toHaveLength(2);expect(html).toContain('background:#000000');expect(html).toContain('@media print');expect(html).toContain('data:image/avif;base64,');
     expect(html).toContain('&lt;img src=');expect(html).not.toMatch(/<script|<iframe|<DashboardLayout/i);expect(html).not.toContain('Loading your invoice');expect(html).not.toContain('No VAT');
     for(const [request] of env.ASSETS.fetch.mock.calls){expect(new URL(request.url).origin).toBe('https://wdp.test');expect([...request.headers]).toEqual([]);}
   });
