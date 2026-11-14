@@ -222,7 +222,7 @@ describe('customer paid invoices',()=>{
     await app.webhook(input);await app.webhook(input);
     const list=await get(app,customer.cookie);expect(list.headers.get('cache-control')).toBe('no-store');const summary=await list.json();expect(summary).toMatchObject({invoiceCount:1,totalPaid:15500,unpaidInvoiceCount:0});expect(summary.invoices[0]).not.toHaveProperty('billing');expect(JSON.stringify(summary)).not.toContain('access_hash');
     const detail=(await (await get(app,customer.cookie,'?invoice='+input.attemptId)).json()).invoice;
-    expect(detail).toMatchObject({reference:'WDP-TEST-0000001',mode:'test',total:15500,amountPaid:15500,balanceDue:0,seller:{registrationNumber:'2026/282129/07',vatRegistered:false},billing:{email:customer.user.email,address:'Original street'}});
+    expect(detail).toMatchObject({reference:'WDP-TEST-0000001',mode:'test',total:15500,amountPaid:15500,balanceDue:0,seller:{registrationNumber:'2026/282129/07'},billing:{email:customer.user.email,address:'Original street'}});
     expect(detail.lines).toEqual([{description:'Domain registration: example.co.za',period:'1 year',amount:9500},{description:'Starter hosting with email',period:'First month',amount:6000}]);
     expect(detail).not.toHaveProperty('payment_id');expect(detail).not.toHaveProperty('access_hash');expect(detail).not.toHaveProperty('registrant');expect(detail).not.toHaveProperty('checkout_id');
     app.sql.prepare('UPDATE wdp_customer_profiles SET profile_json=? WHERE auth_user_id=?').run(JSON.stringify({...profile,address:'New address'}),customer.user.id);

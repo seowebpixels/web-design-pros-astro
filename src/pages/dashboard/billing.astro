@@ -5,7 +5,7 @@ import DashboardLayout from '../../layouts/DashboardLayout.astro';
 <DashboardLayout title="Billing | Web Design Pros" activeNav="billing">
   <header class="billing-heading"><div><h1>My invoices</h1><p>Your invoices and confirmed payments, in one place.</p></div><a href="/dashboard/orders/">View orders →</a></header>
   <div class="billing-controls"><label>Purchases <select id="billing-mode"><option value="test">Test purchases</option><option value="live">Live purchases</option></select></label><button id="billing-refresh" type="button">Refresh invoices</button></div>
-  <p id="billing-notice">Test invoices only. No money has been charged. These are not tax invoices.</p>
+  <p id="billing-notice">Test invoices only. No money has been charged. These documents are practice records.</p>
   <section class="billing-summary" aria-label="Billing overview"><article><span>Invoices</span><strong id="billing-count">—</strong></article><article><span id="billing-paid-label">Test payments confirmed</span><strong id="billing-paid">—</strong></article></section>
   <p id="billing-status" role="status" aria-live="polite">Loading your invoices…</p>
   <div class="billing-table"><table><thead><tr><th>Invoice / WDP reference</th><th>Invoice date</th><th>Total</th><th>Status</th><th>Action</th></tr></thead><tbody id="billing-body"></tbody></table></div>

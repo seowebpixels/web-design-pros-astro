@@ -8,12 +8,12 @@ import logo from '../../assets/wdp-logo-new-design-one.avif';
   <p id="invoice-status" role="status" aria-live="polite">Loading your invoice…</p>
   <article id="invoice-paper" class="invoice-paper" hidden>
     <header class="invoice-heading"><div class="invoice-logo"><img src={logo.src} width={logo.width} height={logo.height} alt="Web Design Pros" /></div><div><h1 id="invoice-title">Invoice</h1><p id="invoice-reference"></p><span id="invoice-paid" class="paid-badge"></span></div></header>
-    <p id="invoice-test-note" class="test-note" hidden>TEST INVOICE — No money has been charged. This document is a test record, not a tax invoice or proof of domain registration.</p>
+    <p id="invoice-test-note" class="test-note" hidden>TEST INVOICE — No money has been charged. This document is a test record, not proof of payment or domain registration.</p>
     <div class="invoice-parties"><section><h2>From</h2><strong id="invoice-seller"></strong><p id="invoice-seller-contact" class="multiline"></p></section><section><h2>Bill to</h2><strong id="invoice-customer"></strong><p id="invoice-customer-company"></p><p id="invoice-customer-contact" class="multiline"></p></section></div>
     <dl class="invoice-dates"><div><dt>Invoice date</dt><dd id="invoice-issued"></dd></div><div><dt>Payment confirmed</dt><dd id="invoice-payment-date"></dd></div><div><dt>Currency</dt><dd>ZAR</dd></div></dl>
     <div class="invoice-table"><table><thead><tr><th>Description</th><th>Period</th><th>Amount</th></tr></thead><tbody id="invoice-lines"></tbody></table></div>
     <dl class="invoice-totals"><div><dt>Total</dt><dd id="invoice-total"></dd></div><div><dt id="invoice-amount-paid-label">Amount paid</dt><dd id="invoice-amount-paid"></dd></div><div class="balance"><dt>Balance due</dt><dd id="invoice-balance"></dd></div></dl>
-    <footer class="invoice-footer"><p id="invoice-company-registration"></p><p>No VAT charged. Web Design Pros is not VAT registered.</p><p>Keep your WDP reference when contacting us about this purchase. Payment confirmation is separate from domain registration or hosting activation.</p><a id="invoice-order" href="/dashboard/orders/">View related order →</a></footer>
+    <footer class="invoice-footer"><p id="invoice-company-registration"></p><p>Keep your WDP reference when contacting us about this purchase. Payment confirmation is separate from domain registration or hosting activation.</p><a id="invoice-order" href="/dashboard/orders/">View related order →</a></footer>
   </article>
 </DashboardLayout>
 <script>import '../../scripts/invoice';</script>

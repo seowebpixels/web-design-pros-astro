@@ -1,7 +1,7 @@
 import {AccountError} from '../accounts/auth';
 import {orderReference,type OrderRow} from './core';
 
-export const invoiceSeller={name:'Web Design Pros',registrationNumber:'2026/282129/07',address:'15 Madge Avenue, Northcliff, Johannesburg, 2115',email:'info@webdesignpros.co.za',phone:'075 221 6842',website:'webdesignpros.co.za',vatRegistered:false};
+export const invoiceSeller={name:'Web Design Pros',registrationNumber:'2026/282129/07',address:'15 Madge Avenue, Northcliff, Johannesburg, 2115',email:'info@webdesignpros.co.za',phone:'075 221 6842',website:'webdesignpros.co.za'};
 // Use purchase snapshots, never current catalogue prices. Reuse the WDP reference
 // without consuming another order sequence or creating another charge.
 export function invoiceSummary(order:OrderRow){
