@@ -6,6 +6,8 @@ export interface AccountEnv {
   AUTH_BASE_URL?: string;
   AUTH_FROM_EMAIL?: string;
   RESEND_API_KEY?: string;
+  WDP_REGISTRATION_QUEUE_ENABLED?: string;
+  WDP_REGISTRATION_ADMIN_EMAIL?: string;
 }
 export class AccountError extends Error {
   constructor(public status: number, message: string) { super(message); }

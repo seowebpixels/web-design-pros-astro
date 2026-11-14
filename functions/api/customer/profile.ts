@@ -1,11 +1,12 @@
 import { accountJson, accountFailure, AccountError, requireCustomer, type AccountEnv } from '../../../src/lib/accounts/auth';
 import { validateProfile } from '../../../src/lib/accounts/profile';
 import { readBody } from '../../../src/lib/payments/core';
+import {isRegistrationAdmin} from '../../../src/lib/orders/registrations';
 export const onRequestGet: PagesFunction<AccountEnv> = async context => {
   try {
     const session = await requireCustomer(context.request,context.env,p=>context.waitUntil(p));
     const row = await context.env.DB!.prepare('SELECT profile_json FROM wdp_customer_profiles WHERE auth_user_id=?').bind(session.user.id).first<{profile_json:string}>();
-    return accountJson({user:{name:session.user.name,email:session.user.email},profile:row?JSON.parse(row.profile_json):null});
+    return accountJson({user:{name:session.user.name,email:session.user.email},isRegistrationAdmin:isRegistrationAdmin(context.env,session.user.email),profile:row?JSON.parse(row.profile_json):null});
   } catch(error) {return accountFailure(error);}
 };
 export const onRequestPut: PagesFunction<AccountEnv> = async context => {

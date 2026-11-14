@@ -2,6 +2,7 @@ import {accountRequest} from './account-client';
 const status=document.getElementById('dashboard-status')!;
 void accountRequest('/api/customer/profile').then(data=>{
   document.getElementById('dashboard-customer')!.textContent=data.user.name;
+  const adminLink=document.getElementById('registration-admin-link');if(adminLink)adminLink.hidden=!data.isRegistrationAdmin;
   const name=document.getElementById('dashboard-profile-name'),address=document.getElementById('dashboard-profile-address');
   if(name)name.textContent=data.user.name;
   if(address)address.textContent=data.profile?[data.profile.company,data.profile.address,[data.profile.city,data.profile.province,data.profile.postalCode].filter(Boolean).join(', '),data.profile.country].filter(Boolean).join('\n'):'Add your billing details to complete your account.';
@@ -15,3 +16,6 @@ const orderCount=document.getElementById('dashboard-order-count');
 if(orderCount)void accountRequest('/api/customer/orders').then(data=>{orderCount.textContent=String(data.orderCount);}).catch(()=>{orderCount.textContent='—';status.textContent='Your order count could not be loaded. You can retry from Orders.';});
 const serviceCount=document.getElementById('dashboard-service-count');
 if(serviceCount)void accountRequest('/api/customer/services').then(data=>{serviceCount.textContent=String(data.serviceCount);}).catch(()=>{serviceCount.textContent='—';status.textContent='Your service count could not be loaded. You can retry from Services.';});
+
+const domainCount=document.getElementById('dashboard-domain-count');
+if(domainCount)void accountRequest('/api/customer/domains').then(data=>{domainCount.textContent=String(data.domainCount);}).catch(()=>{domainCount.textContent='—';});

@@ -32,6 +32,10 @@ export async function queuePaidOrderAlerts(env:AlertEnv,orderId:string){
   if(!order||order.payment_status!=='paid')return;
   if(order.mode==='test'&&env.WDP_ORDER_TEST_ALERTS_ENABLED!=='true')return;
   const message=alertMessage(order);
+  if(env.WDP_REGISTRATION_QUEUE_ENABLED==='true'&&env.AUTH_BASE_URL){
+    const base=new URL(env.AUTH_BASE_URL);
+    if(base.protocol==='https:'&&base.origin===env.AUTH_BASE_URL)message.text+=`\n\nRegistration queue: ${base.origin}/dashboard/registrations/`;
+  }
   const statements=channels.map(channel=>{
     if(channel==='email'&&(!env.RESEND_API_KEY||!env.AUTH_FROM_EMAIL||!env.WDP_ORDER_ALERT_EMAIL||! /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(env.WDP_ORDER_ALERT_EMAIL)))throw new Error('Order email alerts not configured');
     if(channel==='telegram'&&(!/^\d+:[A-Za-z0-9_-]+$/.test(env.WDP_TELEGRAM_BOT_TOKEN??'')||!/^\d+$/.test(env.WDP_TELEGRAM_CHAT_ID??'')))throw new Error('Private Telegram alerts not configured');

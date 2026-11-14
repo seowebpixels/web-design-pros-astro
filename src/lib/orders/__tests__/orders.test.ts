@@ -8,6 +8,9 @@ import {deliverOrderAlerts} from '../alerts';
 import {onRequestPost as retryAlerts} from '../../../../functions/api/internal/order-alerts';
 import {onRequestGet as ordersEndpoint} from '../../../../functions/api/customer/orders';
 import {onRequestGet as servicesEndpoint} from '../../../../functions/api/customer/services';
+import {onRequestGet as queueEndpoint,onRequestPut as registrationEndpoint} from '../../../../functions/api/admin/registrations';
+import {onRequestGet as domainsEndpoint} from '../../../../functions/api/customer/domains';
+import {validDate} from '../registrations';
 import type {PaymentEnv} from '../../payments/core';
 
 const signing='test-order-webhook-secret',secret='whsec_'+btoa(signing);
@@ -23,6 +26,7 @@ function setup(){
   const sql=new DatabaseSync(':memory:'),payments=new DatabaseSync(':memory:');
   sql.exec(readFileSync('migrations/0002_customer_accounts.sql','utf8'));sql.exec(readFileSync('migrations/0003_customer_orders.sql','utf8'));sql.exec(readFileSync('migrations/0004_order_price_snapshots.sql','utf8'));
   sql.exec(readFileSync('migrations/0005_order_alerts.sql','utf8'));
+  sql.exec(readFileSync('migrations/0006_domain_registration_queue.sql','utf8'));
   payments.exec(readFileSync('migrations/0001_payment_tests.sql','utf8'));
   const env={DB:database(sql),WDP_PAYMENT_DB:database(payments),WDP_ACCOUNTS_ENABLED:'true',AUTH_SECRET:'test-only-account-secret-at-least-thirty-two-characters',AUTH_BASE_URL:'https://wdp.test',AUTH_FROM_EMAIL:'WDP <accounts@example.com>',RESEND_API_KEY:'test-only',WDP_PAYMENT_TEST_ENABLED:'true',YOCO_TEST_SECRET_KEY:'sk_test_only',YOCO_TEST_WEBHOOK_SECRET:secret} as PaymentEnv;
   const tasks:Promise<unknown>[]=[];const waitUntil=(task:Promise<unknown>)=>tasks.push(task),mail:any[]=[],checkouts:any[]=[];
@@ -161,14 +165,14 @@ describe('customer test orders',()=>{
 describe('paid-order owner alerts',()=>{
   const enable=(app:ReturnType<typeof setup>)=>Object.assign(app.env,{WDP_ORDER_EMAIL_ENABLED:'true',WDP_ORDER_TELEGRAM_ENABLED:'true',WDP_ORDER_TEST_ALERTS_ENABLED:'true',WDP_ORDER_ALERT_EMAIL:'info@webdesignpros.co.za',WDP_TELEGRAM_BOT_TOKEN:'123456:test_only_bot_token',WDP_TELEGRAM_CHAT_ID:'1234567',WDP_ORDER_ALERT_RETRY_SECRET:'test-retry-secret-at-least-thirty-two-characters'});
   it('sends independent minimal TEST alerts only after verified payment and reuses replayed deliveries',async()=>{
-    const app=setup(),customer=await app.customer(),input=app.input();enable(app);
+    const app=setup(),customer=await app.customer(),input=app.input();enable(app);app.env.WDP_REGISTRATION_QUEUE_ENABLED='true';
     await createPayment(app.context(app.request(input,customer.cookie)));
     expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_order_alerts').get()!.n).toBe(0);
     const sent:any[]=[];
     app.provider.mockImplementation(async(url,options)=>{sent.push({url:String(url),headers:options!.headers,body:JSON.parse(options!.body as string)});return new Response(String(url).includes('telegram.org')?JSON.stringify({ok:true,result:{message_id:42}}):JSON.stringify({id:'email_order'}));});
     expect((await app.webhook(input)).status).toBe(200);
     expect(sent).toHaveLength(2);expect(sent.find(item=>item.url.includes('resend')).body.to).toEqual(['info@webdesignpros.co.za']);
-    const mail=sent.find(item=>item.url.includes('resend'));expect(mail.headers['Idempotency-Key']).toBe(`wdp-paid-order/${input.attemptId}/email`);
+    const mail=sent.find(item=>item.url.includes('resend'));expect(mail.headers['Idempotency-Key']).toBe(`wdp-paid-order/${input.attemptId}/email`);expect(mail.body.text).toContain('https://wdp.test/dashboard/registrations/');
     for(const item of sent){expect(item.body.text).toContain('WDP-TEST-0000001');expect(item.body.text).toContain('example.co.za');expect(item.body.text).toContain('Do not buy or register');expect(item.body.text).not.toContain('Original street');expect(item.body.text).not.toContain(customer.email);expect(item.body.text).not.toContain(input.accessToken);}
     expect(app.sql.prepare("SELECT COUNT(*) AS n FROM wdp_order_alerts WHERE status='sent'").get()!.n).toBe(2);
     expect((await app.webhook(input)).status).toBe(200);expect(sent).toHaveLength(2);
@@ -202,5 +206,52 @@ describe('paid-order owner alerts',()=>{
     expect((await retry('wrong')).status).toBe(403);expect((await retry(app.env.WDP_ORDER_ALERT_RETRY_SECRET!)).status).toBe(200);
     app.sql.exec("UPDATE wdp_order_alerts SET status='pending',created_at='2020-01-01 00:00:00' WHERE channel='email'");
     expect(await deliverOrderAlerts(app.env,input.attemptId)).toBe(false);expect(sent).toHaveLength(2);expect(app.sql.prepare("SELECT last_error FROM wdp_order_alerts WHERE channel='email'").get()!.last_error).toBe('manual_review');
+  });
+});
+
+
+describe('private manual registration queue',()=>{
+  const enable=(app:ReturnType<typeof setup>)=>Object.assign(app.env,{WDP_REGISTRATION_QUEUE_ENABLED:'true',WDP_REGISTRATION_ADMIN_EMAIL:'admin@example.com'});
+  const queue=(app:ReturnType<typeof setup>,cookie='',query='')=>queueEndpoint(app.context(new Request('https://wdp.test/api/admin/registrations'+query,{headers:{Cookie:cookie}})));
+  const update=(app:ReturnType<typeof setup>,cookie:string,body:any,origin='https://wdp.test')=>registrationEndpoint(app.context(new Request('https://wdp.test/api/admin/registrations',{method:'PUT',headers:{Cookie:cookie,Origin:origin,'Content-Type':'application/json'},body:JSON.stringify(body)})));
+  const record=(orderId:string,domain='example.co.za',version=0)=>({orderId,domain,version,status:'registered',registeredOn:'2026-11-13',expiresOn:'2027-11-13',providerReference:'TH-123',notes:'Internal note',confirmed:true});
+  it('restricts queue reads and writes to the configured verified administrator',async()=>{
+    const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com');enable(app);
+    expect((await queue(app)).status).toBe(401);expect((await queue(app,customer.cookie)).status).toBe(403);expect((await queue(app,admin.cookie)).status).toBe(200);
+    expect((await update(app,customer.cookie,record(crypto.randomUUID()))).status).toBe(403);
+    expect((await update(app,admin.cookie,record(crypto.randomUUID()),'https://evil.test')).status).toBe(403);
+    app.env.WDP_REGISTRATION_QUEUE_ENABLED='false';expect((await queue(app,admin.cookie)).status).toBe(403);
+  });
+  it('records paid domains individually, audits edits and keeps test purchases visibly separate',async()=>{
+    const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com'),other=await app.customer('other@example.com');enable(app);
+    const input={...app.input(),domains:['example.co.za','example.com'],hosting:false,quotedAmount:30500};
+    await createPayment(app.context(app.request(input,customer.cookie)));expect((await queue(app,admin.cookie)).status).toBe(200);expect((await (await queue(app,admin.cookie)).json()).items).toHaveLength(0);
+    await app.webhook(input,'succeeded',30500);const initial=await (await queue(app,admin.cookie)).json();expect(initial.items).toHaveLength(2);expect(initial.items[0].registrant.address).toBe('Original street');
+    const calls=app.provider.mock.calls.length;
+    expect((await update(app,admin.cookie,record(input.attemptId))).status).toBe(200);
+    expect(app.sql.prepare('SELECT fulfilment_status FROM wdp_orders').get()!.fulfilment_status).toBe('test_registration_pending');
+    expect((await update(app,admin.cookie,record(input.attemptId))).status).toBe(409);
+    expect((await update(app,admin.cookie,record(input.attemptId,'example.com'))).status).toBe(200);
+    expect(app.sql.prepare('SELECT fulfilment_status FROM wdp_orders').get()!.fulfilment_status).toBe('test_domains_recorded');expect(app.provider.mock.calls).toHaveLength(calls);
+    await app.webhook(input,'succeeded',30500);expect(app.sql.prepare('SELECT fulfilment_status FROM wdp_orders').get()!.fulfilment_status).toBe('test_domains_recorded');
+    expect((await (await queue(app,admin.cookie,'?status=registered')).json()).items).toHaveLength(2);expect((await (await queue(app,admin.cookie)).json()).items).toHaveLength(0);
+    const getDomains=(cookie:string)=>domainsEndpoint(app.context(new Request('https://wdp.test/api/customer/domains',{headers:{Cookie:cookie}})));
+    const domains=await (await getDomains(customer.cookie)).json();expect(domains.domains).toHaveLength(2);expect(domains.domainCount).toBe(0);expect(domains.domains[0]).toMatchObject({mode:'test',status:'registered',registeredOn:'2026-11-13',expiresOn:'2027-11-13'});expect(domains.domains[0]).not.toHaveProperty('notes');expect(domains.domains[0]).not.toHaveProperty('providerReference');expect((await (await getDomains(other.cookie)).json()).domains).toHaveLength(0);
+    const services=await (await servicesEndpoint(app.context(new Request('https://wdp.test/api/customer/services',{headers:{Cookie:customer.cookie}})))).json();expect(services.services[0]).toMatchObject({status:'test_recorded',expiresOn:'2027-11-13'});
+    expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_registration_audit').get()!.n).toBe(2);
+    expect((await update(app,admin.cookie,{...record(input.attemptId,'example.com',1),notes:'Corrected notes'})).status).toBe(200);expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_registration_audit').get()!.n).toBe(3);
+  });
+  it('validates dates, paid membership, confirmation and issue notes without writing bad records',async()=>{
+    const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com'),input=app.input();enable(app);await createPayment(app.context(app.request(input,customer.cookie)));
+    expect((await update(app,admin.cookie,record(input.attemptId))).status).toBe(404);await app.webhook(input);
+    for(const change of [{registeredOn:'2026-02-30'},{registeredOn:'2099-01-01'},{expiresOn:'2026-11-12'},{confirmed:false},{providerReference:''},{status:'issue',notes:''}])expect((await update(app,admin.cookie,{...record(input.attemptId),...change})).status).toBe(400);
+    expect((await update(app,admin.cookie,record(input.attemptId,'not-purchased.com'))).status).toBe(404);
+    expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_domain_registrations').get()!.n).toBe(0);expect(validDate('2028-02-29')).toBe(true);expect(validDate('2027-02-29')).toBe(false);
+    expect((await update(app,admin.cookie,{...record(input.attemptId),status:'issue',notes:'Domain became unavailable'})).status).toBe(200);expect((await (await queue(app,admin.cookie,'?status=issue')).json()).items).toHaveLength(1);
+  });
+  it('refuses competing stale edits and keeps one matching audit entry',async()=>{
+    const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com'),input=app.input();enable(app);await createPayment(app.context(app.request(input,customer.cookie)));await app.webhook(input);
+    const results=await Promise.all([update(app,admin.cookie,record(input.attemptId)),update(app,admin.cookie,{...record(input.attemptId),notes:'Competing change'})]);
+    expect(results.map(result=>result.status).sort()).toEqual([200,409]);expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_registration_audit').get()!.n).toBe(1);expect(app.sql.prepare('SELECT version FROM wdp_domain_registrations').get()!.version).toBe(1);
   });
 });

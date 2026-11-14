@@ -11,8 +11,9 @@ function row(service:any){
   small(price,service.product==='Domain Registration'?`Paid ${money(service.paidCents)} · ${(service.years??1)===1?'first year':`${service.years} years`}`:`Paid ${money(service.paidCents)} · first month`);
   if(service.priceSource==='current_catalogue')small(price,'Current renewal price');
   const due=cell(service.nextDueDate?new Intl.DateTimeFormat('en-ZA',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(service.nextDueDate+'T12:00:00Z')):'Date unavailable');
-  const state=cell(''),badge=document.createElement('span');badge.className='status-badge pending';badge.textContent=service.status==='test_purchase'?'Test purchase':service.status==='pending_registration'?'Pending registration':'Pending setup';state.append(badge);
-  if(service.status==='test_purchase')small(state,service.product==='Domain Registration'?'Not registered':'Not provisioned');
+  if(service.expiresOn)small(due,`${service.mode==='test'?'Test expiry':'Registry expiry'}: ${service.expiresOn}`);
+  const state=cell(''),badge=document.createElement('span');badge.className='status-badge pending';badge.textContent=service.status==='test_purchase'?'Test purchase':service.status==='pending_registration'?'Pending registration':service.status==='test_recorded'?'Test record saved':service.status==='registered'?'Registration recorded':['registration_issue','test_issue'].includes(service.status)?'Needs attention':'Pending setup';state.append(badge);
+  if(['test_purchase','test_recorded','test_issue'].includes(service.status))small(state,service.product==='Domain Registration'?'Not registered':'Not provisioned');
   const action=cell('','service-action'),link=document.createElement('a');link.className='table-manage-btn';link.href=`/dashboard/orders/?order=${encodeURIComponent(service.orderId)}`;link.textContent='Manage';link.setAttribute('aria-label',`Manage ${service.product} for ${service.domain}`);action.append(link);
   tr.append(product,domain,price,due,state,action);return tr;
 }

@@ -2,7 +2,7 @@
 import logoImage from '../assets/wdp-logo-new-design-one.avif';
 interface Props {
   title?: string;
-  activeNav?: 'dashboard' | 'orders' | 'services' | 'domains' | 'billing';
+  activeNav?: 'dashboard' | 'orders' | 'services' | 'domains' | 'billing' | 'registrations';
   userName?: string;
 }
 const {title='Client Portal | Web Design Pros',activeNav='dashboard',userName='My account'}=Astro.props;
@@ -28,7 +28,7 @@ const links=[['dashboard','Dashboard','/dashboard/'],['orders','Orders','/dashbo
   <body>
     <header class="portal-header"><div class="portal-header-inner">
       <a class="portal-brand" href="/" aria-label="Web Design Pros home"><img src={logoImage.src} width={logoImage.width} height={logoImage.height} alt="Web Design Pros" loading="eager" /></a>
-      <nav class="portal-nav" aria-label="Customer menu">{links.map(([key,label,href])=><a href={href} class:list={{active:activeNav===key}} aria-current={activeNav===key?'page':undefined}>{label}</a>)}</nav>
+      <nav class="portal-nav" aria-label="Customer menu">{links.map(([key,label,href])=><a href={href} class:list={{active:activeNav===key}} aria-current={activeNav===key?'page':undefined}>{label}</a>)}<a id="registration-admin-link" href="/dashboard/registrations/" hidden class:list={{active:activeNav==='registrations'}}>Registration queue</a></nav>
       <div class="portal-user"><span class="portal-user-name"><span class="portal-user-dot" aria-hidden="true"></span><span id="dashboard-customer">{userName}</span></span><button class="portal-logout" id="dashboard-logout" data-dashboard-logout type="button">Sign out</button></div>
     </div></header>
     <main class="container"><p id="dashboard-status" role="status" aria-live="polite"></p><slot /><p id="dashboard-logout-status" role="status" aria-live="polite"></p></main>
