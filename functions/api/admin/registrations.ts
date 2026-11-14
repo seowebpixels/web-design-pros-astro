@@ -28,9 +28,9 @@ export const onRequestPut:PagesFunction<AccountEnv>=async context=>{
     let emailStatus='off';
     if(registration.status==='registered'&&context.env.WDP_REGISTRATION_EMAIL_ENABLED==='true'){
       try{
-        await deliverRegistrationEmails(context.env,registration.order_id,registration.domain);
-        const email=await context.env.DB!.prepare('SELECT status,last_error FROM wdp_registration_emails WHERE order_id=? AND domain=?').bind(registration.order_id,registration.domain).first<{status:string;last_error:string|null}>();
-        emailStatus=email?.last_error==='manual_review'?'manual_review':email?.status??'off';
+        await deliverRegistrationEmails(context.env,registration.order_id);
+        const email=await context.env.DB!.prepare("SELECT status,last_error,json_extract(payload_json,'$.scope') AS scope FROM wdp_registration_emails WHERE order_id=? ORDER BY CASE WHEN status='sent' THEN 0 ELSE 1 END LIMIT 1").bind(registration.order_id).first<{status:string;last_error:string|null;scope:string|null}>();
+        emailStatus=!email?'waiting':email.status==='sent'?'sent':email.last_error==='manual_review'||email.scope!=='order'?'manual_review':email.status;
       }catch{emailStatus='pending';}
     }
     return accountJson({saved:true,version:registration.version,emailStatus});

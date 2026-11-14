@@ -10,17 +10,19 @@
 
 ## Exercise
 
-Choose one test purchase in the private Registration queue, enter sample dates/reference, select registered, confirm and save. Its verified WDP customer account email receives **TEST registration confirmation** with the domain, WDP reference, sample dates and a link to Domains. It explicitly says no domain was registered. No message goes to the registrant's possibly different email, Telegram, or an address supplied in the admin request.
+Choose a NEW two-domain test purchase in the private Registration queue. Enter sample dates/reference, select registered, confirm and save the first domain: no email should be sent. Save the last domain as registered. Its verified WDP customer account email receives **TEST registration confirmation** only after every domain in the SAME paid order is registered. The one message lists all purchased domains with their sample dates, WDP reference, a link to Domains and one full-order PDF invoice attachment. It explicitly says no domain was registered. No message goes to the registrant's possibly different email, Telegram, or an address supplied in the admin request.
 
-Existing completed registrations are not automatically mailed on deployment. To rehearse one, open **Registration recorded** or **All paid domains**, then save that record again. Enabling notifications allows its first confirmation to be queued; subsequent notes/date edits and status toggles do not send another confirmation. New domains in the same order each receive their own email. Pending or issue statuses do not trigger a confirmation.
+Separate purchases are independent, even for the same customer. An unfinished order does not hold up a completed order. Any pending, missing or issue domain in an order holds that order's confirmation. Registration dates and expiry dates for every domain are captured in the transaction that completes the last registration. The invoice itself is unchanged.
 
-For live purchases, the subject is **Your domain is registered**, with the actual registration/expiry dates and WDP production reference. There is no registrar API call or live-payment switch in this feature.
+Resaving, correcting dates/notes, retrying, or recording domains concurrently does not send extra confirmations. Existing completed registrations are not automatically emailed on deployment. Historical orders with any old per-domain queue record do not receive a new order-level email. Old sent rows remain for audit; old pending/uncertain per-domain messages are held for manual review, never rewritten or automatically sent. Use a NEW purchase to test this change.
+
+For live purchases, the subject is **Your domain is registered** or **Your domains are registered**, with the actual registration/expiry dates and WDP production reference. There is no registrar API call or live-payment switch in this feature.
 
 ## Delivery and recovery
 
 The registration, audit entry and email queue entry commit in the same D1 transaction. A failed send leaves the registration saved. The Save response distinguishes provider acceptance from queued delivery; acceptance does not guarantee inbox delivery. Review bounces/suppressions in Resend when necessary.
 
-`wdp_registration_emails` has a unique `(order_id,domain)` entry. The first confirmation payload and verified customer recipient are frozen for repeat-safe retries; later corrections do not silently rewrite an email that might already have been sent. Handle substantive corrections separately. Leases prevent ordinary concurrent sends, and Resend requests reuse a stable idempotency key. Uncertain sends older than 23 hours from the first attempt are held as `manual_review` to avoid resending outside Resend's 24-hour deduplication window.
+`wdp_registration_emails` retains its existing `(order_id,domain)` key, with the order's first domain as the single canonical queue key for new order confirmations. No migration is required. A transaction-level check refuses to insert another queue row for an order that already has any notification history. The order confirmation payload and verified customer recipient are frozen for repeat-safe retries; later corrections do not silently rewrite an email that might already have been sent. Handle substantive corrections separately. Leases prevent ordinary concurrent sends, and Resend requests reuse a stable idempotency key. Uncertain sends older than 23 hours from the first attempt are held as `manual_review` to avoid resending outside Resend's 24-hour deduplication window.
 
 Check status without exposing email payloads:
 
@@ -31,7 +33,7 @@ FROM wdp_registration_emails ORDER BY created_at DESC;
 
 The existing protected `/api/internal/order-alerts` retry endpoint now also processes up to 20 due registration confirmations. Run `node scripts/retry-order-alerts.mjs` after at least one minute to retry a failed send. It reuses the private retry secret already saved in ignored `.dev.vars`. No automatic schedule has been configured. A later save of the same registered domain also attempts its due pending email. Turning off a notification flag pauses that mode's delivery. Never reset a `sent` or `manual_review` record without checking Resend first.
 
-Tests mock all Resend calls. They cover per-domain messages, correct verified customer recipient, test/live wording, private-field exclusion, pending/unpaid restrictions, transaction revision checks, edits, concurrent delivery, failed-send recovery and old uncertain delivery holds.
+Tests mock all Resend calls. They cover multi-domain completion, independent orders, issue/pending holds, concurrent final saves, historical per-domain suppression, correct verified customer recipient, test/live wording, private-field exclusion, pending/unpaid restrictions, transaction revision checks, edits, concurrent delivery, failed-send recovery and old uncertain delivery holds.
 
 Reference: https://resend.com/docs/dashboard/emails/idempotency-keys
 
@@ -50,7 +52,7 @@ The site fetches its static invoice template, CSS and logo through Pages ASSETS,
 
 PDF failures leave registration saved and email pending; a new confirmation is never sent without its required attachment. The complete PDF and email request are persisted before sending, so retries reuse the same attachment bytes and Resend idempotency key. Rendering failures do not start the 23-hour uncertain-send clock. PDFs are limited to 900 KB before base64 encoding for bounded D1 storage.
 
-Existing sent emails are never resent. Older queued confirmations retain their original request without retroactive attachments. Use a new purchase for the attachment test.
+Existing sent emails are never resent. Older per-domain confirmations retain their audit record but are held for manual review, without automatic delivery or retroactive attachments. Use a new purchase for the attachment test.
 
 For pending messages, run `node scripts/retry-order-alerts.mjs` after at least one minute. Error codes: `pdf_configuration` (missing settings), `pdf_asset`/`pdf_template` (deployed invoice asset problem), `pdf_render` (renderer error), `pdf_size` (PDF too large). No sensitive provider responses are logged. No automatic retry schedule is configured.
 

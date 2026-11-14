@@ -305,17 +305,51 @@ describe('private manual registration queue',()=>{
   });
   const confirmations=(app:ReturnType<typeof setup>)=>app.provider.mock.calls.filter(([,options])=>JSON.parse(options!.body as string).subject?.startsWith('TEST registration confirmation:'));
   const enableEmails=(app:ReturnType<typeof setup>)=>Object.assign(app.env,{WDP_REGISTRATION_EMAIL_ENABLED:'true',WDP_REGISTRATION_TEST_EMAILS_ENABLED:'true'});
-  it('sends one clearly labelled customer confirmation per domain and does not resend edits',async()=>{
+  it('waits for every domain in the order, then sends one confirmation and unchanged invoice',async()=>{
     const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com');enable(app);enableEmails(app);
     const input={...app.input(),domains:['example.co.za','example.com'],hosting:false,quotedAmount:30500};await createPayment(app.context(app.request(input,customer.cookie)));await app.webhook(input,'succeeded',30500);
     expect((await update(app,customer.cookie,record(input.attemptId))).status).toBe(403);expect(confirmations(app)).toHaveLength(0);
-    const result=await update(app,admin.cookie,record(input.attemptId));expect(await result.json()).toMatchObject({saved:true,emailStatus:'sent',version:1});
+    const result=await update(app,admin.cookie,record(input.attemptId));expect(await result.json()).toMatchObject({saved:true,emailStatus:'waiting',version:1});
+    expect(confirmations(app)).toHaveLength(0);expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_registration_emails').get()!.n).toBe(0);
+    await deliverRegistrationEmails(app.env);expect(confirmations(app)).toHaveLength(0);
+    expect(await (await update(app,admin.cookie,record(input.attemptId,'example.com'))).json()).toMatchObject({saved:true,emailStatus:'sent'});
     const sent=JSON.parse(confirmations(app)[0][1]!.body as string);
     expect(sent.attachments).toHaveLength(1);expect(sent.attachments[0]).toMatchObject({filename:'WDP-TEST-0000001.pdf',content_type:'application/pdf'});expect(atob(sent.attachments[0].content)).toContain('%PDF-');expect(sent).not.toHaveProperty('_invoice');
-    expect(sent.to).toEqual(['first@example.com']);expect(sent.text).toContain('13 November 2026');expect(sent.text).toContain('13 November 2027');expect(sent.text).toContain('WDP-TEST-0000001');expect(sent.text).toContain('TEST EMAIL — no domain has been registered.');expect(sent.text).toContain('https://wdp.test/dashboard/domains/?mode=test');expect(sent.text).not.toContain('TH-123');expect(sent.text).not.toContain('Internal note');
+    expect(sent.text).toContain('Domain: example.co.za');expect(sent.text).toContain('Domain: example.com');expect(sent.to).toEqual(['first@example.com']);expect(sent.text).toContain('13 November 2026');expect(sent.text).toContain('13 November 2027');expect(sent.text).toContain('WDP-TEST-0000001');expect(sent.text).toContain('TEST EMAIL — no domain has been registered.');expect(sent.text).toContain('https://wdp.test/dashboard/domains/?mode=test');expect(sent.text).not.toContain('TH-123');expect(sent.text).not.toContain('Internal note');
     await update(app,admin.cookie,{...record(input.attemptId,'example.co.za',1),notes:'Corrected internal note'});expect(confirmations(app)).toHaveLength(1);
-    await update(app,admin.cookie,record(input.attemptId,'example.com'));expect(confirmations(app)).toHaveLength(2);
-    expect(app.sql.prepare("SELECT COUNT(*) AS n FROM wdp_registration_emails WHERE status='sent'").get()!.n).toBe(2);
+    await update(app,admin.cookie,record(input.attemptId,'example.com',1));expect(confirmations(app)).toHaveLength(1);
+    expect(app.sql.prepare("SELECT COUNT(*) AS n FROM wdp_registration_emails WHERE status='sent'").get()!.n).toBe(1);
+  });
+  it('sends one complete snapshot when two different domains finish concurrently',async()=>{
+    const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com');enable(app);enableEmails(app);
+    const input={...app.input(),domains:['example.co.za','example.com'],hosting:false,quotedAmount:30500};await createPayment(app.context(app.request(input,customer.cookie)));await app.webhook(input,'succeeded',30500);
+    const results=await Promise.all([update(app,admin.cookie,{...record(input.attemptId),registeredOn:'2026-11-12'}),update(app,admin.cookie,record(input.attemptId,'example.com'))]);
+    expect(results.map(result=>result.status)).toEqual([200,200]);await Promise.all([deliverRegistrationEmails(app.env),deliverRegistrationEmails(app.env)]);
+    expect(confirmations(app)).toHaveLength(1);const sent=JSON.parse(confirmations(app)[0][1]!.body as string);expect(sent.text).toContain('Domain: example.co.za');expect(sent.text).toContain('Domain: example.com');expect(sent.text).toContain('12 November 2026');expect(sent.text).toContain('13 November 2026');expect(sent.attachments).toHaveLength(1);
+    expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_registration_emails').get()!.n).toBe(1);
+  });
+  it('waits for issue domains but does not let another purchase in the same account block a completed order',async()=>{
+    const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com');enable(app);enableEmails(app);
+    const first={...app.input(),domains:['example.co.za','example.com'],hosting:false,quotedAmount:30500},second=app.input();
+    await createPayment(app.context(app.request(first,customer.cookie)));await app.webhook(first,'succeeded',30500);await createPayment(app.context(app.request(second,customer.cookie)));await app.webhook(second);
+    await update(app,admin.cookie,record(first.attemptId));await update(app,admin.cookie,{...record(first.attemptId,'example.com'),status:'issue',notes:'Checking ownership'});expect(confirmations(app)).toHaveLength(0);
+    await update(app,admin.cookie,record(second.attemptId));expect(confirmations(app)).toHaveLength(1);expect(JSON.parse(confirmations(app)[0][1]!.body as string).text).toContain('WDP-TEST-0000002');
+    await update(app,admin.cookie,record(first.attemptId,'example.com',1));expect(confirmations(app)).toHaveLength(2);expect(JSON.parse(confirmations(app)[1][1]!.body as string).text).toContain('WDP-TEST-0000001');
+  });
+  it('does not send a second invoice for a historical order already notified per domain',async()=>{
+    const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com');enable(app);enableEmails(app);
+    const input={...app.input(),domains:['example.co.za','example.com'],hosting:false,quotedAmount:30500};await createPayment(app.context(app.request(input,customer.cookie)));await app.webhook(input,'succeeded',30500);
+    await update(app,admin.cookie,record(input.attemptId));
+    app.sql.prepare("INSERT INTO wdp_registration_emails(order_id,domain,payload_json,status,attempts,first_attempt_at) VALUES (?,?,'{}','sent',1,?)").run(input.attemptId,'example.co.za',Date.now());
+    expect(await (await update(app,admin.cookie,record(input.attemptId,'example.com'))).json()).toMatchObject({saved:true,emailStatus:'sent'});
+    await deliverRegistrationEmails(app.env);expect(confirmations(app)).toHaveLength(0);expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_registration_emails').get()!.n).toBe(1);
+  });
+  it('pauses a queued order if a domain returns to issue status before its email is sent',async()=>{
+    const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com'),input=app.input();enable(app);enableEmails(app);await createPayment(app.context(app.request(input,customer.cookie)));await app.webhook(input);
+    app.env.WDP_PDF_API_TOKEN=undefined;await update(app,admin.cookie,record(input.attemptId));
+    await update(app,admin.cookie,{...record(input.attemptId,'example.co.za',1),status:'issue',notes:'Double-checking registration'});
+    app.env.WDP_PDF_API_TOKEN='test-pdf-token';app.sql.exec('UPDATE wdp_registration_emails SET next_attempt_at=0');await deliverRegistrationEmails(app.env);expect(confirmations(app)).toHaveLength(0);
+    await update(app,admin.cookie,record(input.attemptId,'example.co.za',2));expect(confirmations(app)).toHaveLength(1);
   });
   it('retains a saved registration after email failure and retries with the same provider key',async()=>{
     const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com'),input=app.input();enable(app);enableEmails(app);await createPayment(app.context(app.request(input,customer.cookie)));await app.webhook(input);
@@ -338,12 +372,13 @@ describe('private manual registration queue',()=>{
     app.env.WDP_PDF_API_TOKEN='test-pdf-token';app.sql.exec('UPDATE wdp_registration_emails SET next_attempt_at=0');
     await deliverRegistrationEmails(app.env);expect(confirmations(app)).toHaveLength(1);
   });
-  it('retains legacy queued messages without changing their idempotent request',async()=>{
+  it('holds historical per-domain notifications without rewriting or resending them',async()=>{
     const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com'),input=app.input();enable(app);enableEmails(app);await createPayment(app.context(app.request(input,customer.cookie)));await app.webhook(input);
     app.env.WDP_PDF_API_TOKEN=undefined;await update(app,admin.cookie,record(input.attemptId));
-    const payload=JSON.parse(app.sql.prepare('SELECT payload_json FROM wdp_registration_emails').get()!.payload_json as string);delete payload._invoice;
+    const payload=JSON.parse(app.sql.prepare('SELECT payload_json FROM wdp_registration_emails').get()!.payload_json as string).email;delete payload._invoice;payload.subject='Old per-domain confirmation';
     app.sql.prepare('UPDATE wdp_registration_emails SET payload_json=?,next_attempt_at=0').run(JSON.stringify(payload));await deliverRegistrationEmails(app.env);
-    expect(JSON.parse(confirmations(app)[0][1]!.body as string)).toEqual(payload);
+    expect(confirmations(app)).toHaveLength(0);expect(JSON.parse(app.sql.prepare('SELECT payload_json FROM wdp_registration_emails').get()!.payload_json as string)).toEqual(payload);
+    expect(await (await update(app,admin.cookie,record(input.attemptId,'example.co.za',1))).json()).toMatchObject({emailStatus:'manual_review'});expect(confirmations(app)).toHaveLength(0);
   });
   it('requires test-email opt-in and never notifies pending, unpaid or invalid domains',async()=>{
     const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com'),input=app.input();enable(app);app.env.WDP_REGISTRATION_EMAIL_ENABLED='true';await createPayment(app.context(app.request(input,customer.cookie)));

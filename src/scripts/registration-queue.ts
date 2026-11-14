@@ -28,7 +28,7 @@ function card(item:any){
       if(!response.ok)throw new Error(data.error||'Unable to save. Refresh before retrying.');
       item.version=data.version;item.status=payload.status;item.registeredOn=payload.registeredOn;item.expiresOn=payload.expiresOn;item.providerReference=payload.providerReference;item.notes=payload.notes;
       top.querySelector('.registration-badge')!.textContent=labels[item.status as keyof typeof labels];
-      const emailMessage=data.emailStatus==='sent'?' Confirmation email accepted for sending.':data.emailStatus==='manual_review'?' Confirmation email needs manual review.':data.emailStatus==='pending'||data.emailStatus==='sending'?' Confirmation email is queued; delivery needs a retry.':'';
+      const emailMessage=data.emailStatus==='waiting'?' The confirmation and invoice will be emailed once all domains in this order are registered.':data.emailStatus==='sent'?' Confirmation email accepted for sending.':data.emailStatus==='manual_review'?' Confirmation email needs manual review.':data.emailStatus==='pending'||data.emailStatus==='sending'?' Confirmation email is queued; delivery needs a retry.':'';
       message.textContent=(item.mode==='test'?'Test record saved. No domain was registered.':'Registration record saved.')+emailMessage;check.checked=false;
     }catch(error){message.textContent=error instanceof Error?error.message:'Unable to save. Refresh before retrying.';}
     finally{controls.forEach(control=>control.disabled=false);updateFields();}
