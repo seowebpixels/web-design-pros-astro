@@ -2,6 +2,7 @@ import {accountJson,accountFailure,AccountError,type AccountEnv} from '../../../
 import {requireRegistrationAdmin,saveRegistration,queueItem,type RegistrationRow} from '../../../src/lib/orders/registrations';
 import type {OrderRow} from '../../../src/lib/orders/core';
 import {readBody} from '../../../src/lib/payments/core';
+import {deliverRegistrationEmails} from '../../../src/lib/orders/registration-emails';
 export const onRequestGet:PagesFunction<AccountEnv>=async context=>{
   try{
     await requireRegistrationAdmin(context.request,context.env,p=>context.waitUntil(p));
@@ -24,6 +25,14 @@ export const onRequestPut:PagesFunction<AccountEnv>=async context=>{
     const session=await requireRegistrationAdmin(context.request,context.env,p=>context.waitUntil(p));
     let body;try{body=JSON.parse(await readBody(context.request,8000));}catch{throw new AccountError(400,'Please check the registration details.');}
     const registration=await saveRegistration(context.env,session.user.id,body);
-    return accountJson({saved:true,version:registration.version});
+    let emailStatus='off';
+    if(registration.status==='registered'&&context.env.WDP_REGISTRATION_EMAIL_ENABLED==='true'){
+      try{
+        await deliverRegistrationEmails(context.env,registration.order_id,registration.domain);
+        const email=await context.env.DB!.prepare('SELECT status,last_error FROM wdp_registration_emails WHERE order_id=? AND domain=?').bind(registration.order_id,registration.domain).first<{status:string;last_error:string|null}>();
+        emailStatus=email?.last_error==='manual_review'?'manual_review':email?.status??'off';
+      }catch{emailStatus='pending';}
+    }
+    return accountJson({saved:true,version:registration.version,emailStatus});
   }catch(error){return accountFailure(error);}
 };

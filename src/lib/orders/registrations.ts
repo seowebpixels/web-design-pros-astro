@@ -1,6 +1,7 @@
 import {AccountError,requireCustomer,type AccountEnv} from '../accounts/auth';
 import {orderReference,type OrderRow} from './core';
 import {uuid} from '../payments/core';
+import {registrationEmailStatement} from './registration-emails';
 export interface RegistrationRow {
   order_id:string;domain:string;status:'pending'|'registered'|'issue';registered_on:string|null;expires_on:string|null;provider_reference:string;notes:string;updated_by:string;version:number;revision_id:string;updated_at:string;
 }
@@ -35,10 +36,12 @@ export async function saveRegistration(env:AccountEnv,actorId:string,body:any){
   const before=await db.prepare('SELECT * FROM wdp_domain_registrations WHERE order_id=? AND domain=?').bind(input.orderId,input.domain).first<RegistrationRow>();
   if((before?.version??0)!==input.version)throw new AccountError(409,'This record changed. Refresh the queue before saving again.');
   const revision=crypto.randomUUID();
+  const email=await registrationEmailStatement(env,order,input,revision);
   await db.batch([
     db.prepare("INSERT INTO wdp_domain_registrations (order_id,domain,status,registered_on,expires_on,provider_reference,notes,updated_by,version,revision_id) SELECT ?,?,?,?,?,?,?,?,1,? WHERE ?=0 OR EXISTS(SELECT 1 FROM wdp_domain_registrations WHERE order_id=? AND domain=? AND version=?) ON CONFLICT(order_id,domain) DO UPDATE SET status=excluded.status,registered_on=excluded.registered_on,expires_on=excluded.expires_on,provider_reference=excluded.provider_reference,notes=excluded.notes,updated_by=excluded.updated_by,version=wdp_domain_registrations.version+1,revision_id=excluded.revision_id,updated_at=CURRENT_TIMESTAMP WHERE wdp_domain_registrations.version=?").bind(input.orderId,input.domain,input.status,input.registeredOn,input.expiresOn,input.providerReference,input.notes,actorId,revision,input.version,input.orderId,input.domain,input.version,input.version),
     db.prepare('INSERT INTO wdp_registration_audit(id,order_id,domain,actor_id,before_json,after_json) SELECT ?,?,?,?,?,? WHERE EXISTS(SELECT 1 FROM wdp_domain_registrations WHERE revision_id=?)').bind(revision,input.orderId,input.domain,actorId,JSON.stringify(before),JSON.stringify(input),revision),
-    db.prepare("UPDATE wdp_orders SET fulfilment_status=CASE WHEN NOT EXISTS(SELECT 1 FROM json_each(wdp_orders.cart_json,'$.domains') d LEFT JOIN wdp_domain_registrations r ON r.order_id=wdp_orders.id AND r.domain=json_extract(d.value,'$.domain') WHERE COALESCE(r.status,'pending')!='registered') THEN CASE WHEN mode='test' THEN 'test_domains_recorded' ELSE 'domains_registered' END ELSE CASE WHEN mode='test' THEN 'test_registration_pending' ELSE 'awaiting_registration' END END WHERE id=? AND EXISTS(SELECT 1 FROM wdp_domain_registrations WHERE revision_id=?)").bind(input.orderId,revision)
+    db.prepare("UPDATE wdp_orders SET fulfilment_status=CASE WHEN NOT EXISTS(SELECT 1 FROM json_each(wdp_orders.cart_json,'$.domains') d LEFT JOIN wdp_domain_registrations r ON r.order_id=wdp_orders.id AND r.domain=json_extract(d.value,'$.domain') WHERE COALESCE(r.status,'pending')!='registered') THEN CASE WHEN mode='test' THEN 'test_domains_recorded' ELSE 'domains_registered' END ELSE CASE WHEN mode='test' THEN 'test_registration_pending' ELSE 'awaiting_registration' END END WHERE id=? AND EXISTS(SELECT 1 FROM wdp_domain_registrations WHERE revision_id=?)").bind(input.orderId,revision),
+    ...(email?[email]:[])
   ]);
   const saved=await db.prepare('SELECT * FROM wdp_domain_registrations WHERE order_id=? AND domain=?').bind(input.orderId,input.domain).first<RegistrationRow>();
   if(saved?.revision_id!==revision)throw new AccountError(409,'This record changed. Refresh the queue before saving again.');

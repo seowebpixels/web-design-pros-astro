@@ -11,6 +11,7 @@ import {onRequestGet as servicesEndpoint} from '../../../../functions/api/custom
 import {onRequestGet as queueEndpoint,onRequestPut as registrationEndpoint} from '../../../../functions/api/admin/registrations';
 import {onRequestGet as domainsEndpoint} from '../../../../functions/api/customer/domains';
 import {validDate} from '../registrations';
+import {deliverRegistrationEmails,registrationMessage} from '../registration-emails';
 import type {PaymentEnv} from '../../payments/core';
 
 const signing='test-order-webhook-secret',secret='whsec_'+btoa(signing);
@@ -27,6 +28,7 @@ function setup(){
   sql.exec(readFileSync('migrations/0002_customer_accounts.sql','utf8'));sql.exec(readFileSync('migrations/0003_customer_orders.sql','utf8'));sql.exec(readFileSync('migrations/0004_order_price_snapshots.sql','utf8'));
   sql.exec(readFileSync('migrations/0005_order_alerts.sql','utf8'));
   sql.exec(readFileSync('migrations/0006_domain_registration_queue.sql','utf8'));
+  sql.exec(readFileSync('migrations/0007_registration_emails.sql','utf8'));
   payments.exec(readFileSync('migrations/0001_payment_tests.sql','utf8'));
   const env={DB:database(sql),WDP_PAYMENT_DB:database(payments),WDP_ACCOUNTS_ENABLED:'true',AUTH_SECRET:'test-only-account-secret-at-least-thirty-two-characters',AUTH_BASE_URL:'https://wdp.test',AUTH_FROM_EMAIL:'WDP <accounts@example.com>',RESEND_API_KEY:'test-only',WDP_PAYMENT_TEST_ENABLED:'true',YOCO_TEST_SECRET_KEY:'sk_test_only',YOCO_TEST_WEBHOOK_SECRET:secret} as PaymentEnv;
   const tasks:Promise<unknown>[]=[];const waitUntil=(task:Promise<unknown>)=>tasks.push(task),mail:any[]=[],checkouts:any[]=[];
@@ -257,5 +259,54 @@ describe('private manual registration queue',()=>{
     const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com'),input=app.input();enable(app);await createPayment(app.context(app.request(input,customer.cookie)));await app.webhook(input);
     const results=await Promise.all([update(app,admin.cookie,record(input.attemptId)),update(app,admin.cookie,{...record(input.attemptId),notes:'Competing change'})]);
     expect(results.map(result=>result.status).sort()).toEqual([200,409]);expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_registration_audit').get()!.n).toBe(1);expect(app.sql.prepare('SELECT version FROM wdp_domain_registrations').get()!.version).toBe(1);
+  });
+  const confirmations=(app:ReturnType<typeof setup>)=>app.provider.mock.calls.filter(([,options])=>JSON.parse(options!.body as string).subject?.startsWith('TEST registration confirmation:'));
+  const enableEmails=(app:ReturnType<typeof setup>)=>Object.assign(app.env,{WDP_REGISTRATION_EMAIL_ENABLED:'true',WDP_REGISTRATION_TEST_EMAILS_ENABLED:'true'});
+  it('sends one clearly labelled customer confirmation per domain and does not resend edits',async()=>{
+    const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com');enable(app);enableEmails(app);
+    const input={...app.input(),domains:['example.co.za','example.com'],hosting:false,quotedAmount:30500};await createPayment(app.context(app.request(input,customer.cookie)));await app.webhook(input,'succeeded',30500);
+    expect((await update(app,customer.cookie,record(input.attemptId))).status).toBe(403);expect(confirmations(app)).toHaveLength(0);
+    const result=await update(app,admin.cookie,record(input.attemptId));expect(await result.json()).toMatchObject({saved:true,emailStatus:'sent',version:1});
+    const sent=JSON.parse(confirmations(app)[0][1]!.body as string);
+    expect(sent.to).toEqual(['first@example.com']);expect(sent.text).toContain('13 November 2026');expect(sent.text).toContain('13 November 2027');expect(sent.text).toContain('WDP-TEST-0000001');expect(sent.text).toContain('TEST EMAIL — no domain has been registered.');expect(sent.text).toContain('https://wdp.test/dashboard/domains/?mode=test');expect(sent.text).not.toContain('TH-123');expect(sent.text).not.toContain('Internal note');
+    await update(app,admin.cookie,{...record(input.attemptId,'example.co.za',1),notes:'Corrected internal note'});expect(confirmations(app)).toHaveLength(1);
+    await update(app,admin.cookie,record(input.attemptId,'example.com'));expect(confirmations(app)).toHaveLength(2);
+    expect(app.sql.prepare("SELECT COUNT(*) AS n FROM wdp_registration_emails WHERE status='sent'").get()!.n).toBe(2);
+  });
+  it('retains a saved registration after email failure and retries with the same provider key',async()=>{
+    const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com'),input=app.input();enable(app);enableEmails(app);await createPayment(app.context(app.request(input,customer.cookie)));await app.webhook(input);
+    app.provider.mockImplementationOnce(async()=>new Response('{}',{status:503}));
+    expect(await (await update(app,admin.cookie,record(input.attemptId))).json()).toMatchObject({saved:true,emailStatus:'pending'});
+    expect(app.sql.prepare('SELECT status FROM wdp_domain_registrations').get()!.status).toBe('registered');
+    const first=confirmations(app)[0][1]!,key=(first.headers as Record<string,string>)['Idempotency-Key'];
+    app.sql.prepare('UPDATE wdp_registration_emails SET next_attempt_at=0').run();
+    await Promise.all([deliverRegistrationEmails(app.env),deliverRegistrationEmails(app.env)]);
+    expect(confirmations(app)).toHaveLength(2);expect((confirmations(app)[1][1]!.headers as Record<string,string>)['Idempotency-Key']).toBe(key);
+    expect(app.sql.prepare('SELECT status,attempts FROM wdp_registration_emails').get()).toMatchObject({status:'sent',attempts:2});
+  });
+  it('requires test-email opt-in and never notifies pending, unpaid or invalid domains',async()=>{
+    const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com'),input=app.input();enable(app);app.env.WDP_REGISTRATION_EMAIL_ENABLED='true';await createPayment(app.context(app.request(input,customer.cookie)));
+    expect((await update(app,admin.cookie,record(input.attemptId))).status).toBe(404);await app.webhook(input);
+    await update(app,admin.cookie,record(input.attemptId));expect(confirmations(app)).toHaveLength(0);expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_registration_emails').get()!.n).toBe(0);
+    enableEmails(app);
+    expect((await update(app,admin.cookie,record(input.attemptId,'not-purchased.com'))).status).toBe(404);
+    await update(app,admin.cookie,{...record(input.attemptId,'example.co.za',1),status:'issue',notes:'Checking details'});expect(confirmations(app)).toHaveLength(0);
+  });
+  it('holds uncertain old deliveries for review instead of risking a duplicate',async()=>{
+    const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com'),input=app.input();enable(app);enableEmails(app);await createPayment(app.context(app.request(input,customer.cookie)));await app.webhook(input);
+    app.provider.mockImplementationOnce(async()=>{throw new Error('Private provider response must not be logged');});await update(app,admin.cookie,record(input.attemptId));
+    expect(app.sql.prepare('SELECT last_error FROM wdp_registration_emails').get()!.last_error).toBe('delivery_uncertain');
+    app.sql.prepare('UPDATE wdp_registration_emails SET next_attempt_at=0,first_attempt_at=?').run(Date.now()-24*60*60*1000);
+    await deliverRegistrationEmails(app.env);expect(confirmations(app)).toHaveLength(1);expect(app.sql.prepare('SELECT last_error FROM wdp_registration_emails').get()!.last_error).toBe('manual_review');
+  });
+  it('rolls back registration and audit when its confirmation cannot be queued',async()=>{
+    const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com'),input=app.input();enable(app);enableEmails(app);await createPayment(app.context(app.request(input,customer.cookie)));await app.webhook(input);
+    app.sql.exec('DROP TABLE wdp_registration_emails');
+    expect((await update(app,admin.cookie,record(input.attemptId))).status).toBe(503);
+    expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_domain_registrations').get()!.n).toBe(0);expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_registration_audit').get()!.n).toBe(0);expect(confirmations(app)).toHaveLength(0);
+  });
+  it('uses the production WDP reference and actual dates in live confirmation wording',()=>{
+    const result=registrationMessage({mode:'live',sequence:2412} as any,{domain:'example.com',status:'registered',registeredOn:'2026-11-14',expiresOn:'2029-11-14'},'https://webdesignpros.co.za');
+    expect(result.subject).toContain('WDP-0002412');expect(result.text).toContain('Your domain registration is complete.');expect(result.text).toContain('14 November 2029');expect(result.text).not.toContain('TEST');
   });
 });
