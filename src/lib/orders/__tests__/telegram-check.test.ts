@@ -5,6 +5,13 @@ import {onRequestPost} from '../../../../functions/api/internal/telegram-check';
 const token='123456:test_only_bot_token',chat='1234567',secret='test-retry-secret-at-least-thirty-two-characters';
 afterEach(()=>vi.restoreAllMocks());
 describe('private Telegram connection checks',()=>{
+  it('retains the global fetch receiver required by Cloudflare',async()=>{
+    vi.spyOn(globalThis,'fetch').mockImplementation(function(this:unknown,url){
+      if(this!==globalThis)throw new TypeError('Illegal invocation');
+      return Promise.resolve(new Response(JSON.stringify({ok:true,result:String(url).endsWith('/getMe')?{is_bot:true}:{type:'private',id:Number(chat)}})));
+    });
+    expect((await checkTelegramConnection(token,chat)).map(item=>item.status)).toEqual(['ok','ok']);
+  });
   it('checks credentials and the private chat without sending a message or returning personal details',async()=>{
     const fetcher=vi.fn(async(url:string,options:any)=>{
       expect(options.redirect).toBe('error');expect(options.method).toBe('POST');

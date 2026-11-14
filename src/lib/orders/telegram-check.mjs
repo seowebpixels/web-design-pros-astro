@@ -1,6 +1,6 @@
 // Read-only checks shared by the private Cloudflare endpoint and local helper.
 // Return fixed labels only: Telegram errors can contain token-bearing URLs.
-export async function checkTelegramConnection(token,chatId,fetcher=fetch){
+export async function checkTelegramConnection(token,chatId,fetcher=globalThis.fetch.bind(globalThis)){
   if(!/^\d+:[A-Za-z0-9_-]+$/.test(token??'')||!/^\d+$/.test(chatId??''))return [{check:'configuration',status:'missing_or_invalid',elapsedMs:0}];
   async function probe(check,method,body){
     const started=Date.now();let phase='request';
