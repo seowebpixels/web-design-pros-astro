@@ -10,6 +10,9 @@ export interface AccountEnv {
   WDP_REGISTRATION_ADMIN_EMAIL?: string;
   WDP_REGISTRATION_EMAIL_ENABLED?: string;
   WDP_REGISTRATION_TEST_EMAILS_ENABLED?: string;
+  ASSETS?: {fetch:(request:Request)=>Promise<Response>};
+  WDP_PDF_ACCOUNT_ID?: string;
+  WDP_PDF_API_TOKEN?: string;
 }
 export class AccountError extends Error {
   constructor(public status: number, message: string) { super(message); }

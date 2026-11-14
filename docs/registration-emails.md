@@ -6,7 +6,7 @@
 2. Under Pages **Settings → Production → Variables and secrets**, add Text variables:
    - `WDP_REGISTRATION_EMAIL_ENABLED`: `true`
    - `WDP_REGISTRATION_TEST_EMAILS_ENABLED`: `true` while rehearsing test purchases. Disable this before production use; live confirmations use the first flag independently.
-3. Keep the existing `RESEND_API_KEY`, `AUTH_FROM_EMAIL`, `AUTH_BASE_URL`, account settings and admin restrictions. No new secret or Resend domain is required. Commit/push and wait for deployment.
+3. Keep the existing `RESEND_API_KEY`, `AUTH_FROM_EMAIL`, `AUTH_BASE_URL`, account settings and admin restrictions. PDF attachments also require the renderer settings below; no new Resend domain is required. Commit/push and wait for deployment.
 
 ## Exercise
 
@@ -34,3 +34,28 @@ The existing protected `/api/internal/order-alerts` retry endpoint now also proc
 Tests mock all Resend calls. They cover per-domain messages, correct verified customer recipient, test/live wording, private-field exclusion, pending/unpaid restrictions, transaction revision checks, edits, concurrent delivery, failed-send recovery and old uncertain delivery holds.
 
 Reference: https://resend.com/docs/dashboard/emails/idempotency-keys
+
+## PDF invoice attachment
+
+New confirmations attach the same invoice available in Billing, rendered from the deployed `/dashboard/invoice/` page and its print styles. No redesign, extra invoice number or new order sequence is created. It uses the saved purchase totals and billing details. Test invoices remain labelled as tests.
+
+Before testing:
+
+1. Find the Cloudflare account ID for the account hosting WDP (32 hexadecimal characters, not a D1 database ID).
+2. In My Profile → API Tokens → Create Token → Custom Token, create an account token with **Browser Run: Edit**, restricted to that WDP account. Keep it private.
+3. In Pages → Settings → Variables and secrets → Production, add `WDP_PDF_ACCOUNT_ID` as Text and `WDP_PDF_API_TOKEN` as an encrypted Secret. Keep existing Resend and registration-email flags. Browser Run must be available on the account; check its usage allowance. No browser binding or database migration is required.
+4. Deploy after saving the settings. Do a NEW test purchase, then record its registration in the private queue. The customer's confirmation should contain `<WDP reference>.pdf`. Compare it to Billing → the same invoice → Print / Save PDF.
+
+The site fetches its static invoice template, CSS and logo through Pages ASSETS, fills text safely and removes scripts. No customer session, cookie, password or public invoice link goes to the renderer. The user explicitly approved sending invoice billing/purchase details to Cloudflare for PDF generation. Only the invoice's public font providers may be contacted during rendering.
+
+PDF failures leave registration saved and email pending; a new confirmation is never sent without its required attachment. The complete PDF and email request are persisted before sending, so retries reuse the same attachment bytes and Resend idempotency key. Rendering failures do not start the 23-hour uncertain-send clock. PDFs are limited to 900 KB before base64 encoding for bounded D1 storage.
+
+Existing sent emails are never resent. Older queued confirmations retain their original request without retroactive attachments. Use a new purchase for the attachment test.
+
+For pending messages, run `node scripts/retry-order-alerts.mjs` after at least one minute. Error codes: `pdf_configuration` (missing settings), `pdf_asset`/`pdf_template` (deployed invoice asset problem), `pdf_render` (renderer error), `pdf_size` (PDF too large). No sensitive provider responses are logged. No automatic retry schedule is configured.
+
+References:
+- https://developers.cloudflare.com/browser-run/quick-actions/pdf-endpoint/
+- https://developers.cloudflare.com/browser-run/pricing/
+- https://developers.cloudflare.com/pages/functions/api-reference/
+- https://resend.com/docs/api-reference/emails/send-email
