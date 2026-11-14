@@ -7,7 +7,7 @@ let nextBefore:number|null=null,busy=false;
 const money=(cents:number)=>rand(cents);
 function node(tag:string,text:string,className=''){const el=document.createElement(tag);el.textContent=text;if(className)el.className=className;return el;}
 function date(value:string){return new Intl.DateTimeFormat('en-ZA',{dateStyle:'medium',timeStyle:'short'}).format(new Date(value.replace(' ','T')+'Z'));}
-function state(order:any){return order.paymentStatus==='paid'?'Test payment confirmed':order.paymentStatus==='failed'?'Payment unsuccessful':'Awaiting payment confirmation';}
+function state(order:any){return order.paymentStatus==='paid'?(order.mode==='test'?'Test payment confirmed':'Payment confirmed'):order.paymentStatus==='failed'?'Payment unsuccessful':'Awaiting payment confirmation';}
 function items(order:any){
   const ul=document.createElement('ul');
   for(const item of order.items.domains)ul.append(node('li',`${item.domain} · ${item.years??1} ${(item.years??1)===1?'year':'years'} registration · ${money(item.cents)}`));
@@ -24,7 +24,10 @@ function card(order:any,full=false){
   const article=node('article','','order-card');
   const heading=node('h2','');const link=document.createElement('a');link.href=`/dashboard/orders/?order=${encodeURIComponent(order.id)}`;link.textContent=order.reference;heading.append(link);article.append(heading);
   const meta=node('div','','order-meta');meta.append(node('span',date(order.createdAt)),node('strong',money(order.amount)));article.append(meta,node('p',state(order),'order-state'),items(order));
-  if(order.paymentStatus==='paid')article.append(node('p','Payment confirmed. This test order does not provision domains or hosting.'));
+  if(order.paymentStatus==='paid'){
+    article.append(node('p',order.mode==='test'?'Payment confirmed. This test order does not provision domains or hosting.':'Payment confirmed. View Services and Domains for activation details.'));
+    const invoice=document.createElement('a');invoice.href='/dashboard/invoice/?invoice='+encodeURIComponent(order.id);invoice.textContent='View invoice →';article.append(invoice);
+  }
   else if(order.paymentStatus==='pending')article.append(node('p','If you have already paid, wait for confirmation before trying again.'));
   if(full){
     if(order.paidAt)article.append(node('p',`Confirmed ${date(order.paidAt)}`));

@@ -25,3 +25,6 @@ if(domainCount)void accountRequest('/api/customer/domains').then(data=>{
   if(note){note.hidden=!showTestRecords;note.textContent='Test registrations';}
   domainCount.closest('a')?.setAttribute('href','/dashboard/domains/?mode='+(showTestRecords?'test':'live'));
 }).catch(()=>{domainCount.textContent='—';});
+
+const unpaidCount=document.getElementById('dashboard-unpaid-count');
+if(unpaidCount)void accountRequest('/api/customer/invoices').then(data=>{unpaidCount.textContent=String(data.unpaidInvoiceCount);}).catch(()=>{unpaidCount.textContent='—';});

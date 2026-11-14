@@ -12,6 +12,8 @@ import {onRequestGet as queueEndpoint,onRequestPut as registrationEndpoint} from
 import {onRequestGet as domainsEndpoint} from '../../../../functions/api/customer/domains';
 import {validDate} from '../registrations';
 import {deliverRegistrationEmails,registrationMessage} from '../registration-emails';
+import {onRequestGet as invoicesEndpoint} from '../../../../functions/api/customer/invoices';
+import {invoiceDetail} from '../invoices';
 import type {PaymentEnv} from '../../payments/core';
 
 const signing='test-order-webhook-secret',secret='whsec_'+btoa(signing);
@@ -211,6 +213,44 @@ describe('paid-order owner alerts',()=>{
   });
 });
 
+
+describe('customer paid invoices',()=>{
+  const get=(app:ReturnType<typeof setup>,cookie='',query='')=>invoicesEndpoint(app.context(new Request('https://wdp.test/api/customer/invoices'+query,{headers:{Cookie:cookie}})));
+  it('issues a paid snapshot only after payment, without duplicating numbers or exposing private data',async()=>{
+    const app=setup(),customer=await app.customer(),input=app.input();await createPayment(app.context(app.request(input,customer.cookie)));
+    expect(await (await get(app,customer.cookie)).json()).toMatchObject({invoiceCount:0,totalPaid:0,unpaidInvoiceCount:0,invoices:[]});expect((await get(app,customer.cookie,'?invoice='+input.attemptId)).status).toBe(404);
+    await app.webhook(input);await app.webhook(input);
+    const list=await get(app,customer.cookie);expect(list.headers.get('cache-control')).toBe('no-store');const summary=await list.json();expect(summary).toMatchObject({invoiceCount:1,totalPaid:15500,unpaidInvoiceCount:0});expect(summary.invoices[0]).not.toHaveProperty('billing');expect(JSON.stringify(summary)).not.toContain('access_hash');
+    const detail=(await (await get(app,customer.cookie,'?invoice='+input.attemptId)).json()).invoice;
+    expect(detail).toMatchObject({reference:'WDP-TEST-0000001',mode:'test',total:15500,amountPaid:15500,balanceDue:0,seller:{registrationNumber:'2026/282129/07',vatRegistered:false},billing:{email:customer.user.email,address:'Original street'}});
+    expect(detail.lines).toEqual([{description:'Domain registration: example.co.za',period:'1 year',amount:9500},{description:'Starter hosting with email',period:'First month',amount:6000}]);
+    expect(detail).not.toHaveProperty('payment_id');expect(detail).not.toHaveProperty('access_hash');expect(detail).not.toHaveProperty('registrant');expect(detail).not.toHaveProperty('checkout_id');
+    app.sql.prepare('UPDATE wdp_customer_profiles SET profile_json=? WHERE auth_user_id=?').run(JSON.stringify({...profile,address:'New address'}),customer.user.id);
+    expect((await (await get(app,customer.cookie,'?invoice='+input.attemptId)).json()).invoice.billing.address).toBe('Original street');
+    expect(app.sql.prepare("SELECT next_value FROM wdp_order_sequences WHERE mode='test'").get()!.next_value).toBe(2);expect(app.sql.prepare("SELECT next_value FROM wdp_order_sequences WHERE mode='live'").get()!.next_value).toBe(2412);
+  });
+  it('requires verified sign-in and customer ownership for lists and individual invoices',async()=>{
+    const app=setup(),customer=await app.customer(),other=await app.customer('other@example.com'),input=app.input();await createPayment(app.context(app.request(input,customer.cookie)));await app.webhook(input);
+    expect((await get(app)).status).toBe(401);expect((await get(app,other.cookie,'?invoice='+input.attemptId)).status).toBe(404);expect((await get(app,customer.cookie,'?invoice=not-a-uuid')).status).toBe(404);
+    expect(await (await get(app,other.cookie)).json()).toMatchObject({invoiceCount:0,totalPaid:0,invoices:[]});expect(await (await get(app,customer.cookie,'?mode=live')).json()).toMatchObject({invoiceCount:0,invoices:[]});
+    expect((await get(app,customer.cookie,'?mode=other')).status).toBe(400);expect((await get(app,customer.cookie,'?before=-1')).status).toBe(400);
+  });
+  it('preserves the complete selected-term total rather than multiplying or repricing it',async()=>{
+    const app=setup(),customer=await app.customer(),input={...app.input(),domains:[{domain:'example.com',years:3}],hosting:false,quotedAmount:73000};await createPayment(app.context(app.request(input,customer.cookie)));await app.webhook(input,'succeeded',73000);
+    const invoice=(await (await get(app,customer.cookie,'?invoice='+input.attemptId)).json()).invoice;
+    expect(invoice.lines).toEqual([{description:'Domain registration: example.com',period:'3 years',amount:73000}]);expect(invoice.total).toBe(73000);
+  });
+  it('excludes failed attempts and refuses mismatched saved item totals',async()=>{
+    const app=setup(),customer=await app.customer(),input=app.input();await createPayment(app.context(app.request(input,customer.cookie)));await app.webhook(input,'failed');
+    expect((await get(app,customer.cookie,'?invoice='+input.attemptId)).status).toBe(404);expect((await (await get(app,customer.cookie)).json()).invoiceCount).toBe(0);
+    const row=app.sql.prepare('SELECT * FROM wdp_orders').get()!;expect(()=>invoiceDetail({...row,payment_status:'paid',amount:1} as any)).toThrow('Invoice totals');
+  });
+  it('paginates confirmed invoices without repeating rows or changing account totals',async()=>{
+    const app=setup(),customer=await app.customer(),priced={cart:JSON.stringify({domains:[{domain:'example.com',cents:21000}],hosting:false}),amount:21000};
+    for(let i=0;i<27;i++)await saveTestOrder(app.env,customer.user,app.input(),priced,'private-hash');app.sql.exec("UPDATE wdp_orders SET payment_status='paid',paid_at='2026-11-14 10:00:00'");
+    const first=await (await get(app,customer.cookie)).json(),next=await (await get(app,customer.cookie,'?before='+first.nextBefore)).json();expect(first).toMatchObject({invoiceCount:27,totalPaid:567000});expect(first.invoices).toHaveLength(25);expect(next.invoices).toHaveLength(2);expect(new Set([...first.invoices,...next.invoices].map(invoice=>invoice.id)).size).toBe(27);expect(next.nextBefore).toBeNull();
+  });
+});
 
 describe('private manual registration queue',()=>{
   const enable=(app:ReturnType<typeof setup>)=>Object.assign(app.env,{WDP_REGISTRATION_QUEUE_ENABLED:'true',WDP_REGISTRATION_ADMIN_EMAIL:'admin@example.com'});

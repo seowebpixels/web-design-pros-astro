@@ -3,5 +3,15 @@ export const prerender = true;
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
 ---
 <DashboardLayout title="Billing | Web Design Pros" activeNav="billing">
-  <h1>Billing</h1><p>No customer invoices yet.</p><a href="/checkout/">Continue to checkout →</a>
+  <header class="billing-heading"><div><h1>My invoices</h1><p>Your invoices and confirmed payments, in one place.</p></div><a href="/dashboard/orders/">View orders →</a></header>
+  <div class="billing-controls"><label>Purchases <select id="billing-mode"><option value="test">Test purchases</option><option value="live">Live purchases</option></select></label><button id="billing-refresh" type="button">Refresh invoices</button></div>
+  <p id="billing-notice">Test invoices only. No money has been charged. These are not tax invoices.</p>
+  <section class="billing-summary" aria-label="Billing overview"><article><span>Invoices</span><strong id="billing-count">—</strong></article><article><span id="billing-paid-label">Test payments confirmed</span><strong id="billing-paid">—</strong></article></section>
+  <p id="billing-status" role="status" aria-live="polite">Loading your invoices…</p>
+  <div class="billing-table"><table><thead><tr><th>Invoice / WDP reference</th><th>Invoice date</th><th>Total</th><th>Status</th><th>Action</th></tr></thead><tbody id="billing-body"></tbody></table></div>
+  <button id="billing-more" type="button" hidden>Load more invoices</button>
 </DashboardLayout>
+<script>import '../../scripts/billing';</script>
+<style>
+  h1{margin:0 0 12px;font-size:2rem}.billing-heading{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}.billing-heading p,#billing-notice{color:var(--text-muted)}.billing-controls{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin:26px 0}.billing-controls label{display:flex;gap:12px;align-items:center}select{font:inherit;padding:10px;background:#101b32;color:white;border:1px solid #4d617d;border-radius:6px}button{font:inherit;font-weight:600;padding:11px 17px;background:#89cfff;color:#07182d;border:0;border-radius:6px;cursor:pointer}button:disabled{opacity:.6}.billing-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;max-width:720px;margin:26px 0}.billing-summary article{display:flex;flex-direction:column;gap:10px;padding:22px;border:1px solid var(--border-color);border-radius:9px;background:var(--bg-card)}.billing-summary span{color:var(--text-muted)}.billing-summary strong{font-size:1.8rem;color:#89cfff}.billing-table{overflow:auto;border:1px solid var(--border-color);border-radius:9px}table{width:100%;min-width:720px;text-align:left;border-collapse:collapse}th{padding:16px;background:#001133;font-size:.75rem;text-transform:uppercase;color:var(--text-muted)}:global(#billing-body td){padding:20px 16px;background:var(--bg-card);border-top:1px solid var(--border-color)}:global(.invoice-paid){display:inline-block;padding:4px 12px;border-radius:20px;background:#083d37;color:#79e4c6;font-size:.8rem}#billing-more{margin-top:22px}@media(max-width:500px){.billing-summary{grid-template-columns:1fr}}
+</style>
