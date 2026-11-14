@@ -8,12 +8,14 @@ try{
   if(!response.ok){console.error(`Order alert retry failed (HTTP ${response.status}). Check configuration and deployment.`);process.exitCode=1;}
   else{
     const result=await response.json();
-    console.log(result.allDueDelivered?'All deliveries due in this batch were accepted.':'Some deliveries are still pending.');
+    const held=Array.isArray(result.pendingAlerts)&&result.pendingAlerts.some(item=>item.reviewRequired===true);
+    console.log(held?'Automatic retries completed. Some Telegram alerts need your review.':result.allDueDelivered?'All deliveries due in this batch were accepted.':'Some deliveries are still pending.');
     const reasons={request_timeout:'The request timed out before delivery was confirmed.',request_aborted:'The request was interrupted; delivery is uncertain.',network_error:'The connection failed; delivery is uncertain.',response_unreadable:'The provider response could not be read.',delivery_record_failed:'Provider accepted the message, but its delivery record could not be saved. Check the chat before retrying.',configuration:'Required notification settings are missing.',invalid_response:'Provider response did not confirm acceptance.',manual_review:'Held for manual review.',delivery_uncertain:'Delivery is uncertain; check the delivery table.'};
     for(const item of (Array.isArray(result.pendingAlerts)?result.pendingAlerts:[]).slice(0,20)){
       if(!/^WDP-(?:TEST-)?\d+$/.test(item.reference)||!['email','telegram'].includes(item.channel)||!Number.isSafeInteger(item.attempts))continue;
       const reason=reasons[item.error]??(/^http_\d{3}$/.test(item.error)?`Provider returned HTTP ${item.error.slice(5)}.`:'Delivery is uncertain.');
       console.log(`${item.reference} | ${item.channel} | attempts: ${item.attempts} | ${reason}`);
+      if(item.reviewRequired===true)console.log('Automatic retries paused. Review this alert in the private Registration Queue.');
     }
     console.log('Check the delivery table for remaining or held alerts.');
   }

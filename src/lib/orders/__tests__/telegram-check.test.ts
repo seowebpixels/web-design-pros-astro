@@ -14,7 +14,9 @@ describe('private Telegram connection checks',()=>{
   });
   it('checks credentials and the private chat without sending a message or returning personal details',async()=>{
     const fetcher=vi.fn(async(url:string,options:any)=>{
-      expect(options.redirect).toBe('error');expect(options.method).toBe('POST');
+      // Workers rejects redirect:'error' before networking. Manual mode also
+      // prevents credentials from being followed to an unexpected destination.
+      expect(options.redirect).toBe('manual');expect(options.method).toBe('POST');
       if(url.endsWith('/getMe'))return new Response(JSON.stringify({ok:true,result:{is_bot:true,username:'private_bot_name'}}));
       expect(url.endsWith('/getChat')).toBe(true);expect(JSON.parse(options.body)).toEqual({chat_id:chat});
       return new Response(JSON.stringify({ok:true,result:{id:Number(chat),type:'private',first_name:'Private person'}}));
@@ -29,6 +31,12 @@ describe('private Telegram connection checks',()=>{
   });
   it('does not make requests for invalid settings',async()=>{
     const fetcher=vi.fn();expect(await checkTelegramConnection('bad',chat,fetcher)).toMatchObject([{check:'configuration',status:'missing_or_invalid'}]);expect(fetcher).not.toHaveBeenCalled();
+  });
+  it('rejects a redirect without following it or forwarding credentials',async()=>{
+    const fetcher=vi.fn(async()=>new Response(null,{status:302,headers:{Location:'https://unexpected.example/'}}));
+    const result=await checkTelegramConnection(token,chat,fetcher);
+    expect(result.map(item=>item.status)).toEqual(['http_302','http_302']);expect(fetcher).toHaveBeenCalledTimes(2);
+    for(const [url,options] of fetcher.mock.calls as any)expect(options.redirect).toBe('manual');
   });
   it('distinguishes HTTP rejection, unreadable responses, and a different chat',async()=>{
     expect((await checkTelegramConnection(token,chat,async()=>new Response('secret response',{status:401}))).map(item=>item.status)).toEqual(['http_401','http_401']);

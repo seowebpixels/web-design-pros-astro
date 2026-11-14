@@ -6,7 +6,7 @@ export async function checkTelegramConnection(token,chatId,fetcher=globalThis.fe
     const started=Date.now();let phase='request';
     const result=status=>({check,status,elapsedMs:Date.now()-started});
     try{
-      const response=await fetcher(`https://api.telegram.org/bot${token}/${method}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),redirect:'error',signal:AbortSignal.timeout(20000)});
+      const response=await fetcher(`https://api.telegram.org/bot${token}/${method}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),redirect:'manual',signal:AbortSignal.timeout(20000)});
       if(!response.ok)return result(`http_${response.status}`);
       phase='response';const data=await response.json();
       if(data?.ok!==true)return result('not_confirmed');

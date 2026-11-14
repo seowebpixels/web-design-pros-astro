@@ -6,6 +6,7 @@ import {createPayment,paymentStatus,paymentWebhook} from '../../payments/handler
 import {saveTestOrder,orderReference} from '../core';
 import {deliverOrderAlerts} from '../alerts';
 import {onRequestPost as retryAlerts} from '../../../../functions/api/internal/order-alerts';
+import {onRequestGet as telegramAlerts,onRequestPost as telegramAction} from '../../../../functions/api/admin/telegram-alerts';
 import {onRequestGet as ordersEndpoint} from '../../../../functions/api/customer/orders';
 import {onRequestGet as servicesEndpoint} from '../../../../functions/api/customer/services';
 import {onRequestGet as queueEndpoint,onRequestPut as registrationEndpoint} from '../../../../functions/api/admin/registrations';
@@ -187,7 +188,7 @@ describe('paid-order owner alerts',()=>{
   it('retains verified payment on a channel failure and retries only the failed channel',async()=>{
     const app=setup(),customer=await app.customer(),input=app.input();enable(app);await createPayment(app.context(app.request(input,customer.cookie)));
     let telegramFail=true;const counts={email:0,telegram:0};
-    app.provider.mockImplementation(async(url)=>{if(String(url).includes('telegram.org')){counts.telegram++;return telegramFail?new Response('{}',{status:503}):new Response('{"ok":true,"result":{"message_id":1}}');}counts.email++;return new Response('{"id":"email_order"}');});
+    app.provider.mockImplementation(async(url)=>{if(String(url).includes('telegram.org')){counts.telegram++;return telegramFail?new Response('{}',{status:429}):new Response('{"ok":true,"result":{"message_id":1}}');}counts.email++;return new Response('{"id":"email_order"}');});
     expect((await app.webhook(input)).status).toBe(503);
     expect(app.sql.prepare('SELECT payment_status FROM wdp_orders').get()!.payment_status).toBe('paid');
     const status=await paymentStatus(app.context(new Request(`https://wdp.test/api/payments/status?attempt=${input.attemptId}`,{headers:{Authorization:`Bearer ${input.accessToken}`}})));
@@ -212,7 +213,7 @@ describe('paid-order owner alerts',()=>{
     const request=(token:string)=>app.context(new Request('https://wdp.test/api/internal/order-alerts',{method:'POST',headers:{Authorization:`Bearer ${token}`}}));
     expect((await retryAlerts(request('wrong'))).status).toBe(403);
     const response=await retryAlerts(request(app.env.WDP_ORDER_ALERT_RETRY_SECRET!)),result=await response.json();
-    expect(result.pendingAlerts).toEqual([{reference:'WDP-TEST-0000001',channel:'telegram',attempts:1,error:reason}]);
+    expect(result.pendingAlerts).toEqual([{reference:'WDP-TEST-0000001',channel:'telegram',attempts:1,error:reason,reviewRequired:true}]);
     expect(JSON.stringify(result)).not.toContain(app.env.WDP_TELEGRAM_BOT_TOKEN);expect(JSON.stringify(result)).not.toContain(customer.user.email);
     expect(app.sql.prepare("SELECT status FROM wdp_order_alerts WHERE channel='email'").get()!.status).toBe('sent');
   });
@@ -239,6 +240,55 @@ describe('paid-order owner alerts',()=>{
     app.provider.mockImplementation(async(url)=>new Response(String(url).includes('telegram.org')?'{"ok":true,"result":{"message_id":42}}':'{"id":"email_order"}'));
     expect((await app.webhook(input)).status).toBe(503);
     expect(app.sql.prepare("SELECT status,last_error FROM wdp_order_alerts WHERE channel='telegram'").get()).toMatchObject({status:'pending',last_error:'delivery_record_failed'});
+  });
+  const action=(app:ReturnType<typeof setup>,cookie:string,orderId:string,name='retry',attempts=1,origin='https://wdp.test',confirmed=true)=>telegramAction(app.context(new Request('https://wdp.test/api/admin/telegram-alerts',{method:'POST',headers:{Cookie:cookie,Origin:origin,'Content-Type':'application/json'},body:JSON.stringify({orderId,action:name,attempts,confirmed})})));
+  const alertList=(app:ReturnType<typeof setup>,cookie:string,query='')=>telegramAlerts(app.context(new Request('https://wdp.test/api/admin/telegram-alerts'+query,{headers:{Cookie:cookie}})));
+  it('pauses uncertain delivery across webhook replays and scheduled retries, then marks received without sending',async()=>{
+    const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com'),input=app.input();enable(app);Object.assign(app.env,{WDP_REGISTRATION_QUEUE_ENABLED:'true',WDP_REGISTRATION_ADMIN_EMAIL:admin.user.email});await createPayment(app.context(app.request(input,customer.cookie)));
+    let telegramSends=0;
+    app.provider.mockImplementation(async(url)=>{if(String(url).includes('telegram.org')){telegramSends++;throw new DOMException('simulated timeout after acceptance','TimeoutError');}return new Response('{"id":"email_order"}');});
+    expect((await app.webhook(input)).status).toBe(503);
+    app.sql.exec('UPDATE wdp_order_alerts SET next_attempt_at=0');
+    expect((await app.webhook(input)).status).toBe(200);expect(await deliverOrderAlerts(app.env)).toBe(true);expect(await deliverOrderAlerts(app.env,input.attemptId)).toBe(true);expect(telegramSends).toBe(1);
+    const response=await alertList(app,admin.cookie);expect(response.headers.get('cache-control')).toBe('no-store');const list=await response.json();expect(list.items).toMatchObject([{orderId:input.attemptId,reference:'WDP-TEST-0000001',state:'uncertain',attempts:1,reviewRequired:true}]);
+    expect(JSON.stringify(list)).not.toContain(app.env.WDP_TELEGRAM_BOT_TOKEN);expect(JSON.stringify(list)).not.toContain('chat_id');expect(JSON.stringify(list)).not.toContain(customer.user.email);
+    expect((await alertList(app,'')).status).toBe(401);expect((await alertList(app,customer.cookie)).status).toBe(403);
+    expect((await action(app,customer.cookie,input.attemptId,'received')).status).toBe(403);expect((await action(app,admin.cookie,input.attemptId,'received',1,'https://other.test')).status).toBe(403);expect((await action(app,admin.cookie,input.attemptId,'received',1,'https://wdp.test',false)).status).toBe(400);
+    expect(await (await action(app,admin.cookie,input.attemptId,'received')).json()).toMatchObject({alert:{state:'received',reviewRequired:false,attempts:1}});
+    expect((await action(app,admin.cookie,input.attemptId,'received')).status).toBe(409);expect((await action(app,admin.cookie,input.attemptId)).status).toBe(409);
+    await app.webhook(input);await deliverOrderAlerts(app.env);expect(telegramSends).toBe(1);
+    expect((await (await alertList(app,admin.cookie)).json()).items).toHaveLength(0);
+    expect((await (await alertList(app,admin.cookie,'?filter=all')).json()).items[0].state).toBe('received');
+    expect(app.sql.prepare('SELECT payment_status,fulfilment_status FROM wdp_orders').get()).toMatchObject({payment_status:'paid',fulfilment_status:'not_started'});
+  });
+  it('allows one deliberate retry and rejects competing or stale actions',async()=>{
+    const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com'),input=app.input();enable(app);Object.assign(app.env,{WDP_REGISTRATION_QUEUE_ENABLED:'true',WDP_REGISTRATION_ADMIN_EMAIL:admin.user.email});await createPayment(app.context(app.request(input,customer.cookie)));
+    let sends=0,fail=true;
+    app.provider.mockImplementation(async(url)=>{if(String(url).includes('telegram.org')){sends++;if(fail)throw new DOMException('timeout','TimeoutError');return new Response('{"ok":true,"result":{"message_id":7}}');}return new Response('{"id":"email_order"}');});
+    await app.webhook(input);fail=false;
+    const results=await Promise.all([action(app,admin.cookie,input.attemptId),action(app,admin.cookie,input.attemptId)]);expect(results.map(result=>result.status).sort()).toEqual([200,409]);expect(sends).toBe(2);
+    expect(app.sql.prepare("SELECT status,attempts FROM wdp_order_alerts WHERE channel='telegram'").get()).toMatchObject({status:'sent',attempts:2});
+    expect((await action(app,admin.cookie,input.attemptId,'retry',2)).status).toBe(409);await app.webhook(input);expect(sends).toBe(2);
+  });
+  it('pauses again after an uncertain manual retry and requires the current attempt count',async()=>{
+    const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com'),input=app.input();enable(app);Object.assign(app.env,{WDP_REGISTRATION_QUEUE_ENABLED:'true',WDP_REGISTRATION_ADMIN_EMAIL:admin.user.email});await createPayment(app.context(app.request(input,customer.cookie)));
+    let sends=0;app.provider.mockImplementation(async(url)=>{if(String(url).includes('telegram.org')){sends++;throw new TypeError('connection lost');}return new Response('{"id":"email_order"}');});
+    await app.webhook(input);expect(await (await action(app,admin.cookie,input.attemptId)).json()).toMatchObject({alert:{state:'uncertain',attempts:2,reviewRequired:true}});
+    expect((await action(app,admin.cookie,input.attemptId,'received',1)).status).toBe(409);app.sql.exec('UPDATE wdp_order_alerts SET next_attempt_at=0');await app.webhook(input);await deliverOrderAlerts(app.env);expect(sends).toBe(2);
+    expect((await action(app,admin.cookie,input.attemptId,'received',2)).status).toBe(200);
+  });
+  it('holds abandoned Telegram sends after lease expiry and respects disabled alerts',async()=>{
+    const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com'),input=app.input();enable(app);Object.assign(app.env,{WDP_REGISTRATION_QUEUE_ENABLED:'true',WDP_REGISTRATION_ADMIN_EMAIL:admin.user.email});await createPayment(app.context(app.request(input,customer.cookie)));
+    app.provider.mockImplementation(async(url)=>new Response(String(url).includes('telegram.org')?'{"ok":true,"result":{"message_id":7}}':'{"id":"email_order"}'));await app.webhook(input);
+    app.sql.exec("UPDATE wdp_order_alerts SET status='sending',lease_until=1,last_error=NULL WHERE channel='telegram'");app.provider.mockClear();
+    await app.webhook(input);await deliverOrderAlerts(app.env);expect(app.provider).not.toHaveBeenCalled();expect((await (await alertList(app,admin.cookie)).json()).items[0].state).toBe('uncertain');
+    app.env.WDP_ORDER_TELEGRAM_ENABLED='false';expect((await action(app,admin.cookie,input.attemptId)).status).toBe(409);expect((await action(app,admin.cookie,input.attemptId,'received')).status).toBe(200);
+  });
+  it('respects Telegram rate-limit delay without replay or manual bypass',async()=>{
+    const app=setup(),customer=await app.customer(),admin=await app.customer('admin@example.com'),input=app.input();enable(app);Object.assign(app.env,{WDP_REGISTRATION_QUEUE_ENABLED:'true',WDP_REGISTRATION_ADMIN_EMAIL:admin.user.email});await createPayment(app.context(app.request(input,customer.cookie)));
+    let sends=0;app.provider.mockImplementation(async(url)=>{if(String(url).includes('telegram.org')){sends++;return new Response('{"parameters":{"retry_after":120}}',{status:429});}return new Response('{"id":"email_order"}');});
+    await app.webhook(input);const next=app.sql.prepare("SELECT next_attempt_at FROM wdp_order_alerts WHERE channel='telegram'").get()!.next_attempt_at as number;expect(next-Date.now()).toBeGreaterThan(115000);
+    await app.webhook(input);await deliverOrderAlerts(app.env);expect((await action(app,admin.cookie,input.attemptId)).status).toBe(409);expect(sends).toBe(1);
   });
   it('does not alert on failed payments, disabled test alerts, or forged webhooks',async()=>{
     const app=setup(),customer=await app.customer(),input=app.input();enable(app);await createPayment(app.context(app.request(input,customer.cookie)));
