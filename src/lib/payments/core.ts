@@ -1,8 +1,9 @@
 import type { AccountEnv } from '../accounts/auth';
+import type { AlertEnv } from '../orders/alerts';
 import { validateDomain } from '../domains/validateDomain';
 import {priceForHostname,termPriceCents,validYears} from '../domains/catalogue';
 
-export interface PaymentEnv extends AccountEnv {
+export interface PaymentEnv extends AccountEnv, AlertEnv {
   WDP_PAYMENT_TEST_ENABLED?: string;
   YOCO_TEST_SECRET_KEY?: string;
   YOCO_TEST_WEBHOOK_SECRET?: string;

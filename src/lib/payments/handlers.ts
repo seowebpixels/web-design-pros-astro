@@ -1,5 +1,6 @@
 import {AccountError,requireCustomer} from '../accounts/auth';
 import {saveTestOrder,syncTestOrder,orderReference} from '../orders/core';
+import {queuePaidOrderAlerts,deliverOrderAlerts} from '../orders/alerts';
 import { PaymentError, hash, json, paymentRedirect, quote, readBody, requireTest, uuid, verifyWebhook, type PaymentEnv } from './core';
 
 type Context = {request:Request; env:PaymentEnv};
@@ -82,6 +83,10 @@ export async function paymentWebhook({request,env}: Context) {
     // A separate customer DB update may fail after payment persistence. Returning an
     // error lets Yoco retry; replay repairs that update without a duplicate order.
     await syncTestOrder(env,updated);
+    if(updated.status==='paid'){
+      await queuePaidOrderAlerts(env,updated.id);
+      if(!await deliverOrderAlerts(env,updated.id))throw new PaymentError(503,'Payment recorded. Order alert delivery will retry.');
+    }
     // Replayed notifications are harmless; paid is never downgraded. No fulfilment is triggered in test mode.
     return json({received:true});
   } catch(error) { return failure(error); }

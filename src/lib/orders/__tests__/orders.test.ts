@@ -4,6 +4,8 @@ import {readFileSync} from 'node:fs';
 import {createAuth} from '../../accounts/auth';
 import {createPayment,paymentStatus,paymentWebhook} from '../../payments/handlers';
 import {saveTestOrder,orderReference} from '../core';
+import {deliverOrderAlerts} from '../alerts';
+import {onRequestPost as retryAlerts} from '../../../../functions/api/internal/order-alerts';
 import {onRequestGet as ordersEndpoint} from '../../../../functions/api/customer/orders';
 import {onRequestGet as servicesEndpoint} from '../../../../functions/api/customer/services';
 import type {PaymentEnv} from '../../payments/core';
@@ -20,6 +22,7 @@ function database(sql:DatabaseSync){
 function setup(){
   const sql=new DatabaseSync(':memory:'),payments=new DatabaseSync(':memory:');
   sql.exec(readFileSync('migrations/0002_customer_accounts.sql','utf8'));sql.exec(readFileSync('migrations/0003_customer_orders.sql','utf8'));sql.exec(readFileSync('migrations/0004_order_price_snapshots.sql','utf8'));
+  sql.exec(readFileSync('migrations/0005_order_alerts.sql','utf8'));
   payments.exec(readFileSync('migrations/0001_payment_tests.sql','utf8'));
   const env={DB:database(sql),WDP_PAYMENT_DB:database(payments),WDP_ACCOUNTS_ENABLED:'true',AUTH_SECRET:'test-only-account-secret-at-least-thirty-two-characters',AUTH_BASE_URL:'https://wdp.test',AUTH_FROM_EMAIL:'WDP <accounts@example.com>',RESEND_API_KEY:'test-only',WDP_PAYMENT_TEST_ENABLED:'true',YOCO_TEST_SECRET_KEY:'sk_test_only',YOCO_TEST_WEBHOOK_SECRET:secret} as PaymentEnv;
   const tasks:Promise<unknown>[]=[];const waitUntil=(task:Promise<unknown>)=>tasks.push(task),mail:any[]=[],checkouts:any[]=[];
@@ -151,5 +154,53 @@ describe('customer test orders',()=>{
     const five={...app.input(),domains:[{domain:'example.com',years:5}],hosting:false,quotedAmount:120000};
     await createPayment(app.context(app.request(five,customer.cookie)));await app.webhook(five,'succeeded',120000);app.sql.prepare('UPDATE wdp_orders SET paid_at=? WHERE id=?').run('2026-11-13 10:00:00',five.attemptId);
     expect((await (await get()).json()).services[0]).toMatchObject({years:5,paidCents:120000,recurringCents:120000,renewalYears:5,nextDueDate:'2031-11-13'});
+  });
+});
+
+
+describe('paid-order owner alerts',()=>{
+  const enable=(app:ReturnType<typeof setup>)=>Object.assign(app.env,{WDP_ORDER_EMAIL_ENABLED:'true',WDP_ORDER_TELEGRAM_ENABLED:'true',WDP_ORDER_TEST_ALERTS_ENABLED:'true',WDP_ORDER_ALERT_EMAIL:'info@webdesignpros.co.za',WDP_TELEGRAM_BOT_TOKEN:'123456:test_only_bot_token',WDP_TELEGRAM_CHAT_ID:'1234567',WDP_ORDER_ALERT_RETRY_SECRET:'test-retry-secret-at-least-thirty-two-characters'});
+  it('sends independent minimal TEST alerts only after verified payment and reuses replayed deliveries',async()=>{
+    const app=setup(),customer=await app.customer(),input=app.input();enable(app);
+    await createPayment(app.context(app.request(input,customer.cookie)));
+    expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_order_alerts').get()!.n).toBe(0);
+    const sent:any[]=[];
+    app.provider.mockImplementation(async(url,options)=>{sent.push({url:String(url),headers:options!.headers,body:JSON.parse(options!.body as string)});return new Response(String(url).includes('telegram.org')?JSON.stringify({ok:true,result:{message_id:42}}):JSON.stringify({id:'email_order'}));});
+    expect((await app.webhook(input)).status).toBe(200);
+    expect(sent).toHaveLength(2);expect(sent.find(item=>item.url.includes('resend')).body.to).toEqual(['info@webdesignpros.co.za']);
+    const mail=sent.find(item=>item.url.includes('resend'));expect(mail.headers['Idempotency-Key']).toBe(`wdp-paid-order/${input.attemptId}/email`);
+    for(const item of sent){expect(item.body.text).toContain('WDP-TEST-0000001');expect(item.body.text).toContain('example.co.za');expect(item.body.text).toContain('Do not buy or register');expect(item.body.text).not.toContain('Original street');expect(item.body.text).not.toContain(customer.email);expect(item.body.text).not.toContain(input.accessToken);}
+    expect(app.sql.prepare("SELECT COUNT(*) AS n FROM wdp_order_alerts WHERE status='sent'").get()!.n).toBe(2);
+    expect((await app.webhook(input)).status).toBe(200);expect(sent).toHaveLength(2);
+  });
+  it('retains verified payment on a channel failure and retries only the failed channel',async()=>{
+    const app=setup(),customer=await app.customer(),input=app.input();enable(app);await createPayment(app.context(app.request(input,customer.cookie)));
+    let telegramFail=true;const counts={email:0,telegram:0};
+    app.provider.mockImplementation(async(url)=>{if(String(url).includes('telegram.org')){counts.telegram++;return telegramFail?new Response('{}',{status:503}):new Response('{"ok":true,"result":{"message_id":1}}');}counts.email++;return new Response('{"id":"email_order"}');});
+    expect((await app.webhook(input)).status).toBe(503);
+    expect(app.sql.prepare('SELECT payment_status FROM wdp_orders').get()!.payment_status).toBe('paid');
+    const status=await paymentStatus(app.context(new Request(`https://wdp.test/api/payments/status?attempt=${input.attemptId}`,{headers:{Authorization:`Bearer ${input.accessToken}`}})));
+    expect(status.status).toBe(200);expect((await status.json()).status).toBe('paid');
+    telegramFail=false;app.sql.exec('UPDATE wdp_order_alerts SET next_attempt_at=0');
+    expect(await deliverOrderAlerts(app.env)).toBe(true);expect(counts).toEqual({email:1,telegram:2});
+  });
+  it('does not alert on failed payments, disabled test alerts, or forged webhooks',async()=>{
+    const app=setup(),customer=await app.customer(),input=app.input();enable(app);await createPayment(app.context(app.request(input,customer.cookie)));
+    app.provider.mockClear();expect((await app.webhook(input,'failed')).status).toBe(200);expect(app.provider).not.toHaveBeenCalled();
+    app.env.WDP_ORDER_TEST_ALERTS_ENABLED='false';expect((await app.webhook(input)).status).toBe(200);expect(app.provider).not.toHaveBeenCalled();
+    expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_order_alerts').get()!.n).toBe(0);
+    app.env.WDP_ORDER_TEST_ALERTS_ENABLED='true';
+    expect((await paymentWebhook(app.context(new Request('https://wdp.test/api/payments/webhook',{method:'POST',body:'{}'})))).status).toBe(403);expect(app.provider).not.toHaveBeenCalled();
+  });
+  it('uses a lease against concurrent delivery, protects retries and holds old uncertain email sends',async()=>{
+    const app=setup(),customer=await app.customer(),input=app.input();enable(app);await createPayment(app.context(app.request(input,customer.cookie)));
+    let release:()=>void;const pending=new Promise<void>(resolve=>{release=resolve;});const sent:string[]=[];
+    app.provider.mockImplementation(async(url)=>{sent.push(String(url));await pending;return new Response(String(url).includes('telegram.org')?'{"ok":true,"result":{"message_id":1}}':'{"id":"email_order"}');});
+    const first=app.webhook(input);await vi.waitFor(()=>expect(sent).toHaveLength(2));
+    expect(await deliverOrderAlerts(app.env,input.attemptId)).toBe(false);expect(sent).toHaveLength(2);release!();expect((await first).status).toBe(200);
+    const retry=(token:string)=>retryAlerts(app.context(new Request('https://wdp.test/api/internal/order-alerts',{method:'POST',headers:{Authorization:`Bearer ${token}`}})));
+    expect((await retry('wrong')).status).toBe(403);expect((await retry(app.env.WDP_ORDER_ALERT_RETRY_SECRET!)).status).toBe(200);
+    app.sql.exec("UPDATE wdp_order_alerts SET status='pending',created_at='2020-01-01 00:00:00' WHERE channel='email'");
+    expect(await deliverOrderAlerts(app.env,input.attemptId)).toBe(false);expect(sent).toHaveLength(2);expect(app.sql.prepare("SELECT last_error FROM wdp_order_alerts WHERE channel='email'").get()!.last_error).toBe('manual_review');
   });
 });
