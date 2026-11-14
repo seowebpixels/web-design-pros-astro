@@ -80,7 +80,7 @@ async function deliver(env:AlertEnv,row:AlertRow){
       url=`https://api.telegram.org/bot${env.WDP_TELEGRAM_BOT_TOKEN}/sendMessage`;
     }
     phase='request';
-    const response=await fetch(url,{method:'POST',headers,body:row.payload_json,signal:AbortSignal.timeout(8000)});
+    const response=await fetch(url,{method:'POST',headers,body:row.payload_json,signal:AbortSignal.timeout(row.channel==='telegram'?20000:8000)});
     if(!response.ok)throw new Error(`http_${response.status}`);
     phase='response';
     const result=await response.json() as any;

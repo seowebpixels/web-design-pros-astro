@@ -216,6 +216,23 @@ describe('paid-order owner alerts',()=>{
     expect(JSON.stringify(result)).not.toContain(app.env.WDP_TELEGRAM_BOT_TOKEN);expect(JSON.stringify(result)).not.toContain(customer.user.email);
     expect(app.sql.prepare("SELECT status FROM wdp_order_alerts WHERE channel='email'").get()!.status).toBe('sent');
   });
+  it('accepts a Telegram confirmation taking longer than the previous eight-second limit',async()=>{
+    const app=setup(),customer=await app.customer(),input=app.input();enable(app);await createPayment(app.context(app.request(input,customer.cookie)));
+    let telegramRequests=0;
+    app.provider.mockImplementation(async(url,options)=>{
+      if(!String(url).includes('telegram.org'))return new Response('{"id":"email_order"}');
+      telegramRequests++;
+      const signal=options!.signal!;
+      return new Promise<Response>((resolve,reject)=>{
+        const abort=()=>{clearTimeout(timer);reject(signal.reason);};
+        const timer=setTimeout(()=>{signal.removeEventListener('abort',abort);resolve(new Response('{"ok":true,"result":{"message_id":42}}'));},9000);
+        signal.addEventListener('abort',abort,{once:true});if(signal.aborted)abort();
+      });
+    });
+    expect((await app.webhook(input)).status).toBe(200);
+    expect(app.sql.prepare("SELECT status,provider_id FROM wdp_order_alerts WHERE channel='telegram'").get()).toMatchObject({status:'sent',provider_id:'42'});
+    expect((await app.webhook(input)).status).toBe(200);expect(telegramRequests).toBe(1);
+  },15000);
   it('distinguishes acceptance followed by a delivery-record failure',async()=>{
     const app=setup(),customer=await app.customer(),input=app.input();enable(app);await createPayment(app.context(app.request(input,customer.cookie)));
     app.sql.exec("CREATE TRIGGER reject_telegram_sent BEFORE UPDATE OF status ON wdp_order_alerts WHEN NEW.channel='telegram' AND NEW.status='sent' BEGIN SELECT RAISE(ABORT,'private database error'); END;");
