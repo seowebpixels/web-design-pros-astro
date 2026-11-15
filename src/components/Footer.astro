@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import logoImage from '../assets/wdp-logo-new-design-one.avif';
+import { services } from '../data/services';
 ---
 
 <footer class="site-footer">
@@ -61,12 +62,9 @@ import logoImage from '../assets/wdp-logo-new-design-one.avif';
     <div class="footer-col">
       <h3 class="col-title">Our Services</h3>
       <ul class="footer-links">
-        <li><a href="/services/web-design/"><span class="chevron">›</span> Starter Website</a></li>
-        <li><a href="/services/web-design/"><span class="chevron">›</span> Business Website</a></li>
-        <li><a href="/services/web-design/"><span class="chevron">›</span> Website Redesign</a></li>
-        <li><a href="/services/website-maintenance/"><span class="chevron">›</span> Website Maintenance</a></li>
-        <li><a href="/services/branding-services/"><span class="chevron">›</span> Graphic Design</a></li>
-        <li><a href="/services/social-media-marketing/"><span class="chevron">›</span> Social Media Marketing</a></li>
+        {services.map(service => (
+          <li><a href={`/services/${service.slug}/`}><span class="chevron" aria-hidden="true">›</span> {service.title}</a></li>
+        ))}
       </ul>
     </div>
 
