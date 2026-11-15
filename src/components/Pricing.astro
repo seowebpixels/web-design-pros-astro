@@ -207,9 +207,23 @@ const hostingTiers = [
 
 <style>
   .pricing-section {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
     padding: 5rem 2rem;
     max-width: 1200px;
     margin: 0 auto;
+  }
+
+  .container {
+    width: 100%;
+    min-width: 0;
+    margin-inline: auto;
+  }
+
+  .pricing-section :is(.glass-card, .waas-wrapper, .waas-card, .hosting-wrapper, .hosting-card, .btn-select, .btn-hosting) {
+    box-sizing: border-box;
+    min-width: 0;
   }
 
   .section-header {
@@ -233,14 +247,14 @@ const hostingTiers = [
   /* 1. Design Cards Grid */
   .pricing-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
     gap: 1.25rem;
     margin-bottom: 4rem;
   }
 
   @media (min-width: 1024px) {
     .pricing-grid {
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 1.25rem;
     }
   }
@@ -390,7 +404,7 @@ const hostingTiers = [
 
   .waas-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
     gap: 1.5rem;
   }
 
@@ -464,13 +478,13 @@ const hostingTiers = [
 
   .hosting-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
     gap: 1.25rem;
   }
 
   @media (min-width: 1024px) {
     .hosting-grid {
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 1.25rem;
     }
   }
@@ -552,5 +566,16 @@ const hostingTiers = [
   .btn-hosting:hover {
     background: #89CFF0;
     color: #16213E;
+  }
+
+  @media (max-width: 600px) {
+    .pricing-section { padding: 3rem 20px; }
+    .pricing-grid, .waas-grid, .hosting-grid {
+      grid-template-columns: minmax(0, 1fr);
+      width: 100%;
+      margin-inline: auto;
+    }
+    .waas-wrapper, .hosting-wrapper { padding: 24px 16px; }
+    .section-title { font-size: 2rem; }
   }
 </style>
