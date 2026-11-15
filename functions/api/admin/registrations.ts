@@ -9,7 +9,7 @@ export const onRequestGet:PagesFunction<AccountEnv>=async context=>{
     const params=new URL(context.request.url).searchParams,mode=params.get('mode')??'test',status=params.get('status')??'pending',before=params.get('before');
     if(!['test','live'].includes(mode)||!['pending','registered','issue','all'].includes(status)||(before!==null&&(!/^\d{1,10}$/.test(before)||Number(before)<1)))throw new AccountError(400,'Invalid queue filter.');
     const filter=status==='all'?'':" AND EXISTS(SELECT 1 FROM json_each(o.cart_json,'$.domains') d LEFT JOIN wdp_domain_registrations r ON r.order_id=o.id AND r.domain=json_extract(d.value,'$.domain') WHERE COALESCE(r.status,'pending')=?)";
-    const rows=await context.env.DB!.prepare("SELECT o.* FROM wdp_orders o WHERE o.payment_status='paid' AND o.mode=? AND o.sequence<?"+filter+' ORDER BY o.sequence DESC LIMIT 26').bind(mode,before?Number(before):Number.MAX_SAFE_INTEGER,...(status==='all'?[]:[status])).all<OrderRow>();
+    const rows=await context.env.DB!.prepare("SELECT o.* FROM wdp_orders o WHERE o.payment_status='paid' AND o.mode=? AND o.sequence<? AND COALESCE(json_extract(o.cart_json,'$.kind'),'registration')!='renewal'"+filter+' ORDER BY o.sequence DESC LIMIT 26').bind(mode,before?Number(before):Number.MAX_SAFE_INTEGER,...(status==='all'?[]:[status])).all<OrderRow>();
     const orders=rows.results.slice(0,25),items:any[]=[];
     for(const order of orders){
       const registrations=await context.env.DB!.prepare('SELECT * FROM wdp_domain_registrations WHERE order_id=?').bind(order.id).all<RegistrationRow>();

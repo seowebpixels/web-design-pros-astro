@@ -106,6 +106,7 @@ form.addEventListener('submit', async event => {
     const fingerprint = Array.from(new Uint8Array(digest),byte=>byte.toString(16).padStart(2,'0')).join('');
     let saved;
     try { saved = JSON.parse(sessionStorage.getItem('wdp_payment_attempt') || 'null'); } catch { saved = null; }
+    if(saved?.kind==='renewal'&&!saved.completed)throw new Error('A renewal payment is still pending in this tab. Check its result before starting a new purchase.');
     if (!saved || saved.fingerprint !== fingerprint || saved.completed) saved = {attemptId:crypto.randomUUID(), accessToken:crypto.randomUUID(), fingerprint};
     sessionStorage.setItem('wdp_payment_attempt',JSON.stringify(saved));
     // WDP saves the cart and registrant snapshot; passwords/card details are never sent here.

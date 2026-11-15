@@ -1,0 +1,24 @@
+---
+export const prerender=true;
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+---
+<DashboardLayout title="Renew your domain | Web Design Pros" activeNav="domains">
+ <a href="/dashboard/domains/">← My domains</a>
+ <h1>Renew your domain</h1>
+ <p id="renew-status" role="status" aria-live="polite">Loading renewal details…</p>
+ <form id="renew-form" hidden>
+  <h2 id="renew-domain"></h2>
+  <p id="renew-expiry"></p>
+  <label>Renewal period<select id="renew-years" required></select></label>
+  <p id="renew-total"></p>
+  <p id="renew-next"></p>
+  <p>After payment, WDP will renew the domain through TrueHost and confirm the updated expiry date by email.</p>
+  <label class="terms"><input type="checkbox" id="renew-terms" required /> I have read and agree to the <a href="https://truehost.cloud/terms-of-service/" target="_blank" rel="noopener">Terms of Service</a>.</label>
+  <button type="submit" id="renew-pay">Continue to test payment →</button>
+ </form>
+ <a id="renew-order" hidden>View renewal order →</a>
+</DashboardLayout>
+<script>import '../../scripts/customer-renewal';</script>
+<style>
+ form{max-width:750px;background:var(--bg-card);padding:28px;border:1px solid var(--border-color);border-radius:10px}h2{overflow-wrap:anywhere}label{display:grid;gap:10px}select{font:inherit;padding:12px;background:#101b32;color:white;border:1px solid #4d617d;border-radius:6px}.terms{display:flex;flex-wrap:wrap;align-items:center;margin:24px 0}.terms input{width:20px;height:20px}button{font:inherit;background:#89cfff;color:#07182d;border:0;border-radius:6px;padding:14px 22px;font-weight:bold;cursor:pointer}button:disabled{opacity:.5}#renew-total{font-size:1.6rem;font-weight:700}#renew-status{max-width:750px}
+</style>

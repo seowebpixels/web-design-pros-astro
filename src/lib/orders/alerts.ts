@@ -44,10 +44,11 @@ export function enabledChannels(env:AlertEnv):Channel[]{
 }
 export function alertMessage(order:OrderRow){
   const cart=JSON.parse(order.cart_json),reference=orderReference(order);
-  const subject=order.mode==='test'?`TEST paid order ${reference} — do not register`:`Paid order ${reference} — registration required`;
+  const renewal=cart.kind==='renewal';
+  const subject=renewal?(order.mode==='test'?`TEST paid renewal ${reference} — do not renew`:`Paid renewal ${reference} — renewal required`):order.mode==='test'?`TEST paid order ${reference} — do not register`:`Paid order ${reference} — registration required`;
   const lines=cart.domains.map((item:{domain:string;years?:number;cents:number})=>`${item.domain} | ${item.years??1} ${(item.years??1)===1?'year':'years'} | ${rand(item.cents)}`);
   if(cart.hosting)lines.push('Starter hosting with email | first month | R60');
-  return {subject,text:[subject,'',`Payment confirmed: ${rand(order.amount)} ZAR`,...lines,'',order.mode==='test'?'TEST PAYMENT ONLY. No real money received. Do not buy or register these domains.':'Awaiting manual registration through TrueHost. Use the saved WDP order registrant details. Confirm registration and actual expiry before marking the domain active.','',`WDP reference: ${reference}`].join('\n')};
+  return {subject,text:[subject,'',`Payment confirmed: ${rand(order.amount)} ZAR`,...lines,'',order.mode==='test'?(renewal?'TEST PAYMENT ONLY. Do not renew these domains in TrueHost.':'TEST PAYMENT ONLY. No real money received. Do not buy or register these domains.'):(renewal?'Awaiting manual renewal through TrueHost. Confirm the new expiry date in the renewal queue.':'Awaiting manual registration through TrueHost. Use the saved WDP order registrant details. Confirm registration and actual expiry before marking the domain active.'),'',`WDP reference: ${reference}`].join('\n')};
 }
 // Called only after payment signature/amount/mode validation and saved-order sync.
 // Persist independent channel deliveries before making external requests.

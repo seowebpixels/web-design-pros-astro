@@ -1,3 +1,6 @@
+import {renewalQuote,confirmRenewal,extendExpiry,renewalState,queueRenewalReminders,deliverRenewalMail,todayZA} from '../renewals';
+import {onRequestGet as renewalsEndpoint} from '../../../../functions/api/customer/renewals';
+import {onRequestGet as renewalAdmin,onRequestPut as renewalConfirm} from '../../../../functions/api/admin/renewals';
 import {afterEach,describe,expect,it,vi} from 'vitest';
 import {DatabaseSync} from 'node:sqlite';
 import {readFileSync} from 'node:fs';
@@ -32,6 +35,7 @@ function setup(){
   sql.exec(readFileSync('migrations/0005_order_alerts.sql','utf8'));
   sql.exec(readFileSync('migrations/0006_domain_registration_queue.sql','utf8'));
   sql.exec(readFileSync('migrations/0007_registration_emails.sql','utf8'));
+  sql.exec(readFileSync('migrations/0008_domain_renewals.sql','utf8'));
   payments.exec(readFileSync('migrations/0001_payment_tests.sql','utf8'));
   const env={DB:database(sql),WDP_PAYMENT_DB:database(payments),WDP_ACCOUNTS_ENABLED:'true',AUTH_SECRET:'test-only-account-secret-at-least-thirty-two-characters',AUTH_BASE_URL:'https://wdp.test',AUTH_FROM_EMAIL:'WDP <accounts@example.com>',RESEND_API_KEY:'test-only',WDP_PAYMENT_TEST_ENABLED:'true',YOCO_TEST_SECRET_KEY:'sk_test_only',YOCO_TEST_WEBHOOK_SECRET:secret} as PaymentEnv;
   const template=readFileSync('src/pages/dashboard/invoice.astro','utf8').replace(/^---[\s\S]*?---/, '').replace(/<img src=\{logo.src\}[^>]+>/,'<img src="/_astro/logo.avif" alt="Web Design Pros">');
@@ -596,4 +600,71 @@ describe('private manual registration queue',()=>{
     const result=registrationMessage([{mode:'live',sequence:2412,registrations:[{domain:'example.com',status:'registered',registeredOn:'2026-11-14',expiresOn:'2029-11-14'}]}] as any,'https://webdesignpros.co.za');
     expect(result.subject).toBe('Your domain registrations are complete');expect(result.text).toContain('WDP-0002412');expect(result.text).toContain('Your domain registrations are complete.');expect(result.text).toContain('14 November 2029');expect(result.text).not.toContain('TEST');
   });
+});
+describe('domain renewal workflow',()=>{
+ async function ready(){
+  const app=setup(),customer=await app.customer(),input={...app.input(),hosting:false,quotedAmount:9500};
+  Object.assign(app.env,{WDP_RENEWALS_ENABLED:'true',WDP_REGISTRATION_QUEUE_ENABLED:'true',WDP_REGISTRATION_ADMIN_EMAIL:'admin@example.com'});
+  expect((await createPayment(app.context(app.request(input,customer.cookie)))).status).toBe(200);expect((await app.webhook(input,'succeeded',9500)).status).toBe(200);
+  const expiry=extendExpiry(todayZA(),1);
+  app.sql.prepare("INSERT INTO wdp_domain_registrations(order_id,domain,status,registered_on,expires_on,provider_reference,notes,updated_by,version,revision_id) VALUES (?,'example.co.za','registered',?,?,'TH-initial','',?,1,'initial')").run(input.attemptId,todayZA(),expiry,customer.user.id);
+  const renewal={kind:'renewal',sourceOrderId:input.attemptId,domain:'example.co.za',expiresOn:expiry,years:3,quotedAmount:26000,termsAccepted:true,attemptId:crypto.randomUUID(),accessToken:crypto.randomUUID()};
+  return {...app,purchaser:customer,input,expiry,renewal};
+ }
+ it('clamps leap years and uses South African dates',()=>{
+  expect(extendExpiry('2028-02-29',1)).toBe('2029-02-28');expect(extendExpiry('2028-02-29',4)).toBe('2032-02-29');
+  expect(renewalState({status:'registered',expires_on:'2027-01-01'},new Date('2026-12-31T23:00:00Z')).state).toBe('expired');
+ });
+ it('uses complete-term renewal pricing, keeps the original domain until manual confirmation and rejects duplicate payment',async()=>{
+  const app=await ready(),r=app.renewal;
+  expect((await createPayment(app.context(app.request(r,app.purchaser.cookie)))).status).toBe(200);expect(app.checkouts.at(-1).amount).toBe(26000);
+  expect((await createPayment(app.context(app.request({...r,attemptId:crypto.randomUUID()},app.purchaser.cookie)))).status).toBe(409);
+  expect((await app.webhook(r,'succeeded',26000)).status).toBe(200);expect((await app.webhook(r,'succeeded',26000)).status).toBe(200);
+  expect(app.sql.prepare('SELECT expires_on FROM wdp_domain_registrations').get()!.expires_on).toBe(app.expiry);
+  expect(app.sql.prepare('SELECT fulfilment_status FROM wdp_orders WHERE id=?').get(r.attemptId)!.fulfilment_status).toBe('renewal_pending');
+  const status=await paymentStatus(app.context(new Request('https://wdp.test/api/payments/status?attempt='+r.attemptId,{headers:{Authorization:'Bearer '+r.accessToken}})));
+  expect(await status.json()).toMatchObject({kind:'renewal',paidDomains:[],status:'paid'});
+  const domains=await (await domainsEndpoint(app.context(new Request('https://wdp.test/api/customer/domains',{headers:{Cookie:app.purchaser.cookie}})))).json();expect(domains.domains).toHaveLength(1);
+  const result=await confirmRenewal(app.env,app.purchaser.user.id,{orderId:r.attemptId,version:1,confirmed:true,providerReference:'TH-renewal',expiresOn:extendExpiry(app.expiry,3)});expect(result.saved).toBe(true);
+  await confirmRenewal(app.env,app.purchaser.user.id,{orderId:r.attemptId,version:1,confirmed:true,providerReference:'TH-renewal',expiresOn:extendExpiry(app.expiry,3)});
+  expect(app.sql.prepare('SELECT expires_on FROM wdp_domain_registrations').get()!.expires_on).toBe(extendExpiry(app.expiry,3));
+  expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_registration_audit').get()!.n).toBe(1);expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_renewal_mail').get()!.n).toBe(1);
+  const services=await (await servicesEndpoint(app.context(new Request('https://wdp.test/api/customer/services',{headers:{Cookie:app.purchaser.cookie}})))).json();expect(services.serviceCount).toBe(1);expect(services.services[0].nextDueDate).toBe(extendExpiry(app.expiry,3));
+  const order=app.sql.prepare('SELECT * FROM wdp_orders WHERE id=?').get(r.attemptId);expect(invoiceDetail(order as any).lines[0].description).toBe('Domain renewal: example.co.za');
+ });
+ it('requires ownership, current expiry, current price, confirmed registration and a non-expired date',async()=>{
+  const app=await ready(),other=await app.customer('other@example.com');
+  await expect(renewalQuote(app.env,other.user.id,app.renewal)).rejects.toMatchObject({status:404});
+  await expect(renewalQuote(app.env,app.purchaser.user.id,{...app.renewal,quotedAmount:1})).rejects.toMatchObject({status:409});
+  await expect(renewalQuote(app.env,app.purchaser.user.id,{...app.renewal,expiresOn:'2027-01-01'})).rejects.toMatchObject({status:409});
+  app.sql.prepare('UPDATE wdp_domain_registrations SET expires_on=?').run(todayZA());
+  await expect(renewalQuote(app.env,app.purchaser.user.id,{...app.renewal,expiresOn:todayZA()})).rejects.toMatchObject({status:409});
+ });
+ it('protects the admin queue, rejects unpaid and wrong-period confirmations, and never exposes other customer domains',async()=>{
+  const app=await ready(),admin=await app.customer('admin@example.com'),r=app.renewal;
+  expect((await renewalAdmin(app.context(new Request('https://wdp.test/api/admin/renewals',{headers:{Cookie:app.purchaser.cookie}})))).status).toBe(403);
+  await createPayment(app.context(app.request(r,app.purchaser.cookie)));
+  await expect(confirmRenewal(app.env,admin.user.id,{orderId:r.attemptId,version:1,confirmed:true,providerReference:'TH',expiresOn:extendExpiry(app.expiry,3)})).rejects.toMatchObject({status:404});
+  await app.webhook(r,'succeeded',26000);
+  await expect(confirmRenewal(app.env,admin.user.id,{orderId:r.attemptId,version:1,confirmed:true,providerReference:'TH',expiresOn:extendExpiry(app.expiry,1)})).rejects.toMatchObject({status:400});
+  expect((await renewalConfirm(app.context(new Request('https://wdp.test/api/admin/renewals',{method:'PUT',headers:{Cookie:admin.cookie,Origin:'https://evil.test','Content-Type':'application/json'},body:'{}'})))).status).toBe(403);
+  const queue=await (await queueEndpoint(app.context(new Request('https://wdp.test/api/admin/registrations?status=all',{headers:{Cookie:admin.cookie}})))).json();expect(queue.items).toHaveLength(1);
+  const renewals=await (await renewalAdmin(app.context(new Request('https://wdp.test/api/admin/renewals',{headers:{Cookie:admin.cookie}})))).json();expect(renewals.items).toHaveLength(1);expect(JSON.stringify(renewals)).not.toContain('access_hash');
+ });
+ it('deduplicates reminder windows, suppresses paid and stale reminders, and requires test-email opt-in',async()=>{
+  const app=await ready();app.env.WDP_RENEWAL_EMAIL_ENABLED='true';
+  const expiry=new Date(Date.parse(todayZA()+'T12:00:00Z')+5*86400000).toISOString().slice(0,10);app.sql.prepare('UPDATE wdp_domain_registrations SET expires_on=?').run(expiry);
+  expect(await queueRenewalReminders(app.env)).toBe(0);app.env.WDP_RENEWAL_TEST_EMAILS_ENABLED='true';expect(await queueRenewalReminders(app.env)).toBe(1);expect(await queueRenewalReminders(app.env)).toBe(0);
+  expect(await deliverRenewalMail(app.env)).toEqual({sent:1,pending:0});expect(await deliverRenewalMail(app.env)).toEqual({sent:0,pending:0});
+  app.sql.prepare("UPDATE wdp_renewal_mail SET status='pending',payload_json=json_remove(payload_json,'$.email')").run();
+  app.sql.prepare('UPDATE wdp_domain_registrations SET expires_on=?').run(extendExpiry(expiry,1));expect(await deliverRenewalMail(app.env)).toEqual({sent:0,pending:0});expect(app.sql.prepare('SELECT status FROM wdp_renewal_mail').get()!.status).toBe('skipped');
+ });
+ it('sends one confirmation with the existing PDF invoice and can retry without a second date extension',async()=>{
+  const app=await ready(),r=app.renewal;Object.assign(app.env,{WDP_RENEWAL_EMAIL_ENABLED:'true',WDP_RENEWAL_TEST_EMAILS_ENABLED:'true'});
+  await createPayment(app.context(app.request(r,app.purchaser.cookie)));await app.webhook(r,'succeeded',26000);
+  await confirmRenewal(app.env,app.purchaser.user.id,{orderId:r.attemptId,version:1,confirmed:true,providerReference:'TH',expiresOn:extendExpiry(app.expiry,3)});
+  expect(await deliverRenewalMail(app.env)).toEqual({sent:1,pending:0});expect(await deliverRenewalMail(app.env)).toEqual({sent:0,pending:0});
+  const payload=JSON.parse(app.sql.prepare('SELECT payload_json FROM wdp_renewal_mail').get()!.payload_json as string);expect(payload.email.attachments).toHaveLength(1);expect(payload.email.subject).toContain('TEST');
+  const invoice=await invoicesEndpoint(app.context(new Request('https://wdp.test/api/customer/invoices?invoice='+r.attemptId+'&download=pdf',{headers:{Cookie:app.purchaser.cookie}})));expect(invoice.headers.get('content-type')).toBe('application/pdf');
+ });
 });

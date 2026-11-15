@@ -5,6 +5,7 @@ import DashboardLayout from '../../../layouts/DashboardLayout.astro';
 <DashboardLayout title="Registration Queue | Web Design Pros" activeNav="registrations">
   <header class="queue-heading"><div><p class="eyebrow">WDP ADMINISTRATION</p><h1>Registration queue</h1><p>Paid domain orders, ready for your next step.</p></div><a class="th-link" href="https://truehost.cloud/" target="_blank" rel="noopener noreferrer">Open TrueHost ↗</a></header>
   <div class="queue-filters"><label>Orders<select id="queue-mode"><option value="test">Test purchases</option><option value="live">Live purchases</option></select></label><label>Show<select id="queue-filter"><option value="pending">Awaiting registration</option><option value="issue">Needs attention</option><option value="registered">Registration recorded</option><option value="all">All paid domains</option></select></label><button id="queue-refresh" type="button">Refresh queue</button></div>
+  <p><a href="/dashboard/renewals/">Open renewal queue →</a></p>
   <p id="queue-notice" class="queue-notice">TEST PURCHASES · Practise recording details here. Do not buy these domains in TrueHost.</p>
   <section id="telegram-alerts" class="telegram-panel" hidden aria-labelledby="telegram-heading">
     <h2 id="telegram-heading">Telegram alerts</h2>

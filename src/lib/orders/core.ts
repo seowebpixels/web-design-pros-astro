@@ -25,11 +25,17 @@ export function registrantDetails(input:any,billing:Record<string,string>){
 export async function saveTestOrder(env:AccountEnv,user:{id:string;email:string},input:any,priced:{cart:string;amount:number},accessHash:string){
   if(!env.DB)throw new AccountError(503,'Customer orders are not configured.');
   const db=env.DB;
+  const renewal=JSON.parse(priced.cart).kind==='renewal';
   const saved=await db.prepare('SELECT profile_json FROM wdp_customer_profiles WHERE auth_user_id=?').bind(user.id).first<{profile_json:string}>();
   if(!saved)throw new PaymentError(400,'Please save your billing details before payment.');
   const billing={...validateProfile(JSON.parse(saved.profile_json)),email:user.email};
-  const billingJson=JSON.stringify(billing),registrantJson=JSON.stringify(registrantDetails(input.registrant,billing));
+  const billingJson=JSON.stringify(billing),registrantJson=JSON.stringify(renewal?input.registrant:registrantDetails(input.registrant,billing));
   const priceSnapshot=JSON.stringify(JSON.parse(priced.cart).domains.map((item:{domain:string;cents:number;years?:number})=>{const price=priceForHostname(item.domain),years=item.years??1;return {domain:item.domain,registrationCents:item.cents,renewalCents:price?renewalPriceCents(price,years):null,renewalYears:years,transferCents:price?.transferCents??null,years,yearlyPricesCents:price?.yearlyPricesCents??[]};}));
+  if(renewal){
+    const link=JSON.parse(priced.cart).renewal;
+    const prior=await db.prepare("SELECT id FROM wdp_orders WHERE customer_id=? AND mode='test' AND json_extract(cart_json,'$.renewal.sourceOrderId')=? AND json_extract(cart_json,'$.renewal.domain')=? AND json_extract(cart_json,'$.renewal.expiresOn')=?").bind(user.id,link.sourceOrderId,link.domain,link.expiresOn).first<{id:string}>();
+    if(prior&&prior.id!==input.attemptId)throw new PaymentError(409,'A renewal already exists. Check your orders before paying again.');
+  }
   // D1 executes the batch transactionally. Concurrent requests cannot share a number;
   // repeating the same order ID does not advance the counter or create another order.
   await db.batch([
@@ -53,6 +59,7 @@ export async function syncTestOrder(env:AccountEnv,payment:{id:string;cart_json:
   }else if(payment.status==='failed'){
     await db.prepare("UPDATE wdp_orders SET payment_status='failed',checkout_id=? WHERE id=? AND payment_status!='paid'").bind(payment.checkout_id,order.id).run();
   }else if(payment.checkout_id){await db.prepare('UPDATE wdp_orders SET checkout_id=? WHERE id=?').bind(payment.checkout_id,order.id).run();}
+  if(payment.status==='paid'&&JSON.parse(order.cart_json).kind==='renewal')await db.prepare("UPDATE wdp_orders SET fulfilment_status='renewal_pending' WHERE id=? AND fulfilment_status='not_started'").bind(order.id).run();
   return {...order,payment_status:order.payment_status==='paid'?'paid':payment.status};
 }
 export function publicOrder(order:OrderRow,detail=false){

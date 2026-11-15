@@ -15,7 +15,7 @@ export function invoiceDetail(order:OrderRow){
   for(const item of cart.domains){
     const years=item.years??1;
     if(typeof item.domain!=='string'||!Number.isSafeInteger(item.cents)||item.cents<=0||!Number.isInteger(years)||years<1||years>5)throw new AccountError(503,'Invoice details are unavailable. Please contact WDP.');
-    lines.push({description:`Domain registration: ${item.domain}`,period:`${years} ${years===1?'year':'years'}`,amount:item.cents});
+    lines.push({description:`Domain ${cart.kind==='renewal'?'renewal':'registration'}: ${item.domain}`,period:`${years} ${years===1?'year':'years'}`,amount:item.cents});
   }
   const domainTotal=lines.reduce((total,item)=>total+item.amount,0),hostingAmount=order.amount-domainTotal;
   if(cart.hosting&&Number.isSafeInteger(hostingAmount)&&hostingAmount>0)lines.push({description:'Starter hosting with email',period:'First month',amount:hostingAmount});

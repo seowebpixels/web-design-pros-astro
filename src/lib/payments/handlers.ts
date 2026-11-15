@@ -1,3 +1,4 @@
+import {renewalQuote} from '../orders/renewals';
 import {AccountError,requireCustomer} from '../accounts/auth';
 import {saveTestOrder,syncTestOrder,orderReference} from '../orders/core';
 import {queuePaidOrderAlerts,deliverOrderAlerts} from '../orders/alerts';
@@ -17,7 +18,10 @@ export async function createPayment({request,env}: Context) {
     let input: any;
     try { input = JSON.parse(await readBody(request)); } catch (e) { if (e instanceof PaymentError) throw e; throw new PaymentError(400,'Invalid request.'); }
     if (!uuid(input?.attemptId) || !uuid(input?.accessToken)) throw new PaymentError(400,'Invalid payment attempt.');
-    const {amount,cart} = quote(input);
+    if(input.kind==='renewal'&&!session)throw new AccountError(401,'Sign in to renew your domain.');
+    const priced = input.kind==='renewal'?await renewalQuote(env,session!.user.id,input):quote(input);
+    const {amount,cart}=priced;
+    if(input.kind==='renewal')input.registrant=(priced as any).registrant;
     const accessHash = await hash(input.accessToken);
     const prior=await db.prepare('SELECT * FROM payment_tests WHERE id=?').bind(input.attemptId).first<Row>();
     if(prior&&(prior.access_hash!==accessHash||prior.cart_json!==cart||prior.amount!==amount))throw new PaymentError(409,'This payment attempt belongs to another cart. Start a new attempt.');
@@ -54,7 +58,7 @@ export async function paymentStatus({request,env}: Context) {
     const order = await db.prepare('SELECT * FROM payment_tests WHERE id=? AND access_hash=?').bind(id,await hash(token)).first<Row>();
     if (!order) throw new PaymentError(404,'Payment attempt not found.');
     const customerOrder=await syncTestOrder(env,order);
-    return json({status:order.status,amount:order.amount,currency:'ZAR',mode:'test',reference:customerOrder?orderReference(customerOrder):order.id,orderId:customerOrder?.id??null,paidDomains:order.status === 'paid' ? JSON.parse(order.cart_json).domains.map((item: {domain:string}) => item.domain) : []});
+    return json({status:order.status,amount:order.amount,currency:'ZAR',mode:'test',reference:customerOrder?orderReference(customerOrder):order.id,orderId:customerOrder?.id??null,kind:JSON.parse(order.cart_json).kind??'registration',paidDomains:order.status === 'paid' && JSON.parse(order.cart_json).kind!=='renewal' ? JSON.parse(order.cart_json).domains.map((item: {domain:string}) => item.domain) : []});
   } catch(error) { return failure(error); }
 }
 export async function paymentWebhook({request,env}: Context) {

@@ -32,7 +32,7 @@ export function registrationInput(body:any){
 export async function saveRegistration(env:AccountEnv,actorId:string,body:any){
   const input=registrationInput(body),db=env.DB!;
   const order=await db.prepare('SELECT * FROM wdp_orders WHERE id=?').bind(input.orderId).first<OrderRow>();
-  if(!order||order.payment_status!=='paid'||!JSON.parse(order.cart_json).domains.some((item:any)=>item.domain===input.domain))throw new AccountError(404,'Paid domain purchase not found.');
+  if(!order||JSON.parse(order.cart_json).kind==='renewal'||order.payment_status!=='paid'||!JSON.parse(order.cart_json).domains.some((item:any)=>item.domain===input.domain))throw new AccountError(404,'Paid domain purchase not found.');
   const before=await db.prepare('SELECT * FROM wdp_domain_registrations WHERE order_id=? AND domain=?').bind(input.orderId,input.domain).first<RegistrationRow>();
   if((before?.version??0)!==input.version)throw new AccountError(409,'This record changed. Refresh the queue before saving again.');
   const revision=crypto.randomUUID();

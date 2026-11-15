@@ -1,0 +1,21 @@
+---
+export const prerender=true;
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+---
+<DashboardLayout title="Renewal queue | Web Design Pros" activeNav="registrations">
+ <a href="/dashboard/registrations/">← Registration queue</a>
+ <h1>Renewal queue</h1>
+ <p>Paid renewals awaiting your confirmation in TrueHost.</p>
+ <p id="renewal-admin-status" role="status" aria-live="polite">Checking access…</p>
+ <section id="renewal-admin" hidden>
+  <label>Orders <select id="renewal-mode"><option value="test">Test renewals</option><option value="live">Live renewals</option></select></label>
+  <button type="button" id="renewal-refresh">Refresh renewals</button>
+  <p id="renewal-mail-status"></p>
+  <div id="renewal-items"></div>
+  <button id="renewal-more" type="button" hidden>Load more</button>
+ </section>
+</DashboardLayout>
+<script>import '../../scripts/renewal-queue';</script>
+<style is:global>
+ #renewal-admin select,#renewal-admin input{font:inherit;background:#101b32;color:white;border:1px solid #4d617d;border-radius:6px;padding:12px;color-scheme:dark}#renewal-admin button{font:inherit;background:#89cfff;color:#07182d;border:0;border-radius:6px;padding:12px 20px;font-weight:700;cursor:pointer}#renewal-admin button:disabled{opacity:.5}#renewal-admin form{background:var(--bg-card);padding:26px;border:1px solid var(--border-color);border-radius:10px;margin:24px 0;max-width:900px}#renewal-admin form label{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:18px 0}#renewal-admin h2{overflow-wrap:anywhere}#renewal-admin input[type=checkbox]{width:20px;height:20px}
+</style>

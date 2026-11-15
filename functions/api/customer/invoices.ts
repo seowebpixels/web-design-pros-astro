@@ -31,16 +31,18 @@ export const onRequestGet:PagesFunction<AccountEnv>=async context=>{
       if(!order)throw new AccountError(404,'Invoice not found.');
       const combined=await db.prepare(`SELECT json_extract(e.payload_json,'$.invoice') AS invoice_json,json_extract(e.payload_json,'$.email') AS email_json FROM wdp_orders o JOIN wdp_registration_emails e JOIN wdp_orders anchor ON anchor.id=e.order_id AND anchor.customer_id=o.customer_id AND anchor.mode=o.mode WHERE o.id=? AND o.customer_id=? AND ${finalized} AND ${owner} AND ${member('o.id')} LIMIT 1`).bind(id,session.user.id).first<{invoice_json:string;email_json:string}>();
       const invoice=combined?JSON.parse(combined.invoice_json):invoiceDetail(order);
-      const hasPdf=!!(combined&&JSON.parse(combined.email_json)?.attachments?.[0]?.content);
+      const renewalEmail=context.env.WDP_RENEWALS_ENABLED==='true'&&JSON.parse(order.cart_json).kind==='renewal'?await db.prepare("SELECT json_extract(payload_json,'$.email') AS email_json FROM wdp_renewal_mail WHERE id=? AND first_attempt_at IS NOT NULL").bind('confirmation/'+order.id).first<{email_json:string}>():null;
+      const hasPdf=!!((combined&&JSON.parse(combined.email_json)?.attachments?.[0]?.content)||(renewalEmail&&JSON.parse(renewalEmail.email_json)?.attachments?.[0]?.content));
       if(download==='pdf'){
         if(!hasPdf)throw new AccountError(409,'Your PDF will be available once registration is complete and the invoice email is prepared.');
-        return downloadPdf(invoice,combined!.email_json);
+        return downloadPdf(invoice,combined?.email_json??renewalEmail!.email_json);
       }
       return accountJson({invoice,pdfAvailable:hasPdf});
     }
     const mode=params.get('mode')??'test',before=params.get('before');
     if(!['test','live'].includes(mode)||(before!==null&&(!/^\d{1,10}$/.test(before)||Number(before)<1)))throw new AccountError(400,'Invalid invoice page.');
-    const rows=await db.prepare(`SELECT o.*,${invoiceSnapshot} AS consolidated_json,${pdfAvailable} AS pdf_available FROM wdp_orders o WHERE o.customer_id=? AND o.mode=? AND o.payment_status='paid' AND o.sequence<? AND ${visible} ORDER BY o.sequence DESC LIMIT 26`).bind(session.user.id,mode,before?Number(before):Number.MAX_SAFE_INTEGER).all<OrderRow&{consolidated_json:string|null;pdf_available:number}>();
+    const availablePdf=context.env.WDP_RENEWALS_ENABLED==='true'?`(${pdfAvailable} OR EXISTS(SELECT 1 FROM wdp_renewal_mail renewal WHERE renewal.id='confirmation/'||o.id AND renewal.first_attempt_at IS NOT NULL AND json_extract(renewal.payload_json,'$.email.attachments[0].content') IS NOT NULL))`:pdfAvailable;
+    const rows=await db.prepare(`SELECT o.*,${invoiceSnapshot} AS consolidated_json,${availablePdf} AS pdf_available FROM wdp_orders o WHERE o.customer_id=? AND o.mode=? AND o.payment_status='paid' AND o.sequence<? AND ${visible} ORDER BY o.sequence DESC LIMIT 26`).bind(session.user.id,mode,before?Number(before):Number.MAX_SAFE_INTEGER).all<OrderRow&{consolidated_json:string|null;pdf_available:number}>();
     const invoices=rows.results.slice(0,25);
     const totals=await db.prepare(`SELECT COALESCE(SUM(CASE WHEN ${visible} THEN 1 ELSE 0 END),0) AS total,COALESCE(SUM(o.amount),0) AS amount FROM wdp_orders o WHERE o.customer_id=? AND o.mode=? AND o.payment_status='paid'`).bind(session.user.id,mode).first<{total:number;amount:number}>();
     return accountJson({invoices:invoices.map(order=>({... (order.consolidated_json?summary(JSON.parse(order.consolidated_json)):invoiceSummary(order)),pdfAvailable:!!order.pdf_available})),invoiceCount:totals?.total??0,totalPaid:totals?.amount??0,unpaidInvoiceCount:0,nextBefore:rows.results.length>25?invoices.at(-1)!.sequence:null});

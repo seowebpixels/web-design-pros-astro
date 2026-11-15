@@ -1,6 +1,9 @@
 import { betterAuth } from 'better-auth';
 export interface AccountEnv {
   DB?: D1Database;
+  WDP_RENEWALS_ENABLED?: string;
+  WDP_RENEWAL_EMAIL_ENABLED?: string;
+  WDP_RENEWAL_TEST_EMAILS_ENABLED?: string;
   WDP_ACCOUNTS_ENABLED?: string;
   AUTH_SECRET?: string;
   AUTH_BASE_URL?: string;

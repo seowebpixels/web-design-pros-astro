@@ -20,12 +20,14 @@ async function check() {
     }
     const response = await fetch(`/api/payments/status?attempt=${encodeURIComponent(attempt)}`,{headers:{Authorization:`Bearer ${saved.accessToken}`},cache:'no-store',signal:AbortSignal.timeout(10000)});
     const result = await response.json();
+    if(saved.kind==='renewal'){const link=document.getElementById('result-return') as HTMLAnchorElement|null;if(link){link.href='/dashboard/domains/';link.textContent='Return to My Domains →';}}
     if (!response.ok) throw new Error(result.error || 'Unable to check payment.');
     document.getElementById('result-reference')!.textContent = `Reference: ${result.reference}`;
     if (result.status === 'paid') {
       title.textContent = 'Test payment confirmed';
       message.textContent = `The payment provider confirmed ${new Intl.NumberFormat('en-ZA',{style:'currency',currency:'ZAR'}).format(result.amount/100)}. Your paid items have been removed from the cart.`;
       saved.completed = true;
+      if(result.kind==='renewal'){message.textContent='Your test renewal payment is confirmed. WDP will record completion after the TrueHost renewal. The expiry date has not changed yet.';sessionStorage.setItem('wdp_payment_attempt',JSON.stringify(saved));button.hidden=true;return;}
       try {
         clearPaidDomains(result,saved,localStorage,sessionStorage,()=>window.dispatchEvent(new Event('cart-updated')));
         button.hidden = true;

@@ -1,0 +1,7 @@
+{
+ "name":"wdp-renewal-reminders",
+ "main":"renewal-reminders.mjs",
+ "compatibility_date":"2026-11-15",
+ "triggers":{"crons":["0 * * * *"]},
+ "vars":{"WDP_SITE_ORIGIN":"https://web-design-pros-astro.pages.dev"}
+}

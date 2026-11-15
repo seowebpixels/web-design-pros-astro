@@ -12,7 +12,7 @@ export function nextBillingDate(purchasedAt:string,cycle:'Annual'|'Monthly',year
   return target.toISOString().slice(0,10);
 }
 export function purchasedServices(order:OrderRow&{prices_json?:string|null}){
-  if(order.payment_status!=='paid')return [];
+  if(order.payment_status!=='paid'||JSON.parse(order.cart_json).kind==='renewal')return [];
   const cart=JSON.parse(order.cart_json),prices=order.prices_json?JSON.parse(order.prices_json):[];
   const purchasedAt=order.paid_at??order.created_at;
   const base={orderId:order.id,reference:orderReference(order),mode:order.mode,status:order.mode==='test'?'test_purchase':'pending_setup'};
