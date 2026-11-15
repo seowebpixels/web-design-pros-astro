@@ -4,20 +4,23 @@ const more=document.getElementById('services-more') as HTMLButtonElement,refresh
 let nextBefore:number|null=null,busy=false;
 const money=(cents:number)=>rand(cents);
 function cell(text:string,className=''){const td=document.createElement('td');td.textContent=text;if(className)td.className=className;return td;}
-function small(parent:HTMLElement,text:string){const el=document.createElement('small');el.textContent=text;parent.append(el);}
+function small(parent:HTMLElement,text:string,className=''){const el=document.createElement('small');el.textContent=text;if(className)el.className=className;parent.append(el);return el;}
 const date=(value:string)=>new Intl.DateTimeFormat('en-ZA',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(value+'T12:00:00Z'));
 function row(service:any){
   const tr=document.createElement('tr'),product=cell(service.product,'product-name');small(product,service.reference);
   const renewal=service.completedRenewal;
-  const domain=cell(service.domain,'domain-link'),price=cell(renewal?`${money(renewal.paidCents)} / ${renewal.years===1?'year':`${renewal.years} years`}`:service.recurringCents===null?'To be confirmed':`${money(service.recurringCents)} / ${service.cycle==='Annual'?((service.renewalYears??1)===1?'year':`${service.renewalYears} years`):'month'}`,'price-val');
-  small(price,renewal?`Paid renewal · Covered until ${date(service.expiresOn)}`:service.product==='Domain Registration'?`Paid ${money(service.paidCents)} · ${(service.years??1)===1?'first year':`${service.years} years`}`:`Paid ${money(service.paidCents)} · first month`);
-  if(!renewal&&service.priceSource==='current_catalogue')small(price,'Current renewal price');
-  const due=cell(service.nextDueDate?date(service.nextDueDate):'Date unavailable');
+  const domainService=service.product==='Domain Registration',years=renewal?.years??service.years??1;
+  const domain=cell(service.domain,'domain-link'),price=cell(renewal?`${money(renewal.paidCents)} / ${years===1?'year':`${years} years`}`:domainService&&years>1?`${money(service.paidCents)} / ${years} years`:service.recurringCents===null?'To be confirmed':`${money(service.recurringCents)} / ${service.cycle==='Annual'?((service.renewalYears??1)===1?'year':`${service.renewalYears} years`):'month'}`,'price-val');
+  small(price,domainService?`${renewal?'Paid renewal':'Paid registration'} · ${years} ${years===1?'year':'years'}`:`Paid ${money(service.paidCents)} · first month`);
+  if(domainService&&!renewal&&years===1)small(price,`Paid ${money(service.paidCents)}`);
+  if(domainService&&service.expiresOn){const coverage=small(price,'Covered until');const expiry=document.createElement('span');expiry.className='service-date';expiry.style.display='block';expiry.textContent=date(service.expiresOn);coverage.append(expiry);}
+  if(!renewal&&!(domainService&&years>1)&&service.priceSource==='current_catalogue')small(price,'Current renewal price');
+  const due=cell(service.nextDueDate?date(service.nextDueDate):'Date unavailable','service-date');
   if(service.expiresOn)small(due,`${service.mode==='test'?'Test expiry':'Registry expiry'}: ${service.expiresOn}`);
   const state=cell(''),badge=document.createElement('span');badge.className='status-badge pending';badge.textContent=service.status==='test_purchase'?'Test purchase':service.status==='pending_registration'?'Pending registration':service.status==='test_recorded'?'Test record saved':service.status==='registered'?'Registration recorded':['registration_issue','test_issue'].includes(service.status)?'Needs attention':'Pending setup';state.append(badge);
   if(['test_purchase','test_recorded','test_issue'].includes(service.status))small(state,service.product==='Domain Registration'?'Not registered':'Not provisioned');
   const action=cell('','service-action'),link=document.createElement('a');link.className='table-manage-btn';link.href=`/dashboard/orders/?order=${encodeURIComponent(service.orderId)}`;link.textContent='Manage';link.setAttribute('aria-label',`Manage ${service.product} for ${service.domain}`);action.append(link);
-  if(renewal&&service.expiryState==='active')small(action,'No renewal needed now');
+  if(domainService&&service.expiryState==='active')small(action,'No renewal needed now');
   tr.append(product,domain,price,due,state,action);return tr;
 }
 async function load(append=false){

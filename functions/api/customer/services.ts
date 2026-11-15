@@ -21,6 +21,7 @@ export const onRequestGet:PagesFunction<AccountEnv>=async context=>{
           if(record?.status==='registered'){
             Object.assign(service,{registrationRecorded:true,registeredOn:record.registered_on,expiresOn:record.expires_on,nextDueDate:record.expires_on,status:order.mode==='test'?'test_recorded':'registered'});
             if(context.env.WDP_RENEWALS_ENABLED==='true'){
+              Object.assign(service,{expiryState:renewalState(record).state});
               const renewal=await context.env.DB!.prepare("SELECT * FROM wdp_orders WHERE customer_id=? AND mode=? AND payment_status='paid' AND fulfilment_status='renewal_complete' AND json_extract(cart_json,'$.kind')='renewal' AND json_extract(cart_json,'$.renewal.sourceOrderId')=? AND json_extract(cart_json,'$.renewal.domain')=? AND json_extract(cart_json,'$.renewal.expectedExpiresOn')=? ORDER BY sequence DESC LIMIT 1").bind(session.user.id,order.mode,order.id,service.domain,record.expires_on).first<OrderRow>();
               if(renewal){
                 const cart=JSON.parse(renewal.cart_json),item=cart.domains.find((item:any)=>item.domain===service.domain);
