@@ -1,0 +1,109 @@
+---
+// Edit this service's page content below. Shared design: src/components/ServicePage.astro.
+import ServicePage from '../../components/ServicePage.astro';
+import type {Service,ServiceDetail} from '../../data/service-types';
+export const prerender=true;
+
+// Page heading, introduction, included work, process and FAQs.
+const service:Service = {
+  "slug": "social-media-marketing",
+  "title": "Social Media Marketing",
+  "icon": "📱",
+  "summary": "A clear content plan and consistent creative for your business channels.",
+  "seoTitle": "Social Media Marketing Johannesburg",
+  "headline": "Social media with something worth sharing.",
+  "intro": "Build a recognisable presence with content that explains what you do and gives customers a reason to engage. We plan relevant content for Facebook, Instagram, LinkedIn or TikTok around your audience, offers and brand voice.",
+  "audience": "Businesses that want a more consistent social presence without creating every post themselves.",
+  "features": [
+    "Content planning and scheduling",
+    "Branded social creative",
+    "Channel-specific messaging"
+  ],
+  "deliverables": [
+    {
+      "title": "A manageable content plan",
+      "description": "Choose relevant themes, channels and a posting schedule that fits your business and available content."
+    },
+    {
+      "title": "Creative that belongs to your brand",
+      "description": "Prepare the agreed graphics, captions and formats using a consistent visual direction."
+    },
+    {
+      "title": "An approval process",
+      "description": "Review planned posts before publication, with responsibilities and turnaround times agreed."
+    },
+    {
+      "title": "Useful performance reviews",
+      "description": "Look at the agreed engagement and enquiry measures, then use the results to guide the next content cycle."
+    }
+  ],
+  "steps": [
+    {
+      "title": "Set the direction",
+      "description": "Identify your audience, channels, brand assets and content goals."
+    },
+    {
+      "title": "Prepare and approve",
+      "description": "Develop the content calendar and creative for your review."
+    },
+    {
+      "title": "Publish and learn",
+      "description": "Schedule approved content and review what resonates with your audience."
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Which platforms will you manage?",
+      "answer": "We select platforms based on your audience and scope. The proposal lists the accounts, formats and number of posts included."
+    },
+    {
+      "question": "Are paid adverts included?",
+      "answer": "Paid campaign setup, management and advertising spend are separate unless explicitly included in your proposal."
+    },
+    {
+      "question": "Will you reply to every message?",
+      "answer": "Community management and customer-message handling are only included when agreed. We establish an escalation process for enquiries your team needs to answer."
+    }
+  ],
+  "scope": "Post quantities, revisions, photography, video production, community management and reporting are agreed before work begins. Follower growth and sales are not guaranteed.",
+  "related": [
+    "branding-services",
+    "google-ads",
+    "web-design"
+  ]
+};
+
+// Detailed service explanation, approach, outcomes and example brief.
+const detail:ServiceDetail = {
+  "heading": "Give people a clearer picture of your business.",
+  "introduction": [
+    "A business account needs more than a steady stream of posts. People need to recognise the brand, understand the offer and see a reason to pay attention. Your content should answer real questions, show useful aspects of the business and make the next step clear when someone is ready to enquire.",
+    "WDP brings planning, visual design and messaging together so your social channels feel like part of the same business as your website. We choose themes and formats around the audience you want to reach and the content you can genuinely support. You get an organised way to prepare, approve and publish material, with reporting that helps decide what to continue and what to change."
+  ],
+  "approach": [
+    {
+      "title": "Choose channels with a purpose.",
+      "body": "We start with the audience, the type of purchase and the material your business can supply. A professional service may need a different approach from a visual retail brand. Platform choice follows those requirements. We establish the role of each selected channel, whether that is explaining expertise, presenting products, answering recurring questions or directing people to a relevant page."
+    },
+    {
+      "title": "Make the content recognisably yours.",
+      "body": "Consistent typography, colours, imagery and tone make a content calendar feel like one business. We plan a mix of useful explanations, service or product information and timely updates. Your team reviews the material before publication, so offers, photographs and business claims remain accurate. Supplied customer images or testimonials need the appropriate permission."
+    },
+    {
+      "title": "Separate attention from commercial results.",
+      "body": "Reach and engagement can help explain which content attracts interest, but they do not automatically represent enquiries or revenue. We agree the measures that matter for your campaign and review them alongside the content. Paid promotion, message handling and organic posting each have their own responsibilities and budget, which we make clear before work starts."
+    }
+  ],
+  "outcomes": [
+    "A content direction matched to your audience and selected channels",
+    "A consistent set of branded graphics and captions within scope",
+    "A clear calendar, review process and publishing responsibility",
+    "Performance reviews that inform the next content cycle"
+  ],
+  "example": {
+    "title": "A professional service explaining its expertise",
+    "body": "For example, an accounting practice could plan a sequence of plain-language answers to common client questions, supported by consistent graphics and links to its own service pages. That gives readers something useful before asking them to book a consultation."
+  }
+};
+---
+<ServicePage service={service} detail={detail} />

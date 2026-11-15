@@ -1,0 +1,117 @@
+---
+// Edit this service's page content below. Shared design: src/components/ServicePage.astro.
+import ServicePage from '../../components/ServicePage.astro';
+import type {Service,ServiceDetail} from '../../data/service-types';
+export const prerender=true;
+
+// Page heading, introduction, included work, process and FAQs.
+const service:Service = {
+  "slug": "seo-optimization",
+  "title": "SEO Optimization & Local Search",
+  "icon": "🔍",
+  "summary": "Help search engines understand your website and customers find the right pages.",
+  "seoTitle": "SEO Services Randburg & Johannesburg",
+  "headline": "SEO that helps the right customers find you.",
+  "intro": "Good search visibility starts with a useful website. We work on the technical foundations, service content and local business information that help connect your business with relevant searches.",
+  "audience": "South African service businesses looking to improve relevant organic enquiries and local visibility.",
+  "features": [
+    "Technical and on-page SEO",
+    "Local business information",
+    "Search Console setup and review"
+  ],
+  "deliverables": [
+    {
+      "title": "Technical SEO",
+      "description": "Review crawl access, indexing, redirects, canonical URLs and loading behaviour. Prioritise faults that stop useful pages being discovered or used."
+    },
+    {
+      "title": "On-page content and structure",
+      "description": "Give each service page a clear purpose, descriptive headings, useful answers, relevant metadata and internal links. Remove repetition that adds no value."
+    },
+    {
+      "title": "Local search information",
+      "description": "Check business contact details, genuine service areas and eligible Google Business Profile information for consistency."
+    },
+    {
+      "title": "Off-page reputation and links",
+      "description": "Identify relevant business listings, genuine review opportunities and useful industry relationships. Focus on earned references and accurate profiles rather than buying ranking links."
+    },
+    {
+      "title": "Measurement and next steps",
+      "description": "Use Search Console and agreed enquiry measures to review progress. Distinguish visibility and clicks from enquiries and sales."
+    },
+    {
+      "title": "Useful content for your audience",
+      "description": "Plan service explanations, project examples and answers based on customer questions. Support factual claims with appropriate evidence."
+    }
+  ],
+  "steps": [
+    {
+      "title": "Understand demand",
+      "description": "Discuss your services, service areas and the enquiries you want."
+    },
+    {
+      "title": "Improve the foundations",
+      "description": "Address agreed technical and content priorities in a practical sequence."
+    },
+    {
+      "title": "Review the evidence",
+      "description": "Check search performance and refine the plan as useful data becomes available."
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Can you guarantee the first position on Google?",
+      "answer": "No. Search positions depend on competition, search-engine systems and many factors outside our control. We focus on measurable improvements rather than guaranteed rankings."
+    },
+    {
+      "question": "How soon will SEO work?",
+      "answer": "Timing varies with the site, competition and changes involved. SEO is an ongoing process; your proposal will distinguish initial work from continuing support."
+    },
+    {
+      "question": "Does this include Google Ads?",
+      "answer": "No. Organic SEO and paid advertising are separate services. They can support the same goals, but campaign management and advertising spend are agreed separately."
+    }
+  ],
+  "scope": "On-page changes and off-page activity are scoped separately. Profile access, genuine customer reviews and editorial links depend on account owners, customers and publishers. Rankings, indexing and third-party placements cannot be guaranteed.",
+  "related": [
+    "web-design",
+    "google-ads",
+    "website-maintenance"
+  ]
+};
+
+// Detailed service explanation, approach, outcomes and example brief.
+const detail:ServiceDetail = {
+  "heading": "Build search visibility around the customers you want.",
+  "introduction": [
+    "Being found is useful when the searcher is a good fit for your business. A local repair enquiry, a request for a professional consultation and a product purchase each start with different questions. An effective SEO plan connects those questions to pages that explain your offer and help someone decide whether to contact you.",
+    "WDP combines technical review, content structure and local business information into one practical plan. We examine whether search engines can access the important pages, whether those pages answer the intended query and whether the business behind them is clear. We then prioritise work against your services and commercial goals. That keeps the conversation focused on relevant visibility and useful enquiries, rather than a long list of keywords with little connection to the business."
+  ],
+  "approach": [
+    {
+      "title": "Give each search intent a useful destination.",
+      "body": "We map the services you provide to the questions people need answered. A page should explain the work, its suitability, the process and the next step in natural language. Titles, headings and internal links reinforce that purpose. Where two pages overlap, we assess whether they need distinct content or should be consolidated, instead of multiplying similar pages for minor keyword variations."
+    },
+    {
+      "title": "Make the technical signals consistent.",
+      "body": "Crawl access, canonical URLs, redirects, sitemaps and page status codes need to describe the same website. We review those foundations alongside mobile usability and loading behaviour. Structured data helps describe the content that is actually present; it cannot replace useful pages or genuine business evidence. For a redesign, preserving important old URLs through appropriate redirects is part of the work."
+    },
+    {
+      "title": "Build local credibility and measure useful progress.",
+      "body": "Accurate business details, an eligible business profile, genuine client reviews and relevant references support a credible local presence. We identify inconsistencies and opportunities while keeping profile changes and outreach accountable. Search Console data can show discovery and clicks; enquiry tracking helps connect those visits to business activity. We use the available evidence to decide what deserves attention next."
+    }
+  ],
+  "outcomes": [
+    "A prioritised technical and content action plan",
+    "Service pages organised around relevant customer questions",
+    "Consistent business information and practical off-page priorities",
+    "Reporting that separates search visibility from enquiries and sales"
+  ],
+  "example": {
+    "title": "One company, several different customer needs",
+    "body": "For example, a Johannesburg contractor may offer both emergency repairs and planned installations. Separate, useful explanations help visitors understand availability, scope and how to enquire. Creating dozens of near-identical suburb pages would add less value than explaining those services properly."
+  }
+};
+---
+<ServicePage service={service} detail={detail} />

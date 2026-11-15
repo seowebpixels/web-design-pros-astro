@@ -1,0 +1,55 @@
+---
+import Layout from '../layouts/Layout.astro';
+import {services} from '../data/services';
+import type {Service,ServiceDetail as ServiceDetailContent} from '../data/service-types';
+import ServiceTrust from './ServiceTrust.astro';
+import ServiceDetail from './ServiceDetail.astro';
+import CTA from './CTA.astro';
+interface Props {service:Service;detail:ServiceDetailContent}
+const {service,detail}=Astro.props;
+const related=service.related.map(slug=>services.find(item=>item.slug===slug)!);
+const url=`https://webdesignpros.co.za/services/${service.slug}/`;
+const schema={"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":url,name:service.seoTitle??service.title,description:service.summary,isPartOf:{'@id':'https://webdesignpros.co.za/#website'},about:{'@id':url+'#service'},publisher:{'@id':'https://webdesignpros.co.za/#organization'},inLanguage:'en-ZA',breadcrumb:{'@id':url+'#breadcrumb'}},{"@type":"Service",'@id':url+'#service',name:service.title,serviceType:service.title,description:service.summary,url,provider:{'@id':'https://webdesignpros.co.za/#organization'},areaServed:{'@type':'Country',name:'South Africa'}},{'@type':'BreadcrumbList','@id':url+'#breadcrumb',itemListElement:[{ '@type':'ListItem',position:1,name:'Home',item:'https://webdesignpros.co.za/'},{'@type':'ListItem',position:2,name:'Services',item:'https://webdesignpros.co.za/services/'},{'@type':'ListItem',position:3,name:service.title,item:url}]}]};
+---
+<Layout title={`${service.seoTitle??service.title} | Web Design Pros`} description={service.summary} canonical={url}>
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(schema)} />
+  <div class="service-page">
+    <div class="service-container">
+      <nav class="service-breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/services/">Services</a><span aria-hidden="true">/</span><span aria-current="page">{service.title}</span></nav>
+      <section class="service-hero" id="professional" aria-labelledby="service-heading">
+        <div>
+          <p class="service-eyebrow">{service.title}</p>
+          <h1 id="service-heading">{service.headline}</h1>
+          <p class="service-lead">{service.intro}</p>
+          <div class="service-buttons"><a class="service-btn primary" href="/contact/#contact">Discuss your project <span aria-hidden="true">→</span></a><a class="service-btn secondary" href="#included">Explore the service</a></div>
+          {service.slug==='branding-services'&&<a class="service-history-link" href="#brand-history">Explore the Microsoft logo timeline ↓</a>}
+          <p class="service-location">Based in Johannesburg · Working with businesses across South Africa</p>
+        </div>
+        <aside class="service-brief" aria-label="Service at a glance">
+          <span class="service-icon" aria-hidden="true">{service.icon}</span><p class="service-eyebrow">A practical starting point</p>
+          <h2>Built around what you need.</h2>
+          <ul>{service.features.map(feature=><li><span aria-hidden="true">✓</span>{feature}</li>)}</ul>
+          <div class="service-fit"><h3>Who it suits</h3><p>{service.audience}</p></div>
+        </aside>
+      </section>
+    </div>
+    <ServiceDetail detail={detail} />
+    <section id="included" class="service-section service-tinted" aria-labelledby="included-heading"><div class="service-container">
+      <p class="service-eyebrow">What we can help with</p><h2 id="included-heading">The details that make a difference.</h2>
+      <div class="service-deliverables" id="services">{service.deliverables.map((item,index)=><article><span class="service-number">0{index+1}</span><h3>{item.title}</h3><p>{item.description}</p></article>)}</div>
+    </div></section>
+    <slot name="service-extra" />
+    <section class="service-section service-container" id="proven" aria-labelledby="process-heading"><p class="service-eyebrow">How we work</p><h2 id="process-heading">A clear path from brief to delivery.</h2>
+      <ol class="service-steps">{service.steps.map((step,index)=><li><span class="service-step-index">0{index+1}</span><h3>{step.title}</h3><p>{step.description}</p></li>)}</ol>
+      <aside class="service-scope" id="packages"><h3>Agree the scope before work starts.</h3><p>{service.scope}</p>{service.slug==='web-design'||service.slug==='e-commerce'?<a href="/pricing/">View published website packages →</a>:<a href="/contact/#contact">Ask for a tailored proposal →</a>}</aside>
+    </section>
+    <section class="service-section service-tinted" id="faq" aria-labelledby="questions-heading"><div class="service-container service-faq-layout"><div><p class="service-eyebrow">Before we begin</p><h2 id="questions-heading">Your questions, answered.</h2><p>Have a question about your particular setup? <a href="/contact/">Talk it through with us.</a></p></div><div class="service-faqs">{service.faqs.map(faq=><details><summary>{faq.question}</summary><p>{faq.answer}</p></details>)}</div></div></section>
+    <ServiceTrust showWork={service.slug==='web-design'} />
+    <section class="service-section service-container" aria-labelledby="related-heading"><p class="service-eyebrow">Bring it together</p><h2 id="related-heading">Services that work well together.</h2><div class="service-related">{related.map(item=><a href={`/services/${item.slug}/`}><span aria-hidden="true">{item.icon}</span><h3>{item.title}</h3><p>{item.summary}</p><span class="service-related-link">Explore service →</span></a>)}</div></section>
+  </div>
+  <CTA />
+</Layout>
+<style>
+ .service-history-link{display:inline-block;margin-top:20px;font-size:.85rem} .service-page{--service-muted:#b8c7df;color:#f1f5ff}.service-container{width:min(1200px,calc(100% - 48px));margin-inline:auto}.service-breadcrumb{display:flex;flex-wrap:wrap;gap:10px;padding-block:30px;font-size:.78rem;color:var(--service-muted)}.service-page a{color:var(--accent-secondary)}.service-breadcrumb a{text-decoration:none}.service-page a:focus-visible,.service-page summary:focus-visible{outline:2px solid #89cff0;outline-offset:5px}.service-hero{display:grid;grid-template-columns:1.45fr 1fr;gap:64px;align-items:center;padding:38px 0 85px}.service-eyebrow{color:var(--accent-secondary);font-size:.75rem;font-weight:600;letter-spacing:.13em;text-transform:uppercase;margin-bottom:16px}.service-hero h1{font-size:clamp(2.5rem,4.6vw,4.3rem);line-height:1.06;letter-spacing:-.035em;text-align:left;text-transform:none;margin-bottom:25px}.service-lead{color:var(--service-muted);font-size:1.05rem;line-height:1.85;max-width:640px}.service-buttons{display:flex;flex-wrap:wrap;gap:14px;margin-top:30px}.service-page .service-btn{display:inline-flex;align-items:center;justify-content:center;gap:14px;padding:15px 22px;border-radius:7px;text-decoration:none;font-weight:600;font-size:.88rem;transition:background .2s}.service-page .primary{color:#04142b;background:#89cff0;border:1px solid #89cff0}.service-page .primary:hover{background:#b4e5ff}.service-page .secondary{border:1px solid #50617f;color:#e7f4ff}.service-page .secondary:hover{background:#233354}.service-location{font-size:.73rem;color:var(--service-muted);margin-top:24px}.service-brief{background:linear-gradient(145deg,#213653,#182640);padding:34px;border:1px solid #3b5473;border-top:3px solid #0096ff;border-radius:12px}.service-icon{font-size:2rem;display:block;margin-bottom:22px}.service-brief h2{font-size:1.85rem;line-height:1.15;margin-bottom:24px}.service-brief ul{list-style:none;display:grid;gap:15px;font-size:.88rem}.service-brief li{display:flex;gap:12px;align-items:baseline}.service-brief li span{color:#89cff0}.service-fit{margin-top:25px;border-top:1px solid #3b4e6b;padding-top:23px}.service-fit h3{font-size:.9rem;color:#89cff0;margin-bottom:6px}.service-fit p{font-size:.85rem;color:var(--service-muted)}.service-section{padding-block:75px;scroll-margin-top:30px}.service-tinted{background:#101b33;border-block:1px solid #2d3d58}.service-section h2,.service-closing h2{font-size:clamp(1.9rem,3vw,2.65rem);line-height:1.15;letter-spacing:-.02em;margin-bottom:35px}.service-deliverables{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}.service-deliverables article{border:1px solid #34435e;border-radius:10px;background:#19263f;padding:28px}.service-number{font-size:.78rem;color:#89cff0;display:block;margin-bottom:15px;letter-spacing:.08em}.service-section h3{font-size:1.32rem;line-height:1.25;margin-bottom:12px;font-weight:700}.service-section p{color:var(--service-muted);font-size:.92rem;line-height:1.85}.service-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;list-style:none}.service-step-index{display:block;width:42px;height:42px;line-height:40px;text-align:center;border:1px solid #526988;border-radius:50%;color:#89cff0;font-size:.8rem;margin-bottom:21px}.service-scope{border-left:3px solid #0096ff;background:#1c2b47;padding:25px 30px;margin-top:40px}.service-scope a{display:inline-block;margin-top:14px;font-size:.9rem}.service-faq-layout{display:grid;grid-template-columns:1fr 1.3fr;gap:65px}.service-faqs details{border-bottom:1px solid #3d4d66;padding-block:20px}.service-faqs details:first-child{padding-top:0}.service-faqs summary{font-weight:600;cursor:pointer;font-size:.98rem;padding-right:12px}.service-faqs p{margin-top:16px}.service-related{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}.service-related a{text-decoration:none;padding:28px;border:1px solid #3a4b69;border-radius:10px;background:#1b2944;display:flex;flex-direction:column;align-items:flex-start}.service-related a:hover{border-color:#89cff0}.service-related a>span:first-child{font-size:1.6rem;margin-bottom:22px}.service-related h3{color:#fff}.service-related-link{margin-top:auto;padding-top:22px;font-size:.85rem;font-weight:600}.service-closing{display:flex;align-items:center;justify-content:space-between;gap:30px;margin-bottom:75px;padding:40px;background:#203753;border:1px solid #466382;border-radius:12px}.service-closing h2{margin-bottom:15px}.service-closing p:not(.service-eyebrow){color:var(--service-muted);max-width:620px;font-size:.92rem}.service-closing .service-btn{flex-shrink:0}
+ @media(max-width:900px){.service-hero{grid-template-columns:1fr;gap:35px;padding:25px 0 55px}.service-brief{max-width:650px}.service-faq-layout{grid-template-columns:1fr;gap:20px}.service-closing{flex-direction:column;align-items:flex-start}.service-related{grid-template-columns:1fr}.service-related a{padding:24px}.service-related a>span:first-child{margin-bottom:12px}}@media(max-width:600px){.service-container{width:calc(100% - 36px)}.service-deliverables,.service-steps{grid-template-columns:1fr}.service-section{padding-block:48px}.service-brief{padding:25px}.service-hero h1{font-size:2.65rem}.service-buttons{flex-direction:column;align-items:stretch}.service-closing{padding:26px;margin-bottom:48px}.service-closing .service-btn{white-space:normal;width:100%}.service-scope{padding:22px}.service-breadcrumb{font-size:.7rem}.service-steps{gap:28px}}
+</style>

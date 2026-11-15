@@ -1,0 +1,108 @@
+---
+// Edit this service's page content below. Shared design: src/components/ServicePage.astro.
+import ServicePage from '../../components/ServicePage.astro';
+import type {Service,ServiceDetail} from '../../data/service-types';
+export const prerender=true;
+
+// Page heading, introduction, included work, process and FAQs.
+const service:Service = {
+  "slug": "google-ads",
+  "title": "Google Ads & PPC Marketing",
+  "icon": "🎯",
+  "summary": "Focused paid search campaigns with useful landing pages and conversion measurement.",
+  "headline": "Put your offer in front of active searches.",
+  "intro": "Reach people looking for the services you provide. We plan paid search campaigns around your offer, service area and budget, then connect the adverts to a clear next step on your website.",
+  "audience": "Businesses with a clear offer, a suitable landing page and a budget for paid customer acquisition.",
+  "features": [
+    "Search campaign planning",
+    "Landing page alignment",
+    "Conversion tracking and reporting"
+  ],
+  "deliverables": [
+    {
+      "title": "A focused campaign brief",
+      "description": "Agree the services, locations, budget and enquiries the campaign should target."
+    },
+    {
+      "title": "Relevant search adverts",
+      "description": "Structure agreed keywords and ad groups, write advert copy and identify irrelevant searches to exclude."
+    },
+    {
+      "title": "A better landing experience",
+      "description": "Review the page people reach after clicking, with a clear offer and contact or purchase action."
+    },
+    {
+      "title": "Measurement and refinement",
+      "description": "Set up agreed conversion events, review available results and make campaign adjustments within scope."
+    }
+  ],
+  "steps": [
+    {
+      "title": "Check readiness",
+      "description": "Review your offer, landing page, account access and measurement setup."
+    },
+    {
+      "title": "Prepare the campaign",
+      "description": "Agree targeting, copy, spend and launch settings before activation."
+    },
+    {
+      "title": "Review and refine",
+      "description": "Assess search terms and conversion results as data builds up."
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Is advertising spend included in your fee?",
+      "answer": "Advertising spend and campaign management are separate costs unless your proposal explicitly states otherwise. We agree the budget before launch."
+    },
+    {
+      "question": "Can you guarantee leads or sales?",
+      "answer": "No. Results depend on competition, budget, demand, the offer and the website. We agree meaningful measures and review results without promising a fixed outcome."
+    },
+    {
+      "question": "Who owns the advertising account?",
+      "answer": "We agree account ownership and access at the outset. The preferred arrangement is a business-owned account with the permissions needed for management."
+    }
+  ],
+  "scope": "Campaign types, account setup, landing page changes, management frequency and reporting are agreed in writing. Advertising platforms review ads and may require business verification.",
+  "related": [
+    "seo-optimization",
+    "web-design",
+    "social-media-marketing"
+  ]
+};
+
+// Detailed service explanation, approach, outcomes and example brief.
+const detail:ServiceDetail = {
+  "heading": "Connect paid searches to a convincing offer.",
+  "introduction": [
+    "A paid click creates an opportunity, not a completed sale. The search, advert and landing page need to make sense together. When someone arrives, they should recognise the service they searched for, understand the offer and know how to enquire or buy.",
+    "WDP plans campaigns around that complete journey. We establish the audience, service area, offer and budget, then assess the destination page and how useful actions will be measured. Campaign structure and ongoing review follow those priorities. Your spend is attached to a defined commercial purpose, with a clearer basis for deciding what to adjust as results become available."
+  ],
+  "approach": [
+    {
+      "title": "Start with a focused search opportunity.",
+      "body": "We identify the services and locations the campaign should promote, then group related searches around relevant adverts. Search intent matters: someone researching a topic may need a different message from someone ready to request a quote. We also review irrelevant search terms so the campaign can be refined around the work you actually want."
+    },
+    {
+      "title": "Make the landing page earn the click.",
+      "body": "An advert promising a particular service should lead to a page that explains it clearly. We review message consistency, important customer questions, business identity and the enquiry action. On mobile, form usability and a clear contact route deserve attention. Where the destination needs work, we identify that before treating additional spend as the answer."
+    },
+    {
+      "title": "Measure actions that matter to the business.",
+      "body": "We agree which events count as useful conversions and check how those actions are recorded. Reporting distinguishes spend, clicks and tracked actions from confirmed customers or revenue. Reviewing search terms and conversion evidence helps guide changes to targeting, copy and the landing experience. Account access, ownership and advertising costs remain clear throughout the engagement."
+    }
+  ],
+  "outcomes": [
+    "A campaign brief with an agreed offer, audience and budget",
+    "Structured search targeting and relevant advert copy",
+    "A reviewed landing journey and agreed conversion measurement",
+    "Reporting and optimisation focused on useful business actions"
+  ],
+  "example": {
+    "title": "A campaign for one clearly defined service",
+    "body": "For example, a specialist repair business could advertise one repair category within its actual service area. A matching landing page can explain supported equipment, the enquiry process and contact details, helping visitors decide whether the business can handle their request."
+  }
+};
+---
+<ServicePage service={service} detail={detail} />

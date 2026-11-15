@@ -1,0 +1,14 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ServicesGrid from '../../components/ServicesGrid.astro';
+import CTA from '../../components/CTA.astro';
+export const prerender=true;
+---
+<Layout title="Digital Services for South African Businesses | Web Design Pros" description="Explore web design, maintenance, hosting, SEO, branding, social media, e-commerce, business tools and Google Ads services from Web Design Pros.">
+ <section class="services-intro"><nav aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true"> / </span><span aria-current="page">Services</span></nav><p class="eyebrow">Web Design Pros · Johannesburg</p><h1>The right support for your next step.</h1><p class="lead">Build your website, improve how people find you, or make an everyday process easier. Explore our services to see where we can help your business.</p><a class="intro-link" href="/contact/#contact">Not sure where to start? Talk to us →</a></section>
+ <ServicesGrid />
+ <CTA />
+</Layout>
+<style>
+ .services-intro{width:min(900px,calc(100% - 40px));margin:auto;padding:28px 0 10px;text-align:center}.services-intro nav{text-align:left;color:#b8c7df;font-size:.8rem;margin-bottom:48px}.services-intro a,.services-help a{color:#89cff0}.eyebrow{text-transform:uppercase;letter-spacing:.12em;color:#89cff0;font-size:.8rem;margin-bottom:20px}.services-intro h1{text-transform:none;line-height:1.1;font-size:clamp(2.5rem,5vw,4rem)}.lead{color:#b8c7df;font-size:1.08rem;line-height:1.85;max-width:740px;margin:auto}.intro-link{display:inline-block;margin-top:25px}.services-help{width:min(1100px,calc(100% - 40px));margin:0 auto 70px;border:1px solid #415978;border-radius:12px;background:#20334e;padding:40px;text-align:center}.services-help h2{font-size:2rem;margin-bottom:15px}.services-help p{color:#bdcbe0;max-width:700px;margin:auto}.services-help a{display:inline-block;margin-top:22px;font-weight:600}a:focus-visible{outline:2px solid #89cff0;outline-offset:5px}@media(max-width:600px){.services-help{padding:25px}.services-intro nav{margin-bottom:30px}}
+</style>

@@ -1,0 +1,108 @@
+---
+// Edit this service's page content below. Shared design: src/components/ServicePage.astro.
+import ServicePage from '../../components/ServicePage.astro';
+import type {Service,ServiceDetail} from '../../data/service-types';
+export const prerender=true;
+
+// Page heading, introduction, included work, process and FAQs.
+const service:Service = {
+  "slug": "saas-micro-tools",
+  "title": "Hybrid SaaS & Micro-Tools",
+  "icon": "⚙️",
+  "summary": "Purpose-built calculators, portals and integrations that simplify everyday work.",
+  "headline": "Turn a repetitive task into a useful tool.",
+  "intro": "Give customers and your team a simpler way to complete a specific job. We build focused web tools, from quote calculators and enquiry workflows to customer portals and connected business processes.",
+  "audience": "Businesses with a clearly defined workflow that spreadsheets, email chains or disconnected forms no longer handle well.",
+  "features": [
+    "Interactive calculators and forms",
+    "Customer portals and workflows",
+    "API and webhook integrations"
+  ],
+  "deliverables": [
+    {
+      "title": "A defined problem to solve",
+      "description": "Map the current task, users, inputs and expected outcome before selecting the features to build."
+    },
+    {
+      "title": "An interface that guides the task",
+      "description": "Design forms, validation and results around the decisions people actually need to make."
+    },
+    {
+      "title": "Connected data and services",
+      "description": "Integrate agreed systems where suitable APIs and account permissions are available."
+    },
+    {
+      "title": "Access and handover planning",
+      "description": "Agree user roles, data handling, deployment and support responsibilities for the finished tool."
+    }
+  ],
+  "steps": [
+    {
+      "title": "Map the workflow",
+      "description": "Identify the smallest useful version and the rules it needs to follow."
+    },
+    {
+      "title": "Build and validate",
+      "description": "Develop the tool and check important scenarios with representative data."
+    },
+    {
+      "title": "Launch and support",
+      "description": "Deploy the approved version with an agreed plan for support and future changes."
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Can you connect to an existing system?",
+      "answer": "We assess its available API, documentation, permissions and usage costs before committing to an integration."
+    },
+    {
+      "question": "Can we start with a small version?",
+      "answer": "Yes. A focused first version can validate the workflow before adding more features. The initial scope should still include necessary access controls and error handling."
+    },
+    {
+      "question": "Are external service charges included?",
+      "answer": "Third-party subscriptions, transaction fees and usage-based services are identified separately in the proposal."
+    }
+  ],
+  "scope": "Discovery is required before a fixed implementation quote. Data migration, integrations, user roles, external fees and ongoing support must be agreed explicitly.",
+  "related": [
+    "web-design",
+    "e-commerce",
+    "website-maintenance"
+  ]
+};
+
+// Detailed service explanation, approach, outcomes and example brief.
+const detail:ServiceDetail = {
+  "heading": "Put a better process behind the screen.",
+  "introduction": [
+    "Repeatedly copying information between forms, spreadsheets and emails is often a sign that a process needs a better home. A focused web tool can bring the inputs, rules and next steps together, making the task clearer for customers and easier for your team to manage.",
+    "WDP starts with the workflow rather than a feature list. We identify who uses the tool, the decisions it must support and the information it needs to keep. From there, we design a useful first version and the controls required to run it responsibly. That could be a quotation calculator, a customer portal, a booking request or an integration connecting existing systems."
+  ],
+  "approach": [
+    {
+      "title": "Make the business rules explicit.",
+      "body": "A calculation or approval that seems simple often has exceptions: missing information, unusual quantities, price changes or a request that needs manual review. We work through those cases before building the interface. Inputs, validation and outcomes are defined around the real process, so the tool helps people make the right decision instead of hiding uncertainty behind a polished screen."
+    },
+    {
+      "title": "Plan access and failure handling early.",
+      "body": "A portal needs to know which information each user can see and change. An integration needs a way to handle rejected requests, interruptions and repeated events. We include the relevant access checks and important error scenarios in the implementation scope. That thinking matters as much as a successful demonstration of the normal journey."
+    },
+    {
+      "title": "Build a first version you can evaluate.",
+      "body": "We identify the smallest version that delivers the intended task, then check it with representative scenarios and your feedback. External services are assessed for available interfaces, permissions and recurring costs. Deployment, support and the next stage of development are agreed so that the tool has a practical operating plan after launch."
+    }
+  ],
+  "outcomes": [
+    "A documented workflow and clearly defined first version",
+    "An interface with the agreed validation and user permissions",
+    "Relevant integrations and handling for important failure scenarios",
+    "A tested handover with deployment and support responsibilities"
+  ],
+  "example": {
+    "title": "A quote request that needs less back-and-forth",
+    "body": "For example, a supplier could collect product type, quantities and delivery details in one guided form. A calculator can apply the agreed rules while routing unusual requests for manual review, rather than presenting an unreliable fixed price."
+  }
+};
+---
+<ServicePage service={service} detail={detail} />

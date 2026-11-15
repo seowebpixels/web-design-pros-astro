@@ -1,0 +1,109 @@
+---
+// Edit this service's page content below. Shared design: src/components/ServicePage.astro.
+import ServicePage from '../../components/ServicePage.astro';
+import type {Service,ServiceDetail} from '../../data/service-types';
+export const prerender=true;
+
+// Page heading, introduction, included work, process and FAQs.
+const service:Service = {
+  "slug": "web-design",
+  "title": "Web Design & Development",
+  "icon": "💻",
+  "summary": "Custom websites that help customers understand your business and take the next step.",
+  "seoTitle": "Web Design Johannesburg & South Africa",
+  "headline": "Web design built around your business.",
+  "intro": "Turn a first visit into a useful conversation. We design and build clear, responsive websites for South African businesses, with the content, structure and enquiry paths your customers need.",
+  "audience": "Startups, local service businesses and established companies ready for a better website.",
+  "features": [
+    "Custom Astro website builds",
+    "Responsive page layouts",
+    "Clear enquiry and contact journeys"
+  ],
+  "deliverables": [
+    {
+      "title": "Structure before styling",
+      "description": "We plan the pages around your services, customer questions and business goals, so visitors can find what matters."
+    },
+    {
+      "title": "Your identity, across every screen",
+      "description": "Layouts, typography and colours tailored to your brand, with navigation and content that work on mobile and desktop."
+    },
+    {
+      "title": "A considered technical foundation",
+      "description": "Semantic pages, descriptive titles, optimised assets and sensible loading behaviour form part of the build."
+    },
+    {
+      "title": "Enquiries with a clear destination",
+      "description": "Contact forms, phone links and WhatsApp calls to action are set up around the way you actually handle new business."
+    }
+  ],
+  "steps": [
+    {
+      "title": "Plan the site",
+      "description": "Agree on your audience, pages, content responsibilities and required features."
+    },
+    {
+      "title": "Design and build",
+      "description": "Develop the agreed layout and functionality, with opportunities for review."
+    },
+    {
+      "title": "Check and launch",
+      "description": "Review content, test key journeys and connect the approved site to its domain."
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Can you redesign my existing website?",
+      "answer": "Yes. We review what is working, identify content worth keeping and plan redirects where page addresses change. The migration scope is agreed before work starts."
+    },
+    {
+      "question": "Will I be able to update the site?",
+      "answer": "We agree how edits will be handled before building. That may be managed updates or a content management setup where your team needs regular editing access."
+    },
+    {
+      "question": "What does a website cost?",
+      "answer": "Our Pricing page lists the published website packages. We confirm the pages, features and any additional work in your proposal before you commit."
+    }
+  ],
+  "scope": "Page count, copywriting, photography, integrations, hosting and ongoing support are confirmed in your proposal. A new website does not include an ongoing marketing campaign unless agreed.",
+  "related": [
+    "website-maintenance",
+    "seo-optimization",
+    "web-hosting"
+  ]
+};
+
+// Detailed service explanation, approach, outcomes and example brief.
+const detail:ServiceDetail = {
+  "heading": "Give customers a reason to choose your business.",
+  "introduction": [
+    "Your website is often where a prospective customer decides whether to take your business seriously. They need to understand what you offer, see why you are a credible choice and find a straightforward way to contact you. Attractive design earns attention; clear information and a well-planned journey help turn that attention into an enquiry.",
+    "At Web Design Pros, we bring design, development and content structure together from the start. We look at the questions your customers ask, the services you most want to sell and the information someone needs before making contact. That gives every page a purpose and every call to action a place in the wider customer journey. You get a website shaped around how your business works, with a foundation that can support its next stage."
+  ],
+  "approach": [
+    {
+      "title": "We plan the decision, as well as the page.",
+      "body": "A useful service page explains the problem you solve, what the service includes, who it suits and what happens next. We organise that information into a clear hierarchy, then position contact options where they make sense. On mobile, we pay attention to readable text, navigation, form inputs and tap targets. The goal is to make the next step easy to understand without asking visitors to work through unnecessary pages."
+    },
+    {
+      "title": "We choose the build around your requirements.",
+      "body": "For a content-led business website, Astro can deliver the pages with very little browser-side scripting. When you need regular editing, a shop or a customer portal, we assess those requirements before choosing the content and application setup. We optimise images, fonts and scripts because they affect how a page feels to use. Features earn their place by helping your customers or your team."
+    },
+    {
+      "title": "We treat a redesign as a migration.",
+      "body": "An existing website may already have useful pages, search visibility and customer links. We review the content to retain, map important old addresses to their replacements and test the enquiry journey before launch. Your final review covers the wording and functionality as well as the appearance, so the new site represents the business you run today."
+    }
+  ],
+  "outcomes": [
+    "A page structure aligned with your services and customer questions",
+    "A responsive design with clear enquiry routes",
+    "The agreed forms, integrations and technical SEO foundations",
+    "A reviewed launch and a clear route for future updates"
+  ],
+  "example": {
+    "title": "A service business with several specialisms",
+    "body": "For example, an engineering business may need separate pages for installation, repairs and maintenance. Giving each service its own explanation and enquiry route helps a buyer reach the right information, while shared navigation keeps the business understandable as a whole."
+  }
+};
+---
+<ServicePage service={service} detail={detail} />

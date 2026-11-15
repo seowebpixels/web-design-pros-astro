@@ -1,0 +1,109 @@
+---
+// Edit this service's page content below. Shared design: src/components/ServicePage.astro.
+import ServicePage from '../../components/ServicePage.astro';
+import type {Service,ServiceDetail} from '../../data/service-types';
+export const prerender=true;
+
+// Page heading, introduction, included work, process and FAQs.
+const service:Service = {
+  "slug": "web-hosting",
+  "title": "Web Hosting",
+  "icon": "🚀",
+  "summary": "Website hosting, domain connection and email setup matched to your platform.",
+  "seoTitle": "Web Hosting South Africa",
+  "headline": "Web hosting matched to your business.",
+  "intro": "A business website and a business mailbox have different needs. We help choose and configure the right hosting arrangement, whether your project is a custom website or a WordPress build.",
+  "audience": "Businesses launching a website, moving providers or bringing website and email setup together.",
+  "features": [
+    "Hosting matched to your website",
+    "Domain and SSL configuration",
+    "Email and migration planning"
+  ],
+  "deliverables": [
+    {
+      "title": "A suitable hosting setup",
+      "description": "We match the platform to the website. Custom static sites can use Cloudflare hosting; WordPress needs a server environment that supports its application and database."
+    },
+    {
+      "title": "Domain connection",
+      "description": "Configure the agreed DNS records and check the website connection, taking existing email records into account."
+    },
+    {
+      "title": "Secure website access",
+      "description": "Set up HTTPS and check the certificate configuration for the chosen hosting environment."
+    },
+    {
+      "title": "A planned move",
+      "description": "Review website files, mailboxes and DNS before a migration, with responsibilities and a changeover plan agreed in advance."
+    }
+  ],
+  "steps": [
+    {
+      "title": "Check your requirements",
+      "description": "Confirm the website platform, storage needs, mailboxes and current provider."
+    },
+    {
+      "title": "Confirm the package",
+      "description": "Agree storage, email allowances, access, support and any migration work."
+    },
+    {
+      "title": "Connect and check",
+      "description": "Configure the approved services and verify website and email operation after the change."
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Does buying a domain include hosting?",
+      "answer": "Domain registration reserves the name. Website hosting and email are separate services unless a package explicitly includes them."
+    },
+    {
+      "question": "Will I get cPanel access?",
+      "answer": "Access depends on the hosting package and platform. Cloudflare hosting does not provide cPanel. We confirm any individual cPanel access in your hosting proposal before setup."
+    },
+    {
+      "question": "Is mailbox storage separate from website storage?",
+      "answer": "That depends on the package. Where a shared storage allowance is used, website files, databases and mailboxes may all consume it. We confirm the total allowance and mailbox limits before setup."
+    }
+  ],
+  "scope": "Storage, mailbox limits, backups, control-panel access and support are confirmed for your chosen package. Contact us for the current hosting arrangement and migration quote before ordering.",
+  "related": [
+    "web-design",
+    "website-maintenance",
+    "e-commerce"
+  ]
+};
+
+// Detailed service explanation, approach, outcomes and example brief.
+const detail:ServiceDetail = {
+  "heading": "Choose hosting around the way your business operates.",
+  "introduction": [
+    "Hosting is where the website runs, but the buying decision reaches beyond disk space. Your platform, email requirements, editing access, backups and support arrangements all influence which setup makes sense. Getting those decisions right helps avoid paying for facilities you do not use or discovering an important limitation after moving.",
+    "WDP connects the technical choices to your everyday needs. We distinguish the domain name from website hosting and email, identify the services already in place and plan how they will work together. Whether you are launching a new site or changing providers, we explain the arrangement and the responsibilities before making the move. The result is a hosting setup your business can understand and plan around."
+  ],
+  "approach": [
+    {
+      "title": "The website platform comes first.",
+      "body": "A custom static site and a WordPress installation have different server requirements. Cloudflare can serve an appropriate custom website, while WordPress needs an environment that runs its application and database. We assess the actual build and its integrations before recommending hosting. Control-panel access, editing access and mailbox administration are then explained for that specific arrangement."
+    },
+    {
+      "title": "Storage is allocated with email in mind.",
+      "body": "Website files, images, databases and retained email can all contribute to storage use, depending on the package. We discuss the number of mailboxes, their limits and how quickly they are likely to grow. We also clarify the backup allowance and retention arrangements. A useful hosting proposal explains those limits clearly instead of relying on an impressive storage headline."
+    },
+    {
+      "title": "A migration needs a sequence.",
+      "body": "Before changing DNS, we check the existing records and identify which provider handles the website and email. We plan the required file, database and mailbox moves, configure the destination and check the services after changeover. The old service should remain available until the agreed migration checks are complete. This helps avoid overlooking a working mailbox or an important DNS record."
+    }
+  ],
+  "outcomes": [
+    "A hosting recommendation suited to the website platform",
+    "Documented storage, mailbox and access arrangements",
+    "Domain, DNS and HTTPS configuration within the agreed scope",
+    "A planned migration with website and email checks"
+  ],
+  "example": {
+    "title": "A website and email on different platforms",
+    "body": "For example, your website can run on Cloudflare while email stays with a separate mail provider. The domain’s DNS records connect visitors to the website and route messages to the mail service. We check both functions when changing the hosting setup."
+  }
+};
+---
+<ServicePage service={service} detail={detail} />

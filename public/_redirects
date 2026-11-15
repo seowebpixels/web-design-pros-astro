@@ -1,0 +1,17 @@
+# Preserve the existing WordPress service URLs at launch.
+/professional-web-design-johannesburg/ /services/web-design/ 301
+/professional-web-design-johannesburg /services/web-design/ 301
+/web-design-services/ /services/web-design/ 301
+/web-design-services /services/web-design/ 301
+/website-maintenance-south-africa/ /services/website-maintenance/ 301
+/website-maintenance-south-africa /services/website-maintenance/ 301
+/web-hosting-south-africa/ /services/web-hosting/ 301
+/web-hosting-south-africa /services/web-hosting/ 301
+/seo-services-in-randburg-johannesburg/ /services/seo-optimization/ 301
+/seo-services-in-randburg-johannesburg /services/seo-optimization/ 301
+/social-media-marketing/ /services/social-media-marketing/ 301
+/social-media-marketing /services/social-media-marketing/ 301
+/branding-services-south-africa/ /services/branding-services/ 301
+/branding-services-south-africa /services/branding-services/ 301
+/work-with-us/ /contact/ 301
+/work-with-us /contact/ 301

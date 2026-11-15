@@ -1,0 +1,109 @@
+---
+// Edit this service's page content below. Shared design: src/components/ServicePage.astro.
+import ServicePage from '../../components/ServicePage.astro';
+import type {Service,ServiceDetail} from '../../data/service-types';
+export const prerender=true;
+
+// Page heading, introduction, included work, process and FAQs.
+const service:Service = {
+  "slug": "website-maintenance",
+  "title": "Website Maintenance & Performance",
+  "icon": "⚡",
+  "summary": "Practical website care, content updates and performance improvements.",
+  "seoTitle": "Website Maintenance South Africa",
+  "headline": "Website maintenance that keeps business moving.",
+  "intro": "A website needs attention after launch. We help keep content useful, check important functions and address technical issues through a maintenance scope matched to your platform.",
+  "audience": "Businesses with an existing website that need reliable help with updates and technical upkeep.",
+  "features": [
+    "Content updates and edits",
+    "Performance and functionality checks",
+    "Platform-specific maintenance"
+  ],
+  "deliverables": [
+    {
+      "title": "Content that stays relevant",
+      "description": "Update the agreed pages, contact details, service information and supplied assets as your business changes."
+    },
+    {
+      "title": "Checks on the journeys that matter",
+      "description": "Review links, forms and key pages to identify problems that could interrupt customer enquiries."
+    },
+    {
+      "title": "Performance improvements",
+      "description": "Assess image sizes, loading behaviour and avoidable page weight, then prioritise practical fixes."
+    },
+    {
+      "title": "Care for your platform",
+      "description": "For CMS sites, agree a process for updates and backups. Custom-built sites receive checks appropriate to their own setup."
+    }
+  ],
+  "steps": [
+    {
+      "title": "Review and protect",
+      "description": "Check the platform, existing faults and access. Agree the backup and recovery arrangements before changing the site."
+    },
+    {
+      "title": "Update and test",
+      "description": "Use a staging copy where available, apply the agreed updates and check important pages and forms afterwards."
+    },
+    {
+      "title": "Report and plan",
+      "description": "Record the work completed, highlight unresolved issues and quote larger changes separately."
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Do you maintain websites you did not build?",
+      "answer": "We can assess an existing site first. Support depends on its platform, condition and whether the necessary access is available."
+    },
+    {
+      "question": "Are redesigns included?",
+      "answer": "Routine care and small agreed updates differ from new pages, new functionality or a redesign. Larger changes are scoped separately."
+    },
+    {
+      "question": "Does maintenance guarantee that nothing will break?",
+      "answer": "No. Maintenance reduces avoidable problems and provides a process for responding to them. Third-party services and software can still experience faults."
+    }
+  ],
+  "scope": "Update frequency, backups, response arrangements and included hours depend on the agreed plan. Emergency recovery, malware remediation and third-party licence fees are quoted separately where needed.",
+  "related": [
+    "web-design",
+    "web-hosting",
+    "seo-optimization"
+  ]
+};
+
+// Detailed service explanation, approach, outcomes and example brief.
+const detail:ServiceDetail = {
+  "heading": "Keep your website working when customers need it.",
+  "introduction": [
+    "An outdated price, a broken form or a failed software update can quietly interrupt the way your website supports the business. Maintenance gives those details a regular owner. It keeps important information current and creates a practical process for finding, prioritising and resolving technical problems.",
+    "WDP approaches website care as a working routine: understand the platform, protect what is there, make the agreed changes and check what customers actually use. A WordPress site needs different attention from a custom Astro website. We account for that difference rather than selling the same list of tasks to every client. You can focus on your business while we handle the agreed technical upkeep and explain any larger issue that needs a decision."
+  ],
+  "approach": [
+    {
+      "title": "Updates are checked in context.",
+      "body": "On a WordPress site, a theme or plugin update can affect a form, page layout or checkout. We establish the backup and testing arrangements first, use staging where the setup supports it, and check key functions after changes. Custom-built websites receive the dependency, content and deployment checks appropriate to their platform. The process follows what is actually installed and how the site is used."
+    },
+    {
+      "title": "Recovery is part of the plan.",
+      "body": "Having a backup and being able to recover from it are different things. We agree what is backed up, where copies are kept, the retention period and who handles restoration. We also consider the information that changes between backups, particularly orders and customer submissions. Those decisions help set sensible expectations before an incident happens."
+    },
+    {
+      "title": "Useful reporting keeps you in control.",
+      "body": "You should know what changed and what still needs attention. We record the agreed work, explain significant faults in plain language and distinguish routine maintenance from new development. When a larger fix is needed, you can assess its purpose, cost and priority before authorising it. That makes ongoing care easier to budget for."
+    }
+  ],
+  "outcomes": [
+    "An agreed maintenance routine matched to your platform",
+    "Checks on important pages, forms and links",
+    "Clear backup, recovery and support responsibilities",
+    "A record of completed work and practical recommendations"
+  ],
+  "example": {
+    "title": "A site that receives business enquiries",
+    "body": "For example, a service company may have a website that looks unchanged for months while the enquiry form stops delivering messages. A maintenance check follows the form journey and its delivery settings, because a page looking correct is only part of the job."
+  }
+};
+---
+<ServicePage service={service} detail={detail} />

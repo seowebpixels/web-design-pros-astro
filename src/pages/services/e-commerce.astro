@@ -1,0 +1,108 @@
+---
+// Edit this service's page content below. Shared design: src/components/ServicePage.astro.
+import ServicePage from '../../components/ServicePage.astro';
+import type {Service,ServiceDetail} from '../../data/service-types';
+export const prerender=true;
+
+// Page heading, introduction, included work, process and FAQs.
+const service:Service = {
+  "slug": "e-commerce",
+  "title": "Custom E-Commerce",
+  "icon": "🛒",
+  "summary": "Online stores with clear product information and a considered buying journey.",
+  "headline": "Make it easier to buy from your business.",
+  "intro": "Build an online store around your products and the way you fulfil orders. We bring together product browsing, checkout and the operational details that make a store practical to run.",
+  "audience": "Businesses launching an online shop or improving an existing store and checkout experience.",
+  "features": [
+    "Product catalogue and store layouts",
+    "Local payment gateway integration",
+    "Mobile-friendly checkout journeys"
+  ],
+  "deliverables": [
+    {
+      "title": "Products customers can understand",
+      "description": "Plan categories, product pages, variants and supplied images so shoppers can find and compare what you sell."
+    },
+    {
+      "title": "A clear checkout",
+      "description": "Reduce avoidable friction in the agreed purchase journey, with understandable totals and customer information requirements."
+    },
+    {
+      "title": "Payment and fulfilment setup",
+      "description": "Connect the agreed payment provider and configure supported delivery, collection or fulfilment options."
+    },
+    {
+      "title": "A tested handover",
+      "description": "Check key order scenarios and walk your team through the agreed product and order-management process."
+    }
+  ],
+  "steps": [
+    {
+      "title": "Plan the store",
+      "description": "Confirm products, stock rules, fulfilment, payments and platform requirements."
+    },
+    {
+      "title": "Build the buying journey",
+      "description": "Create the catalogue, pages and integrations using the supplied product data."
+    },
+    {
+      "title": "Test before launch",
+      "description": "Check payments, order messages and fulfilment settings before opening the store."
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Which payment gateway can I use?",
+      "answer": "We assess suitable South African providers such as Yoco or PayFast for your chosen platform. Merchant approval, gateway fees and supported features are confirmed with the provider."
+    },
+    {
+      "question": "Can my team manage products?",
+      "answer": "The platform and editing workflow are selected around your needs. We agree which product, inventory and order-management features you require before development."
+    },
+    {
+      "question": "Is product loading included?",
+      "answer": "Your proposal specifies the initial number of products and variants, the data format you need to supply and any additional loading costs."
+    }
+  ],
+  "scope": "Product quantities, shipping rules, payment integration, customer accounts and training are confirmed in the quote. Payment-provider charges and third-party extensions are separate unless stated.",
+  "related": [
+    "web-hosting",
+    "branding-services",
+    "seo-optimization"
+  ]
+};
+
+// Detailed service explanation, approach, outcomes and example brief.
+const detail:ServiceDetail = {
+  "heading": "Build a store your customers can buy from—and you can run.",
+  "introduction": [
+    "A successful buying journey starts before the payment screen. Shoppers need clear product information, understandable options and confidence about delivery and the total cost. Your team also needs a workable way to manage products, receive orders and fulfil what has been sold.",
+    "WDP plans the storefront and the operating process together. We establish how your catalogue works, how stock and variants are handled, which payment arrangements fit the platform and what happens after an order is placed. The design then supports those decisions, giving shoppers a clearer route from discovery to checkout and giving your team a store built around its day-to-day responsibilities."
+  ],
+  "approach": [
+    {
+      "title": "Make the catalogue easier to navigate.",
+      "body": "Categories, product names, photographs and descriptions should help people compare options and choose correctly. We plan the agreed product structure, variants and essential information before loading the catalogue. On mobile, we consider the space needed for options, prices and purchase controls. A product page needs to answer the buying questions, not simply display a picture and an add-to-cart button."
+    },
+    {
+      "title": "Treat payment as a complete journey.",
+      "body": "We consider the path into checkout, the information being collected, the hand-off to the payment provider and the return to the store. Successful, cancelled and interrupted payments need understandable outcomes. Order status and customer notifications should reflect confirmed events, with an agreed process for reconciliation when something needs manual attention."
+    },
+    {
+      "title": "Connect the sale to fulfilment.",
+      "body": "Delivery areas, rates, collection options and order messages all influence the experience after payment. We agree how those functions work for your business and show your team the management process included in the project. Product quantities, integrations and store policies are confirmed early so that the launch scope is realistic and testable."
+    }
+  ],
+  "outcomes": [
+    "A product and category structure suited to your catalogue",
+    "A responsive storefront and clearly explained purchase options",
+    "The agreed payment, delivery and customer-message setup",
+    "Checks on key order scenarios and a practical store handover"
+  ],
+  "example": {
+    "title": "A product with several buying options",
+    "body": "For example, a retailer selling one product in different sizes needs each option, price and stock rule to behave consistently. We plan how those choices appear on the product page and how the selected item is carried through checkout and into the order record."
+  }
+};
+---
+<ServicePage service={service} detail={detail} />

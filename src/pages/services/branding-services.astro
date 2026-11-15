@@ -1,0 +1,113 @@
+---
+// Edit this service's page content below. Shared design: src/components/ServicePage.astro.
+import ServicePage from '../../components/ServicePage.astro';
+import type {Service,ServiceDetail} from '../../data/service-types';
+import BrandTimeline from '../../components/BrandTimeline.astro';
+export const prerender=true;
+
+// Page heading, introduction, included work, process and FAQs.
+const service:Service = {
+  "slug": "branding-services",
+  "title": "Branding Services",
+  "icon": "🎨",
+  "summary": "A coherent visual identity for your website, social channels and business materials.",
+  "seoTitle": "Branding Services South Africa",
+  "headline": "Branding that makes your business recognisable.",
+  "intro": "Bring your business identity together with a clear visual direction. From a new logo to a more consistent set of brand assets, we create a practical foundation you can use across your customer touchpoints.",
+  "audience": "New businesses establishing an identity and established businesses ready to refresh theirs.",
+  "features": [
+    "Logo and identity design",
+    "Colour and typography direction",
+    "Practical brand asset handover"
+  ],
+  "deliverables": [
+    {
+      "title": "Research and strategic discovery",
+      "description": "Explore your audience, business goals, competitors and existing identity. Agree what your brand needs to communicate before developing visuals."
+    },
+    {
+      "title": "Your visual identity",
+      "description": "Develop logo concepts, a colour palette and typography that reflect the business. Refine the selected direction through the agreed review rounds."
+    },
+    {
+      "title": "Digital assets that work in practice",
+      "description": "Prepare the agreed logo variations and assets for websites, social channels and email. Check legibility at small sizes and on light and dark backgrounds."
+    },
+    {
+      "title": "Brand guidelines for consistent use",
+      "description": "Document logo spacing, colour values, typography and practical usage. Give your team a reference for keeping future materials recognisable."
+    }
+  ],
+  "steps": [
+    {
+      "title": "Discover the direction",
+      "description": "Discuss the business, audience, preferences and where the identity will be used."
+    },
+    {
+      "title": "Create and refine",
+      "description": "Present concepts and develop the selected direction with your feedback."
+    },
+    {
+      "title": "Prepare the handover",
+      "description": "Package approved assets with the agreed usage notes and file formats."
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Can you improve an existing logo?",
+      "answer": "Yes. We can assess whether a refinement or a broader refresh will better address the problem while retaining useful recognition."
+    },
+    {
+      "question": "Do I receive editable files?",
+      "answer": "Your proposal specifies the source files and export formats included in the final handover, together with any third-party font or asset licences."
+    },
+    {
+      "question": "Does design include trademark registration?",
+      "answer": "No. Logo design and brand development do not include trademark searches or registration. Those require separate specialist advice."
+    }
+  ],
+  "scope": "Concept count, revisions, source files, guidelines and collateral are specified in the quote. Printing and paid font or image licences are separate unless included.",
+  "related": [
+    "web-design",
+    "social-media-marketing",
+    "e-commerce"
+  ]
+};
+
+// Detailed service explanation, approach, outcomes and example brief.
+const detail:ServiceDetail = {
+  "heading": "Make the quality of your business visible.",
+  "introduction": [
+    "Customers encounter your business in fragments: a logo on a phone screen, an email signature, a social post, a quotation or a business card. When those pieces feel unrelated, it is harder to build recognition. A coherent identity gives them a common visual language and helps your business present itself with confidence.",
+    "WDP builds that identity from the purpose of the business outward. We explore who you serve, how you want to be perceived and where the design needs to work. Those decisions guide the logo, typography, colour and supporting assets. You receive more than an isolated artwork: you receive a direction your website, social channels and business materials can share."
+  ],
+  "approach": [
+    {
+      "title": "Start with positioning and personality.",
+      "body": "Before drawing a logo, we establish what the identity needs to communicate. A technical service, a hospitality business and a professional consultancy may need different visual cues. We consider the audience, existing recognition and relevant competitors, then agree the creative direction. Your preferences matter, but each design decision should also make sense for the business and its customers."
+    },
+    {
+      "title": "Design for use, not just presentation.",
+      "body": "A logo needs to stay legible in a small website header as well as on a larger document. We consider scale, contrast, spacing and variations for light and dark backgrounds. Typography and colour need to work together across digital and agreed print applications. Those practical checks help make the final identity easier to apply consistently after the design presentation is over."
+    },
+    {
+      "title": "Give the identity a working system.",
+      "body": "Brand guidelines explain how to use the approved assets: colour values, clear space, type choices and examples of consistent application. Your handover includes the file formats and variations agreed for the project. When a website, social template or email signature is added later, there is a usable reference for carrying the identity forward."
+    }
+  ],
+  "outcomes": [
+    "An agreed creative direction grounded in your business and audience",
+    "A refined logo and supporting visual identity within scope",
+    "The agreed digital assets, export formats and variations",
+    "Practical brand guidance for consistent future use"
+  ],
+  "example": {
+    "title": "A business moving beyond its first logo",
+    "body": "For example, an established small business may want to retain a recognisable symbol while improving its type, colours and digital presentation. A focused refinement can preserve useful familiarity and give the business a much more consistent set of materials."
+  }
+};
+---
+<ServicePage service={service} detail={detail}>
+  <!-- Microsoft timeline copy and illustrations: src/components/BrandTimeline.astro -->
+  <BrandTimeline slot="service-extra" />
+</ServicePage>
