@@ -640,6 +640,7 @@ describe('domain renewal workflow',()=>{
   expect((await app.webhook(r,'succeeded',26000)).status).toBe(200);expect((await app.webhook(r,'succeeded',26000)).status).toBe(200);
   expect(app.sql.prepare('SELECT expires_on FROM wdp_domain_registrations').get()!.expires_on).toBe(app.expiry);
   expect(app.sql.prepare('SELECT fulfilment_status FROM wdp_orders WHERE id=?').get(r.attemptId)!.fulfilment_status).toBe('renewal_pending');
+  const pendingServices=await (await servicesEndpoint(app.context(new Request('https://wdp.test/api/customer/services',{headers:{Cookie:app.purchaser.cookie}})))).json();expect(pendingServices.services[0].completedRenewal).toBeUndefined();
   const status=await paymentStatus(app.context(new Request('https://wdp.test/api/payments/status?attempt='+r.attemptId,{headers:{Authorization:'Bearer '+r.accessToken}})));
   expect(await status.json()).toMatchObject({kind:'renewal',paidDomains:[],status:'paid'});
   const domains=await (await domainsEndpoint(app.context(new Request('https://wdp.test/api/customer/domains',{headers:{Cookie:app.purchaser.cookie}})))).json();expect(domains.domains).toHaveLength(1);
@@ -648,6 +649,8 @@ describe('domain renewal workflow',()=>{
   expect(app.sql.prepare('SELECT expires_on FROM wdp_domain_registrations').get()!.expires_on).toBe(extendExpiry(app.expiry,3));
   expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_registration_audit').get()!.n).toBe(1);expect(app.sql.prepare('SELECT COUNT(*) AS n FROM wdp_renewal_mail').get()!.n).toBe(1);
   const services=await (await servicesEndpoint(app.context(new Request('https://wdp.test/api/customer/services',{headers:{Cookie:app.purchaser.cookie}})))).json();expect(services.serviceCount).toBe(1);expect(services.services[0].nextDueDate).toBe(extendExpiry(app.expiry,3));
+  expect(services.services[0]).toMatchObject({orderId:app.input.attemptId,completedRenewal:{paidCents:26000,years:3},expiryState:'active'});
+  const other=await app.customer('other@example.com');const otherServices=await (await servicesEndpoint(app.context(new Request('https://wdp.test/api/customer/services',{headers:{Cookie:other.cookie}})))).json();expect(otherServices.services).toEqual([]);
   const order=app.sql.prepare('SELECT * FROM wdp_orders WHERE id=?').get(r.attemptId);expect(invoiceDetail(order as any).lines[0].description).toBe('Domain renewal: example.co.za');
  });
  it('requires ownership, current expiry, current price, confirmed registration and a non-expired date',async()=>{
