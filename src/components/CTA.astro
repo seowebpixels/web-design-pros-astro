@@ -1,5 +1,6 @@
 ---
 /* CTA.astro - Hybrid Interactive Contact Form */
+import CallButton from './CallButton.astro';
 ---
 
 <section class="cta-section" id="contact">
@@ -97,6 +98,10 @@
       ></p>
 
     </form>
+    <div class="cta-call">
+      <p>Prefer to talk it through?</p>
+      <CallButton />
+    </div>
   </div>
 </section>
 
@@ -287,6 +292,8 @@
 </script>
 
 <style>
+  .cta-call { text-align: center; margin-top: 32px; }
+  .cta-call p { margin-bottom: 16px; color: #b8c7df; }
   .cta-section {
     scroll-margin-top: 210px;
     background-color: #000000;

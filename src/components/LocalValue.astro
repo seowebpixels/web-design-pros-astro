@@ -1,4 +1,5 @@
 ---
+import CallButton from './CallButton.astro';
 const localValues = [
   {
     icon: '⚡',
@@ -25,6 +26,7 @@ const localValues = [
 
 <section class="local-value-section">
   <div class="container">
+    <div class="local-call-top"><CallButton /></div>
     <div class="section-header">
       <span class="sub-heading">ENGINEERED FOR LOCAL GROWTH</span>
       
@@ -44,11 +46,19 @@ const localValues = [
         </div>
       ))}
     </div>
+    <div class="local-call-bottom"><CallButton /></div>
   </div>
 </section>
 
 <style>
+  .local-call-top { position: absolute; top: 24px; right: 32px; }
+  .local-call-bottom { margin-top: 32px; }
+  @media (max-width: 600px) {
+    .local-call-top { top: 16px; right: 24px; }
+    .local-call-bottom { width: 100%; }
+  }
   .local-value-section {
+    position: relative;
     padding: 5rem 2rem;
     max-width: 1200px;
     margin: 0 auto;

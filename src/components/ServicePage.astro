@@ -5,6 +5,8 @@ import type {Service,ServiceDetail as ServiceDetailContent} from '../data/servic
 import ServiceTrust from './ServiceTrust.astro';
 import ServiceDetail from './ServiceDetail.astro';
 import CTA from './CTA.astro';
+import GoogleReviews from './GoogleReviews.astro';
+import CallButton from './CallButton.astro';
 interface Props {service:Service;detail:ServiceDetailContent}
 const {service,detail}=Astro.props;
 const related=service.related.map(slug=>services.find(item=>item.slug===slug)!);
@@ -21,7 +23,7 @@ const schema={"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id"
           <p class="service-eyebrow">{service.title}</p>
           <h1 id="service-heading">{service.headline}</h1>
           <p class="service-lead">{service.intro}</p>
-          <div class="service-buttons"><a class="service-btn primary" href="/contact/#contact">Discuss your project <span aria-hidden="true">→</span></a><a class="service-btn secondary" href="#included">Explore the service</a></div>
+          <div class="service-buttons"><a class="service-btn primary" href="/contact/#contact">Discuss your project <span aria-hidden="true">→</span></a><CallButton /><a class="service-btn secondary" href="#included">Explore the service</a></div>
           {service.slug==='branding-services'&&<a class="service-history-link" href="#brand-history">Explore the Microsoft logo timeline ↓</a>}
           <p class="service-location">Based in Johannesburg · Working with businesses across South Africa</p>
         </div>
@@ -47,6 +49,7 @@ const schema={"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id"
     <ServiceTrust showWork={service.slug==='web-design'} />
     <section class="service-section service-container" aria-labelledby="related-heading"><p class="service-eyebrow">Bring it together</p><h2 id="related-heading">Services that work well together.</h2><div class="service-related">{related.map(item=><a href={`/services/${item.slug}/`}><span aria-hidden="true">{item.icon}</span><h3>{item.title}</h3><p>{item.summary}</p><span class="service-related-link">Explore service →</span></a>)}</div></section>
   </div>
+  <GoogleReviews />
   <CTA />
 </Layout>
 <style>

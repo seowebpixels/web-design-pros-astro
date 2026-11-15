@@ -2,11 +2,13 @@
 import Layout from '../../layouts/Layout.astro';
 import ServicesGrid from '../../components/ServicesGrid.astro';
 import CTA from '../../components/CTA.astro';
+import GoogleReviews from '../../components/GoogleReviews.astro';
 export const prerender=true;
 ---
 <Layout title="Digital Services for South African Businesses | Web Design Pros" description="Explore web design, maintenance, hosting, SEO, branding, social media, e-commerce, business tools and Google Ads services from Web Design Pros.">
  <section class="services-intro"><nav aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true"> / </span><span aria-current="page">Services</span></nav><p class="eyebrow">Web Design Pros · Johannesburg</p><h1>The right support for your next step.</h1><p class="lead">Build your website, improve how people find you, or make an everyday process easier. Explore our services to see where we can help your business.</p><a class="intro-link" href="/contact/#contact">Not sure where to start? Talk to us →</a></section>
  <ServicesGrid />
+ <GoogleReviews />
  <CTA />
 </Layout>
 <style>
