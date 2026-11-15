@@ -1,6 +1,7 @@
 import {renewalQuote,confirmRenewal,extendExpiry,renewalState,queueRenewalReminders,deliverRenewalMail,todayZA} from '../renewals';
 import {onRequestGet as renewalsEndpoint} from '../../../../functions/api/customer/renewals';
 import {onRequestGet as renewalAdmin,onRequestPut as renewalConfirm} from '../../../../functions/api/admin/renewals';
+import {onRequestPost as renewalJob} from '../../../../functions/api/internal/renewals';
 import {afterEach,describe,expect,it,vi} from 'vitest';
 import {DatabaseSync} from 'node:sqlite';
 import {readFileSync} from 'node:fs';
@@ -611,6 +612,23 @@ describe('domain renewal workflow',()=>{
   const renewal={kind:'renewal',sourceOrderId:input.attemptId,domain:'example.co.za',expiresOn:expiry,years:3,quotedAmount:26000,termsAccepted:true,attemptId:crypto.randomUUID(),accessToken:crypto.randomUUID()};
   return {...app,purchaser:customer,input,expiry,renewal};
  }
+ it('reports held renewal emails and deployed settings without sending when disabled',async()=>{
+  const app=await ready(),r=app.renewal,retrySecret='test-retry-secret-'.repeat(3);
+  Object.assign(app.env,{WDP_ORDER_ALERT_RETRY_SECRET:retrySecret});
+  await createPayment(app.context(app.request(r,app.purchaser.cookie)));await app.webhook(r,'succeeded',26000);
+  await confirmRenewal(app.env,app.purchaser.user.id,{orderId:r.attemptId,version:1,confirmed:true,providerReference:'TH',expiresOn:extendExpiry(app.expiry,3)});
+  const request=(token=retrySecret)=>app.context(new Request('https://wdp.test/api/internal/renewals',{method:'POST',headers:{Authorization:'Bearer '+token}}));
+  expect((await renewalJob(request('wrong'))).status).toBe(403);
+  const result=await (await renewalJob(request())).json();
+  expect(result).toMatchObject({queued:0,sent:0,pending:0,settings:{renewalsEnabled:true,emailsEnabled:false,testEmailsEnabled:false},outstanding:[{mode:'test',total:1}]});
+  expect(JSON.stringify(result)).not.toContain(retrySecret);
+  expect(app.sql.prepare('SELECT attempts FROM wdp_renewal_mail').get()!.attempts).toBe(0);
+  app.env.WDP_RENEWAL_EMAIL_ENABLED='true';
+  expect(await (await renewalJob(request())).json()).toMatchObject({sent:0,settings:{emailsEnabled:true,testEmailsEnabled:false},outstanding:[{mode:'test',total:1}]});
+  app.env.WDP_RENEWAL_TEST_EMAILS_ENABLED='true';
+  expect(await (await renewalJob(request())).json()).toMatchObject({sent:1,outstanding:[]});
+  expect(await (await renewalJob(request())).json()).toMatchObject({sent:0,outstanding:[]});
+ });
  it('clamps leap years and uses South African dates',()=>{
   expect(extendExpiry('2028-02-29',1)).toBe('2029-02-28');expect(extendExpiry('2028-02-29',4)).toBe('2032-02-29');
   expect(renewalState({status:'registered',expires_on:'2027-01-01'},new Date('2026-12-31T23:00:00Z')).state).toBe('expired');
