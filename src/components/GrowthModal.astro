@@ -28,6 +28,10 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 <div
   id="growth-modal"
   class="growth-modal"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="growth-modal-title"
+  tabindex="-1"
   aria-hidden="true"
 >
 
@@ -77,7 +81,7 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 
 
         <!-- HEADLINE -->
-        <h3 class="growth-headline">
+        <h3 id="growth-modal-title" class="growth-headline">
           Let us help your business grow faster.
         </h3>
 
@@ -1763,6 +1767,60 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
     const successPanel = document.getElementById('growth-success');
     document.getElementById('growth-success-close')?.addEventListener('click', () => closeBtn?.click());
     let isGrowthSubmitting = false;
+    let previousFocus: HTMLElement | null = null;
+    let previousOverflow = '';
+    const inertBackground: HTMLElement[] = [];
+
+    // Disable the surrounding page while leaving the dialog's ancestors active.
+    function setBackgroundInert() {
+      let branch: HTMLElement | null = modal;
+      while (branch && branch !== document.body) {
+        const parent: HTMLElement | null = branch.parentElement;
+        if (!parent) break;
+        for (const sibling of parent.children) {
+          if (sibling !== branch && sibling instanceof HTMLElement && !sibling.inert) {
+            sibling.inert = true;
+            inertBackground.push(sibling);
+          }
+        }
+        branch = parent;
+      }
+    }
+
+    function closeModal() {
+      if (!modal || modal.getAttribute('aria-hidden') === 'true') return;
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      modal.setAttribute('aria-hidden', 'true');
+      inertBackground.splice(0).forEach(element => { element.inert = false; });
+      document.body.style.overflow = previousOverflow;
+      if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
+    }
+
+    modal?.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        event.stopPropagation();
+        closeModal();
+      } else if (event.key === 'Tab') {
+        const controls = Array.from(modal.querySelectorAll<HTMLElement>(
+          'a[href], button, input, select, textarea, [tabindex]'
+        )).filter(element => element.tabIndex >= 0 && !element.matches(':disabled') &&
+          !element.closest('[inert], [hidden]') && element.getClientRects().length > 0);
+        const first = controls[0];
+        const last = controls[controls.length - 1];
+        if (!first) {
+          event.preventDefault();
+          modal.focus();
+        } else if (event.shiftKey && (document.activeElement === first || document.activeElement === modal)) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && (document.activeElement === last || document.activeElement === modal)) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    });
 
 
     /* =======================================================
@@ -1772,6 +1830,8 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
     if (openBtn && modal) {
 
       openBtn.addEventListener('click', () => {
+        previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : openBtn;
+        previousOverflow = document.body.style.overflow;
 
         if (growthPanel?.classList.contains('is-success')) {
           growthPanel.classList.remove('is-success');
@@ -1791,6 +1851,8 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
         modal.setAttribute('aria-hidden', 'false');
 
         document.body.style.overflow = 'hidden';
+        setBackgroundInert();
+        closeBtn?.focus({ preventScroll: true });
 
       });
 
@@ -1803,16 +1865,7 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
 
     if (closeBtn && modal) {
 
-      closeBtn.addEventListener('click', () => {
-
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-
-        modal.setAttribute('aria-hidden', 'true');
-
-        document.body.style.overflow = '';
-
-      });
+      closeBtn.addEventListener('click', closeModal);
 
     }
 
