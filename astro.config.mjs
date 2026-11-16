@@ -14,7 +14,12 @@ export default defineConfig({
   },
 
   integrations: [
-    sitemap()
+    sitemap({
+      filter: page => {
+        const path = decodeURIComponent(new URL(page).pathname);
+        return !/^\/(account|checkout|dashboard|payment|api)(\/|$)/.test(path) && !/\s/.test(path);
+      }
+    })
   ],
 
   vite: {

@@ -1,0 +1,6 @@
+# Production remains indexable. Project, branch and deployment previews do not.
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex
+
+https://:version.:project.pages.dev/*
+  X-Robots-Tag: noindex

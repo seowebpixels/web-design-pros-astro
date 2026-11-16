@@ -3,6 +3,7 @@
 import CallButton from './CallButton.astro';
 ---
 
+<div id="contact-section" class="legacy-contact-anchor" aria-hidden="true"></div>
 <section class="cta-section" id="contact">
   <div class="container">
     <div class="section-header">
@@ -308,6 +309,8 @@ import CallButton from './CallButton.astro';
 </script>
 
 <style>
+  .legacy-contact-anchor { scroll-margin-top: 210px; }
+  @media (max-width: 1250px) { .legacy-contact-anchor { scroll-margin-top: 110px; } }
   .cta-call { text-align: center; margin-top: 32px; }
   .cta-call p { margin-bottom: 16px; color: #b8c7df; }
   .cta-section {
