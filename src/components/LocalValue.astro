@@ -119,6 +119,11 @@ const localValues = [
     text-align: center;
   }
 
+  @media (max-width: 400px) {
+    /* Keep the first card in place while the intro switches fonts. */
+    .section-intro { min-height: 9.6em; }
+  }
+
   /* Value Grid Forced to 4 Columns on Desktop */
   .value-grid {
     display: grid;

@@ -313,6 +313,7 @@ const services=catalogue.map(service=>({...service,description:service.summary,l
   }
 
   .header-logo {
+    aspect-ratio: 1693 / 929;
     height: 200px;
     width: auto;
     object-fit: contain;
@@ -694,7 +695,9 @@ const services=catalogue.map(service=>({...service,description:service.summary,l
 
     .header-container {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto auto;
+      /* Reserve the Login track so a font swap cannot resize the logo,
+         change the header height and move the entire page below it. */
+      grid-template-columns: minmax(0, 1fr) auto 90px;
       align-items: center;
       padding: 5px 1.5rem;
       gap: 16px;
@@ -707,7 +710,7 @@ const services=catalogue.map(service=>({...service,description:service.summary,l
     }
 
     .header-logo { max-width: 100%; height: auto; max-height: 173px; }
-    .header-login { grid-column: 3; grid-row: 1; padding: 8px 12px; }
+    .header-login { grid-column: 3; grid-row: 1; padding: 8px 12px; justify-content: center; }
 
     .mobile-toggle {
       display: flex;

@@ -23,3 +23,42 @@
   font-display: swap;
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
+
+/* Fallback metrics generated from the original fonts with @capsizecss/unpack.
+   Match text sizing while the local brand fonts load to reduce layout shift. */
+@font-face {
+  font-family: 'Cabinet Grotesk Fallback';
+  src: local('Arial');
+  font-weight: 100 500;
+  size-adjust: 102.0635%;
+  ascent-override: 85.2410%;
+  descent-override: 27.4339%;
+  line-gap-override: 8.8180%;
+}
+@font-face {
+  font-family: 'Cabinet Grotesk Fallback';
+  src: local('Arial Bold');
+  font-weight: 600 900;
+  size-adjust: 94.7955%;
+  ascent-override: 91.7765%;
+  descent-override: 29.5373%;
+  line-gap-override: 9.4941%;
+}
+@font-face {
+  font-family: 'Plus Jakarta Sans Fallback';
+  src: local('Arial');
+  font-weight: 100 500;
+  size-adjust: 104.9796%;
+  ascent-override: 98.8763%;
+  descent-override: 21.1470%;
+  line-gap-override: 0.0000%;
+}
+@font-face {
+  font-family: 'Plus Jakarta Sans Fallback';
+  src: local('Arial Bold');
+  font-weight: 600 900;
+  size-adjust: 97.5040%;
+  ascent-override: 106.4572%;
+  descent-override: 22.7683%;
+  line-gap-override: 0.0000%;
+}
