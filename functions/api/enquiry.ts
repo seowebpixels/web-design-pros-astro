@@ -54,11 +54,15 @@ const BUDGETS: Record<string, string> = {
 
 const CONTACT_SERVICES: Record<string, string> = {
   'Full Custom Website': 'Full Custom Website',
+  'Website Redesign': 'Website Redesign',
   'Speed Optimization': 'Speed Optimization',
   'E-Commerce Store': 'E-Commerce Store',
+  'SEO & Google Ads': 'SEO & Google Ads',
+  'Branding & Social Media': 'Branding & Social Media',
 };
 
 const CONTACT_BUDGETS: Record<string, string> = {
+  'R4,000 - R7,000': 'R4,000 – R7,000',
   'R9,500 - R15,000': 'R9,500 – R15,000',
   'R15,000 - R30,000': 'R15,000 – R30,000',
   'R30,000 - R60,000': 'R30,000 – R60,000',
