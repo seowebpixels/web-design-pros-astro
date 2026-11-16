@@ -17,11 +17,13 @@ const {
   canonical
 } = Astro.props;
 
-// Optional per-page canonical URL. Falls back to the current path resolved
-// against the production domain (the same hardcoded domain already used
-// throughout the JSON-LD schema below) so every page gets a sane default
-// even if it doesn't pass one explicitly.
-const canonicalURL = canonical ?? `https://webdesignpros.co.za${Astro.url.pathname}`;
+// Match the production sitemap's directory URLs, including for older pages
+// that still pass a canonical without a trailing slash.
+const canonicalPath = new URL(canonical ?? Astro.url.pathname, Astro.site).pathname;
+const canonicalURL = new URL(
+  canonicalPath.endsWith('/') ? canonicalPath : `${canonicalPath}/`,
+  Astro.site
+).href;
 
 const schemaData = {
   "@context": "https://schema.org",
