@@ -1713,6 +1713,7 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
      ========================================================= -->
 
 <script>
+  import { trackWebsiteEvent } from '../lib/analytics';
 
   document.addEventListener('DOMContentLoaded', () => {
 
@@ -2082,6 +2083,7 @@ import wdpLogo from '../assets/wdp-transparent-logo-new-2.avif';
         }
 
         if (response.ok && result && result.ok) {
+          if (!website) trackWebsiteEvent('generate_lead', 'growth-modal');
           growthPanel?.classList.add('is-success');
           if (successPanel) {
             successPanel.hidden = false;

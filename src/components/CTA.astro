@@ -123,6 +123,7 @@ import CallButton from './CallButton.astro';
 </section>
 
 <script>
+  import { trackWebsiteEvent } from '../lib/analytics';
   // Dynamic single-page reveal interactions
   const hybridForm = document.getElementById('hybridForm');
   const serviceBtns = document.querySelectorAll<HTMLButtonElement>('[data-type="service"]');
@@ -277,6 +278,7 @@ import CallButton from './CallButton.astro';
       }
 
       if (response.ok && result && result.ok) {
+          if (!website) trackWebsiteEvent('generate_lead', 'contact-form');
         hybridForm instanceof HTMLFormElement && hybridForm.reset();
         selectedService = '';
         selectedBudget = '';

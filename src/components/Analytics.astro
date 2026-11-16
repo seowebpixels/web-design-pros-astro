@@ -1,0 +1,89 @@
+---
+---
+<aside id="analytics-choice" class="analytics-choice" aria-labelledby="analytics-choice-title" hidden>
+  <div>
+    <h2 id="analytics-choice-title">Your privacy choices</h2>
+    <p>With your permission, we use Google Analytics to understand visits and improve our website. Your enquiry details are not sent to Analytics. <a href="/privacy/#website-analytics">Learn more</a>.</p>
+  </div>
+  <div class="analytics-actions">
+    <button type="button" id="analytics-decline">Essential only</button>
+    <button type="button" id="analytics-accept">Allow analytics</button>
+  </div>
+</aside>
+<button type="button" id="analytics-preferences" class="analytics-preferences" hidden>Privacy choices</button>
+
+<script>
+  import { ANALYTICS_CHOICE_KEY, GTM_CONTAINER_ID, analyticsAllowed, isPublicProductionPage, trackWebsiteEvent } from '../lib/analytics';
+
+  const banner = document.getElementById('analytics-choice');
+  const preferences = document.getElementById('analytics-preferences');
+  const publicPage = isPublicProductionPage(window.location);
+
+  function command(..._args: unknown[]) {
+    (window.dataLayer ??= []).push(arguments);
+  }
+
+  function loadAnalytics() {
+    if (!publicPage || !analyticsAllowed() || window.wdpAnalyticsLoaded) return;
+    window.wdpAnalyticsLoaded = true;
+    const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.href;
+    let referrer = '';
+    try {
+      const url = new URL(document.referrer);
+      if (!/^\/(account|checkout|dashboard|payment|api)(\/|$)/.test(url.pathname)) referrer = url.origin + url.pathname;
+    } catch { /* No usable referrer. */ }
+    command('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
+    command('consent', 'update', { analytics_storage: 'granted' });
+    command('set', { page_location: canonical ?? window.location.origin + window.location.pathname, page_referrer: referrer, allow_google_signals: false, allow_ad_personalization_signals: false });
+    window.dataLayer!.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = 'https://www.googletagmanager.com/gtm.js?id=' + GTM_CONTAINER_ID;
+    document.head.appendChild(script);
+  }
+
+  function saveChoice(choice: 'accepted' | 'declined') {
+    try { localStorage.setItem(ANALYTICS_CHOICE_KEY, choice); } catch { return; }
+    if (banner) banner.hidden = true;
+    if (choice === 'accepted') loadAnalytics();
+    else {
+      const wasLoaded = window.wdpAnalyticsLoaded;
+      for (const cookie of document.cookie.split(';')) {
+        const name = cookie.split('=')[0].trim();
+        if (!/^(_ga(?:_|$)|_gid$|_gat(?:_|$))/.test(name)) continue;
+        for (const domain of ['', '; domain=webdesignpros.co.za', '; domain=.webdesignpros.co.za']) {
+          document.cookie = name + '=; Max-Age=0; path=/' + domain + '; SameSite=Lax; Secure';
+        }
+      }
+      if (wasLoaded) window.location.reload();
+    }
+  }
+
+  if (publicPage) {
+    if (preferences) preferences.hidden = false;
+    let choice: string | null = null;
+    try { choice = localStorage.getItem(ANALYTICS_CHOICE_KEY); } catch { /* Stay opted out. */ }
+    if (choice !== 'accepted' && choice !== 'declined' && banner) banner.hidden = false;
+    loadAnalytics();
+  }
+  document.getElementById('analytics-accept')?.addEventListener('click', () => saveChoice('accepted'));
+  document.getElementById('analytics-decline')?.addEventListener('click', () => saveChoice('declined'));
+  preferences?.addEventListener('click', () => { if (banner) banner.hidden = false; });
+  document.addEventListener('click', event => {
+    const link = event.target instanceof Element ? event.target.closest('a[href^="tel:"]') : null;
+    if (link) trackWebsiteEvent('phone_click', 'phone-link');
+  });
+</script>
+
+<style>
+  .analytics-choice[hidden], .analytics-preferences[hidden] { display: none; }
+  .analytics-choice { position: fixed; inset: auto 1rem 1rem; z-index: 10000; max-width: 1000px; margin: 0 auto; padding: 1.25rem; display: flex; align-items: center; gap: 1.5rem; background: #091529; color: #fff; border: 1px solid #89cff0; border-radius: 12px; box-shadow: 0 8px 32px #0008; }
+  .analytics-choice h2 { font-size: 1.2rem; margin: 0 0 .35rem; }
+  .analytics-choice p { font-size: .85rem; line-height: 1.6; margin: 0; }
+  .analytics-choice a { color: #89cff0; text-decoration: underline; }
+  .analytics-actions { display: flex; gap: .6rem; flex-shrink: 0; }
+  .analytics-actions button { padding: .7rem 1rem; border: 1px solid #89cff0; border-radius: 6px; background: transparent; color: #fff; font: inherit; cursor: pointer; }
+  #analytics-accept { background: #89cff0; color: #091529; }
+  .analytics-preferences { position: fixed; bottom: .4rem; left: .5rem; z-index: 9998; padding: .3rem .6rem; border: 1px solid #546784; border-radius: 4px; background: #091529; color: #c6d9ec; font: inherit; font-size: .7rem; cursor: pointer; }
+  @media (max-width: 700px) { .analytics-choice { flex-direction: column; align-items: stretch; gap: .8rem; } .analytics-actions { flex-wrap: wrap; } .analytics-actions button { flex: 1; } }
+</style>
