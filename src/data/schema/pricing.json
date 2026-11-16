@@ -1,0 +1,66 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://webdesignpros.co.za/pricing/",
+      "url": "https://webdesignpros.co.za/pricing/",
+      "name": "Website Pricing | Web Design Pros",
+      "description": "Explore website design pricing and request a tailored quotation from Web Design Pros.",
+      "inLanguage": "en-ZA",
+      "isPartOf": {
+        "@id": "https://webdesignpros.co.za/#website"
+      },
+      "about": {
+        "@id": "https://webdesignpros.co.za/#organization"
+      },
+      "publisher": {
+        "@id": "https://webdesignpros.co.za/#organization"
+      },
+      "breadcrumb": {
+        "@id": "https://webdesignpros.co.za/pricing/#breadcrumb"
+      },
+      "mainEntity": {
+        "@id": "https://webdesignpros.co.za/pricing/#website-packages"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://webdesignpros.co.za/pricing/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://webdesignpros.co.za/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Pricing",
+          "item": "https://webdesignpros.co.za/pricing/"
+        }
+      ]
+    },
+    {
+      "@type": "OfferCatalog",
+      "@id": "https://webdesignpros.co.za/pricing/#website-packages",
+      "name": "Web Design Pros Website Packages",
+      "url": "https://webdesignpros.co.za/pricing/",
+      "itemListElement": [
+        {
+          "@id": "https://webdesignpros.co.za/pricing/#offer-starter-website"
+        },
+        {
+          "@id": "https://webdesignpros.co.za/pricing/#offer-website-redesign"
+        },
+        {
+          "@id": "https://webdesignpros.co.za/pricing/#offer-business-website"
+        },
+        {
+          "@id": "https://webdesignpros.co.za/pricing/#offer-e-commerce-website"
+        }
+      ]
+    }
+  ]
+}

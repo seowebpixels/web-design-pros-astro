@@ -1,0 +1,43 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "ContactPage",
+      "@id": "https://webdesignpros.co.za/contact/",
+      "url": "https://webdesignpros.co.za/contact/",
+      "name": "Contact Web Design Pros",
+      "description": "Contact Web Design Pros to discuss a website or digital project. In-person consultations are by appointment only.",
+      "inLanguage": "en-ZA",
+      "isPartOf": {
+        "@id": "https://webdesignpros.co.za/#website"
+      },
+      "about": {
+        "@id": "https://webdesignpros.co.za/#organization"
+      },
+      "publisher": {
+        "@id": "https://webdesignpros.co.za/#organization"
+      },
+      "breadcrumb": {
+        "@id": "https://webdesignpros.co.za/contact/#breadcrumb"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://webdesignpros.co.za/contact/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://webdesignpros.co.za/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Contact",
+          "item": "https://webdesignpros.co.za/contact/"
+        }
+      ]
+    }
+  ]
+}

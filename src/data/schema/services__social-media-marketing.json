@@ -1,0 +1,67 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@id": "https://webdesignpros.co.za/services/social-media-marketing/",
+      "@type": "WebPage",
+      "about": {
+        "@id": "https://webdesignpros.co.za/services/social-media-marketing/#service"
+      },
+      "breadcrumb": {
+        "@id": "https://webdesignpros.co.za/services/social-media-marketing/#breadcrumb"
+      },
+      "description": "A clear content plan and consistent creative for your business channels.",
+      "inLanguage": "en-ZA",
+      "isPartOf": {
+        "@id": "https://webdesignpros.co.za/#website"
+      },
+      "name": "Social Media Marketing Johannesburg",
+      "publisher": {
+        "@id": "https://webdesignpros.co.za/#organization"
+      },
+      "url": "https://webdesignpros.co.za/services/social-media-marketing/",
+      "mainEntity": {
+        "@id": "https://webdesignpros.co.za/services/social-media-marketing/#service"
+      }
+    },
+    {
+      "@id": "https://webdesignpros.co.za/services/social-media-marketing/#service",
+      "@type": "Service",
+      "areaServed": {
+        "@type": "Country",
+        "name": "South Africa"
+      },
+      "description": "A clear content plan and consistent creative for your business channels.",
+      "name": "Social Media Marketing",
+      "provider": {
+        "@id": "https://webdesignpros.co.za/#organization"
+      },
+      "serviceType": "Social Media Marketing",
+      "url": "https://webdesignpros.co.za/services/social-media-marketing/"
+    },
+    {
+      "@id": "https://webdesignpros.co.za/services/social-media-marketing/#breadcrumb",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "item": "https://webdesignpros.co.za/",
+          "name": "Home",
+          "position": 1
+        },
+        {
+          "@type": "ListItem",
+          "item": "https://webdesignpros.co.za/services/",
+          "name": "Services",
+          "position": 2
+        },
+        {
+          "@type": "ListItem",
+          "item": "https://webdesignpros.co.za/services/social-media-marketing/",
+          "name": "Social Media Marketing",
+          "position": 3
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@id": "https://webdesignpros.co.za/services/web-hosting/",
+      "@type": "WebPage",
+      "about": {
+        "@id": "https://webdesignpros.co.za/services/web-hosting/#service"
+      },
+      "breadcrumb": {
+        "@id": "https://webdesignpros.co.za/services/web-hosting/#breadcrumb"
+      },
+      "description": "Website hosting, domain connection and email setup matched to your platform.",
+      "inLanguage": "en-ZA",
+      "isPartOf": {
+        "@id": "https://webdesignpros.co.za/#website"
+      },
+      "name": "Web Hosting South Africa",
+      "publisher": {
+        "@id": "https://webdesignpros.co.za/#organization"
+      },
+      "url": "https://webdesignpros.co.za/services/web-hosting/",
+      "mainEntity": {
+        "@id": "https://webdesignpros.co.za/services/web-hosting/#service"
+      }
+    },
+    {
+      "@id": "https://webdesignpros.co.za/services/web-hosting/#service",
+      "@type": "Service",
+      "areaServed": {
+        "@type": "Country",
+        "name": "South Africa"
+      },
+      "description": "Website hosting, domain connection and email setup matched to your platform.",
+      "name": "Web Hosting",
+      "provider": {
+        "@id": "https://webdesignpros.co.za/#organization"
+      },
+      "serviceType": "Web Hosting",
+      "url": "https://webdesignpros.co.za/services/web-hosting/"
+    },
+    {
+      "@id": "https://webdesignpros.co.za/services/web-hosting/#breadcrumb",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "item": "https://webdesignpros.co.za/",
+          "name": "Home",
+          "position": 1
+        },
+        {
+          "@type": "ListItem",
+          "item": "https://webdesignpros.co.za/services/",
+          "name": "Services",
+          "position": 2
+        },
+        {
+          "@type": "ListItem",
+          "item": "https://webdesignpros.co.za/services/web-hosting/",
+          "name": "Web Hosting",
+          "position": 3
+        }
+      ]
+    }
+  ]
+}

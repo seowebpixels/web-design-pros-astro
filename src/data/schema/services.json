@@ -1,0 +1,133 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "CollectionPage",
+      "@id": "https://webdesignpros.co.za/services/",
+      "url": "https://webdesignpros.co.za/services/",
+      "name": "Website Design and Digital Services | Web Design Pros",
+      "description": "Explore website design, development, SEO, hosting and digital services offered by Web Design Pros.",
+      "inLanguage": "en-ZA",
+      "isPartOf": {
+        "@id": "https://webdesignpros.co.za/#website"
+      },
+      "publisher": {
+        "@id": "https://webdesignpros.co.za/#organization"
+      },
+      "mainEntity": {
+        "@id": "https://webdesignpros.co.za/services/#service-list"
+      },
+      "breadcrumb": {
+        "@id": "https://webdesignpros.co.za/services/#breadcrumb"
+      }
+    },
+    {
+      "@type": "ItemList",
+      "@id": "https://webdesignpros.co.za/services/#service-list",
+      "name": "Web Design Pros services",
+      "itemListOrder": "https://schema.org/ItemListUnordered",
+      "numberOfItems": 9,
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Web Design & Development",
+          "url": "https://webdesignpros.co.za/services/web-design/",
+          "item": {
+            "@id": "https://webdesignpros.co.za/services/web-design/#service"
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Website Maintenance & Performance",
+          "url": "https://webdesignpros.co.za/services/website-maintenance/",
+          "item": {
+            "@id": "https://webdesignpros.co.za/services/website-maintenance/#service"
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Web Hosting",
+          "url": "https://webdesignpros.co.za/services/web-hosting/",
+          "item": {
+            "@id": "https://webdesignpros.co.za/services/web-hosting/#service"
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "SEO Optimization & Local Search",
+          "url": "https://webdesignpros.co.za/services/seo-optimization/",
+          "item": {
+            "@id": "https://webdesignpros.co.za/services/seo-optimization/#service"
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 5,
+          "name": "Social Media Marketing",
+          "url": "https://webdesignpros.co.za/services/social-media-marketing/",
+          "item": {
+            "@id": "https://webdesignpros.co.za/services/social-media-marketing/#service"
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 6,
+          "name": "Branding Services",
+          "url": "https://webdesignpros.co.za/services/branding-services/",
+          "item": {
+            "@id": "https://webdesignpros.co.za/services/branding-services/#service"
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 7,
+          "name": "Hybrid SaaS & Micro-Tools",
+          "url": "https://webdesignpros.co.za/services/saas-micro-tools/",
+          "item": {
+            "@id": "https://webdesignpros.co.za/services/saas-micro-tools/#service"
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 8,
+          "name": "Custom E-Commerce",
+          "url": "https://webdesignpros.co.za/services/e-commerce/",
+          "item": {
+            "@id": "https://webdesignpros.co.za/services/e-commerce/#service"
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 9,
+          "name": "Google Ads & PPC Marketing",
+          "url": "https://webdesignpros.co.za/services/google-ads/",
+          "item": {
+            "@id": "https://webdesignpros.co.za/services/google-ads/#service"
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://webdesignpros.co.za/services/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://webdesignpros.co.za/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Services",
+          "item": "https://webdesignpros.co.za/services/"
+        }
+      ]
+    }
+  ]
+}

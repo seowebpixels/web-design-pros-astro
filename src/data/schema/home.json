@@ -1,0 +1,25 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://webdesignpros.co.za/",
+      "url": "https://webdesignpros.co.za/",
+      "name": "Web Design Pros | Professional Website Design South Africa",
+      "description": "Professional website design and development services for South African businesses.",
+      "inLanguage": "en-ZA",
+      "isPartOf": {
+        "@id": "https://webdesignpros.co.za/#website"
+      },
+      "about": {
+        "@id": "https://webdesignpros.co.za/#organization"
+      },
+      "mainEntity": {
+        "@id": "https://webdesignpros.co.za/#organization"
+      },
+      "publisher": {
+        "@id": "https://webdesignpros.co.za/#organization"
+      }
+    }
+  ]
+}

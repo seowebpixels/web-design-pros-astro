@@ -1,0 +1,78 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@id": "https://webdesignpros.co.za/services/web-design/",
+      "@type": "WebPage",
+      "about": {
+        "@id": "https://webdesignpros.co.za/services/web-design/#service"
+      },
+      "breadcrumb": {
+        "@id": "https://webdesignpros.co.za/services/web-design/#breadcrumb"
+      },
+      "description": "Custom websites that help customers understand your business and take the next step.",
+      "inLanguage": "en-ZA",
+      "isPartOf": {
+        "@id": "https://webdesignpros.co.za/#website"
+      },
+      "name": "Web Design Johannesburg & South Africa",
+      "publisher": {
+        "@id": "https://webdesignpros.co.za/#organization"
+      },
+      "url": "https://webdesignpros.co.za/services/web-design/",
+      "mainEntity": {
+        "@id": "https://webdesignpros.co.za/services/web-design/#service"
+      }
+    },
+    {
+      "@id": "https://webdesignpros.co.za/services/web-design/#service",
+      "@type": "Service",
+      "areaServed": {
+        "@type": "Country",
+        "name": "South Africa"
+      },
+      "description": "Custom websites that help customers understand your business and take the next step.",
+      "name": "Web Design & Development",
+      "provider": {
+        "@id": "https://webdesignpros.co.za/#organization"
+      },
+      "serviceType": "Web Design & Development",
+      "url": "https://webdesignpros.co.za/services/web-design/",
+      "offers": [
+        {
+          "@id": "https://webdesignpros.co.za/pricing/#offer-starter-website"
+        },
+        {
+          "@id": "https://webdesignpros.co.za/pricing/#offer-website-redesign"
+        },
+        {
+          "@id": "https://webdesignpros.co.za/pricing/#offer-business-website"
+        }
+      ]
+    },
+    {
+      "@id": "https://webdesignpros.co.za/services/web-design/#breadcrumb",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "item": "https://webdesignpros.co.za/",
+          "name": "Home",
+          "position": 1
+        },
+        {
+          "@type": "ListItem",
+          "item": "https://webdesignpros.co.za/services/",
+          "name": "Services",
+          "position": 2
+        },
+        {
+          "@type": "ListItem",
+          "item": "https://webdesignpros.co.za/services/web-design/",
+          "name": "Web Design & Development",
+          "position": 3
+        }
+      ]
+    }
+  ]
+}

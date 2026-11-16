@@ -1,11 +1,17 @@
 ---
+import websiteOffers from '../data/schema/offers.json';
 export const prerender = true;
+const packagePrice = (slug: string) => {
+  const offer = websiteOffers.find(item => item['@id'].endsWith(`#offer-${slug}`));
+  if (!offer) throw new Error(`Missing website package: ${slug}`);
+  return `R${offer.price.toLocaleString('en-US')}`;
+};
 
 /* 1. Core Web Design Packages */
 const buildPackages = [
   {
     name: 'Starter',
-    price: 'R4,000',
+    price: packagePrice('starter-website'),
     description: 'Perfect for small businesses getting started online.',
     features: [
       'Up to 3 custom-designed pages',
@@ -20,7 +26,7 @@ const buildPackages = [
   },
   {
     name: 'Website Redesign',
-    price: 'R6,000',
+    price: packagePrice('website-redesign'),
     description: 'Transform your existing site for speed and modern visuals.',
     features: [
       'Complete UI/UX design refresh',
@@ -35,7 +41,7 @@ const buildPackages = [
   },
   {
     name: 'Business Website',
-    price: 'R9,500',
+    price: packagePrice('business-website'),
     description: 'Comprehensive setup for growing companies needing leads.',
     features: [
       '5–12 custom pages',
@@ -50,7 +56,7 @@ const buildPackages = [
   },
   {
     name: 'E-Commerce Website',
-    price: 'R17,000',
+    price: packagePrice('e-commerce-website'),
     description: 'Full online store built to convert visitors into buyers.',
     features: [
       'Full custom online store build',

@@ -1,0 +1,67 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@id": "https://webdesignpros.co.za/services/google-ads/",
+      "@type": "WebPage",
+      "about": {
+        "@id": "https://webdesignpros.co.za/services/google-ads/#service"
+      },
+      "breadcrumb": {
+        "@id": "https://webdesignpros.co.za/services/google-ads/#breadcrumb"
+      },
+      "description": "Focused paid search campaigns with useful landing pages and conversion measurement.",
+      "inLanguage": "en-ZA",
+      "isPartOf": {
+        "@id": "https://webdesignpros.co.za/#website"
+      },
+      "name": "Google Ads & PPC Marketing",
+      "publisher": {
+        "@id": "https://webdesignpros.co.za/#organization"
+      },
+      "url": "https://webdesignpros.co.za/services/google-ads/",
+      "mainEntity": {
+        "@id": "https://webdesignpros.co.za/services/google-ads/#service"
+      }
+    },
+    {
+      "@id": "https://webdesignpros.co.za/services/google-ads/#service",
+      "@type": "Service",
+      "areaServed": {
+        "@type": "Country",
+        "name": "South Africa"
+      },
+      "description": "Focused paid search campaigns with useful landing pages and conversion measurement.",
+      "name": "Google Ads & PPC Marketing",
+      "provider": {
+        "@id": "https://webdesignpros.co.za/#organization"
+      },
+      "serviceType": "Google Ads & PPC Marketing",
+      "url": "https://webdesignpros.co.za/services/google-ads/"
+    },
+    {
+      "@id": "https://webdesignpros.co.za/services/google-ads/#breadcrumb",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "item": "https://webdesignpros.co.za/",
+          "name": "Home",
+          "position": 1
+        },
+        {
+          "@type": "ListItem",
+          "item": "https://webdesignpros.co.za/services/",
+          "name": "Services",
+          "position": 2
+        },
+        {
+          "@type": "ListItem",
+          "item": "https://webdesignpros.co.za/services/google-ads/",
+          "name": "Google Ads & PPC Marketing",
+          "position": 3
+        }
+      ]
+    }
+  ]
+}

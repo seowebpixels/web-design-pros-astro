@@ -1,0 +1,83 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@id": "https://webdesignpros.co.za/#website",
+      "@type": "WebSite",
+      "description": "Boutique digital agency in Randburg, Johannesburg specializing in high-performance web development and digital assets.",
+      "inLanguage": "en-ZA",
+      "name": "Web Design Pros",
+      "publisher": {
+        "@id": "https://webdesignpros.co.za/#organization"
+      },
+      "url": "https://webdesignpros.co.za"
+    },
+    {
+      "@id": "https://webdesignpros.co.za/#organization",
+      "@type": "ProfessionalService",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "ZA",
+        "addressLocality": "Johannesburg",
+        "addressRegion": "Gauteng",
+        "postalCode": "2115",
+        "streetAddress": "15 Madge Ave"
+      },
+      "description": "Premier boutique digital agency in Randburg, Johannesburg. We specialize in engineering High-Performance Digital Assets for South African Growth. In-person consultations are available by appointment only.",
+      "email": "info@webdesignpros.co.za",
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -26.1421358,
+        "longitude": 27.9462075
+      },
+      "hasMap": "https://www.google.com/maps?cid=15746142183424105454",
+      "identifier": {
+        "@type": "PropertyValue",
+        "propertyID": "CIPC registration number",
+        "value": "2026/282129/07"
+      },
+      "image": {
+        "@id": "https://webdesignpros.co.za/#logo"
+      },
+      "knowsAbout": [
+        "Web Design",
+        "Web Development",
+        "Astro Framework",
+        "Search Engine Optimization",
+        "Graphic Design",
+        "Social Media Marketing"
+      ],
+      "legalName": "Web Design Pros (Pty) Ltd",
+      "logo": {
+        "@id": "https://webdesignpros.co.za/#logo",
+        "@type": "ImageObject",
+        "caption": "Web Design Pros Logo",
+        "url": "https://webdesignpros.co.za/_astro/wdp-logo-new-design-one.BAmeN7a5.avif"
+      },
+      "name": "Web Design Pros",
+      "sameAs": [
+        "https://www.facebook.com/webdesignprosza",
+        "https://www.instagram.com/web_design_pros/",
+        "https://www.linkedin.com/in/web-design-pros-a048ba428"
+      ],
+      "telephone": "+27752216842",
+      "url": "https://webdesignpros.co.za",
+      "areaServed": {
+        "@type": "Country",
+        "name": "South Africa"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "telephone": "+27752216842",
+        "email": "info@webdesignpros.co.za",
+        "availableLanguage": [
+          "English"
+        ]
+      },
+      "hasOfferCatalog": {
+        "@id": "https://webdesignpros.co.za/pricing/#website-packages"
+      }
+    }
+  ]
+}

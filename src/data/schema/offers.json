@@ -1,0 +1,62 @@
+[
+  {
+    "@type": "Offer",
+    "@id": "https://webdesignpros.co.za/pricing/#offer-starter-website",
+    "name": "Starter Website",
+    "price": 4000,
+    "priceCurrency": "ZAR",
+    "url": "https://webdesignpros.co.za/pricing/",
+    "availability": "https://schema.org/InStock",
+    "itemOffered": {
+      "@id": "https://webdesignpros.co.za/services/web-design/#service"
+    },
+    "seller": {
+      "@id": "https://webdesignpros.co.za/#organization"
+    }
+  },
+  {
+    "@type": "Offer",
+    "@id": "https://webdesignpros.co.za/pricing/#offer-website-redesign",
+    "name": "Website Redesign",
+    "price": 6000,
+    "priceCurrency": "ZAR",
+    "url": "https://webdesignpros.co.za/pricing/",
+    "availability": "https://schema.org/InStock",
+    "itemOffered": {
+      "@id": "https://webdesignpros.co.za/services/web-design/#service"
+    },
+    "seller": {
+      "@id": "https://webdesignpros.co.za/#organization"
+    }
+  },
+  {
+    "@type": "Offer",
+    "@id": "https://webdesignpros.co.za/pricing/#offer-business-website",
+    "name": "Business Website",
+    "price": 9500,
+    "priceCurrency": "ZAR",
+    "url": "https://webdesignpros.co.za/pricing/",
+    "availability": "https://schema.org/InStock",
+    "itemOffered": {
+      "@id": "https://webdesignpros.co.za/services/web-design/#service"
+    },
+    "seller": {
+      "@id": "https://webdesignpros.co.za/#organization"
+    }
+  },
+  {
+    "@type": "Offer",
+    "@id": "https://webdesignpros.co.za/pricing/#offer-e-commerce-website",
+    "name": "e-Commerce Website",
+    "price": 17000,
+    "priceCurrency": "ZAR",
+    "url": "https://webdesignpros.co.za/pricing/",
+    "availability": "https://schema.org/InStock",
+    "itemOffered": {
+      "@id": "https://webdesignpros.co.za/services/e-commerce/#service"
+    },
+    "seller": {
+      "@id": "https://webdesignpros.co.za/#organization"
+    }
+  }
+]

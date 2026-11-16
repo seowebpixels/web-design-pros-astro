@@ -1,0 +1,72 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@id": "https://webdesignpros.co.za/services/e-commerce/",
+      "@type": "WebPage",
+      "about": {
+        "@id": "https://webdesignpros.co.za/services/e-commerce/#service"
+      },
+      "breadcrumb": {
+        "@id": "https://webdesignpros.co.za/services/e-commerce/#breadcrumb"
+      },
+      "description": "Online stores with clear product information and a considered buying journey.",
+      "inLanguage": "en-ZA",
+      "isPartOf": {
+        "@id": "https://webdesignpros.co.za/#website"
+      },
+      "name": "Custom E-Commerce",
+      "publisher": {
+        "@id": "https://webdesignpros.co.za/#organization"
+      },
+      "url": "https://webdesignpros.co.za/services/e-commerce/",
+      "mainEntity": {
+        "@id": "https://webdesignpros.co.za/services/e-commerce/#service"
+      }
+    },
+    {
+      "@id": "https://webdesignpros.co.za/services/e-commerce/#service",
+      "@type": "Service",
+      "areaServed": {
+        "@type": "Country",
+        "name": "South Africa"
+      },
+      "description": "Online stores with clear product information and a considered buying journey.",
+      "name": "Custom E-Commerce",
+      "provider": {
+        "@id": "https://webdesignpros.co.za/#organization"
+      },
+      "serviceType": "Custom E-Commerce",
+      "url": "https://webdesignpros.co.za/services/e-commerce/",
+      "offers": [
+        {
+          "@id": "https://webdesignpros.co.za/pricing/#offer-e-commerce-website"
+        }
+      ]
+    },
+    {
+      "@id": "https://webdesignpros.co.za/services/e-commerce/#breadcrumb",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "item": "https://webdesignpros.co.za/",
+          "name": "Home",
+          "position": 1
+        },
+        {
+          "@type": "ListItem",
+          "item": "https://webdesignpros.co.za/services/",
+          "name": "Services",
+          "position": 2
+        },
+        {
+          "@type": "ListItem",
+          "item": "https://webdesignpros.co.za/services/e-commerce/",
+          "name": "Custom E-Commerce",
+          "position": 3
+        }
+      ]
+    }
+  ]
+}

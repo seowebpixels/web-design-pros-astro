@@ -1,0 +1,67 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@id": "https://webdesignpros.co.za/services/website-maintenance/",
+      "@type": "WebPage",
+      "about": {
+        "@id": "https://webdesignpros.co.za/services/website-maintenance/#service"
+      },
+      "breadcrumb": {
+        "@id": "https://webdesignpros.co.za/services/website-maintenance/#breadcrumb"
+      },
+      "description": "Practical website care, content updates and performance improvements.",
+      "inLanguage": "en-ZA",
+      "isPartOf": {
+        "@id": "https://webdesignpros.co.za/#website"
+      },
+      "name": "Website Maintenance South Africa",
+      "publisher": {
+        "@id": "https://webdesignpros.co.za/#organization"
+      },
+      "url": "https://webdesignpros.co.za/services/website-maintenance/",
+      "mainEntity": {
+        "@id": "https://webdesignpros.co.za/services/website-maintenance/#service"
+      }
+    },
+    {
+      "@id": "https://webdesignpros.co.za/services/website-maintenance/#service",
+      "@type": "Service",
+      "areaServed": {
+        "@type": "Country",
+        "name": "South Africa"
+      },
+      "description": "Practical website care, content updates and performance improvements.",
+      "name": "Website Maintenance & Performance",
+      "provider": {
+        "@id": "https://webdesignpros.co.za/#organization"
+      },
+      "serviceType": "Website Maintenance & Performance",
+      "url": "https://webdesignpros.co.za/services/website-maintenance/"
+    },
+    {
+      "@id": "https://webdesignpros.co.za/services/website-maintenance/#breadcrumb",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "item": "https://webdesignpros.co.za/",
+          "name": "Home",
+          "position": 1
+        },
+        {
+          "@type": "ListItem",
+          "item": "https://webdesignpros.co.za/services/",
+          "name": "Services",
+          "position": 2
+        },
+        {
+          "@type": "ListItem",
+          "item": "https://webdesignpros.co.za/services/website-maintenance/",
+          "name": "Website Maintenance & Performance",
+          "position": 3
+        }
+      ]
+    }
+  ]
+}
