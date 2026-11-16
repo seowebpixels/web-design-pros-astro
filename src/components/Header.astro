@@ -16,6 +16,10 @@ const services=catalogue.map(service=>({...service,description:service.summary,l
         alt="Web Design Pros Logo" 
         class="header-logo"
         loading="eager"
+        width={740}
+        widths={[200, 370, 740]}
+        sizes="(max-width: 600px) calc(100vw - 200px), (max-width: 1250px) 316px, (max-width: 1390px) 283px, 365px"
+        format="webp"
       />
     </a>
 
@@ -147,7 +151,7 @@ const services=catalogue.map(service=>({...service,description:service.summary,l
   const cartHoverItemList = document.getElementById('cartHoverItemList');
   const hoverSubtotalPrice = document.getElementById('hoverSubtotalPrice');
 
-  const DESKTOP_BREAKPOINT = 1250;
+  const desktopQuery = window.matchMedia('(min-width: 1251px)');
 
   function closeMobileMenu() {
     toggleBtn?.classList.remove('active');
@@ -247,14 +251,9 @@ const services=catalogue.map(service=>({...service,description:service.summary,l
   });
 
   // Breakpoint reset
-  let lastIsDesktop = window.innerWidth > DESKTOP_BREAKPOINT;
-  window.addEventListener('resize', () => {
-    const isDesktop = window.innerWidth > DESKTOP_BREAKPOINT;
-    if (isDesktop !== lastIsDesktop) {
-      closeMobileMenu();
-      closeDropdown();
-      lastIsDesktop = isDesktop;
-    }
+  desktopQuery.addEventListener('change', () => {
+    closeMobileMenu();
+    closeDropdown();
   });
 </script>
 

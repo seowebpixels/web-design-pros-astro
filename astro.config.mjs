@@ -10,7 +10,8 @@ export default defineConfig({
   output: 'static',
 
   build: {
-    format: 'directory'
+    format: 'directory',
+    inlineStylesheets: 'always'
   },
 
   integrations: [

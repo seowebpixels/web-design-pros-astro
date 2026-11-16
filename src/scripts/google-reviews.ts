@@ -32,5 +32,7 @@ for(const root of document.querySelectorAll<HTMLElement>('[data-review-carousel]
  });
  track.addEventListener('scroll',()=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(update);},{passive:true});
  new ResizeObserver(update).observe(track);
- controls.hidden=false;update();
+ // ResizeObserver performs the first measurement after layout, avoiding
+ // a synchronous layout read immediately after revealing the controls.
+ controls.hidden=false;
 }

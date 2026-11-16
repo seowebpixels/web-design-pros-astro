@@ -4,6 +4,8 @@ import Analytics from '../components/Analytics.astro';
 import Footer from '../components/Footer.astro';
 import CustomCursor from '../components/CustomCursor.astro';
 import '../styles/global.css';
+import cabinetFont from '../assets/fonts/cabinet-grotesk-variable.woff2?url';
+import jakartaFont from '../assets/fonts/plus-jakarta-sans-latin.woff2?url';
 import socialLogo from '../assets/wdp-logo-new-design-one.avif';
 import { structuredDataForPage, serializeStructuredData } from '../lib/structured-data';
 
@@ -40,6 +42,8 @@ const schemaData = structuredDataForPage(
     <meta name="google-site-verification" content="1_D8JYwzEaDv6a4J9fBJwI9Lu7kSK2vCzllSFh58ax8" />
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width" />
+    <link rel="preload" href={cabinetFont} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={jakartaFont} as="font" type="font/woff2" crossorigin />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={canonicalURL} />
     <link rel="sitemap" href="/sitemap-index.xml" />
