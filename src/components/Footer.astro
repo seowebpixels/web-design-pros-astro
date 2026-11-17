@@ -78,7 +78,7 @@ import { services } from '../data/services';
       <div class="contact-info">
         <p>📍 15 Madge Avenue, Northcliff, Johannesburg, 2115</p>
         <p>📞 <a href="tel:0752216842">075 221 6842</a></p>
-        <p>✉️ <a href="mailto:info@webdesignpros.co.za">info@webdesignpros.co.za</a></p>
+        <p>✉️ <Fragment set:html={'<!--email_off-->'} /><a href="mailto:info@webdesignpros.co.za">info@webdesignpros.co.za</a><Fragment set:html={'<!--/email_off-->'} /></p>
       </div>
 
       <!-- Embedded Google Map -->

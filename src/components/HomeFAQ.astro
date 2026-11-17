@@ -1,0 +1,96 @@
+---
+import offers from '../data/schema/offers.json';
+
+const price = (fragment: string) => {
+  const offer = offers.find(offer => offer['@id'].endsWith(fragment));
+  if (!offer) throw new Error(`Missing FAQ price: ${fragment}`);
+  return `R${new Intl.NumberFormat('en-ZA', { maximumFractionDigits: 0 }).format(offer.price)}`;
+};
+
+const questions = [
+  {
+    question: 'How much does a website cost at Web Design Pros?',
+    answer: `Our published packages are ${price('#offer-starter-website')} for a Starter Website, ${price('#offer-website-redesign')} for a Website Redesign, ${price('#offer-business-website')} for a Business Website and ${price('#offer-e-commerce-website')} for an E-Commerce Website. We confirm your pages, features and any additional work in a proposal before you commit. Monthly website plans are also available.`,
+    link: { href: '/pricing/', text: 'Compare website packages and monthly plans' }
+  },
+  {
+    question: 'How long will it take to build my website?',
+    answer: 'The timeline depends on the number of pages, the features you need and when your content and feedback are ready. We agree on the scope and target launch date before work starts. A small business website and an online store have different requirements, so we plan the schedule around your project.'
+  },
+  {
+    question: 'Can you redesign or replace my existing WordPress website?',
+    answer: 'Yes. We review your existing website, identify useful content to retain and agree on the migration scope. When page addresses change, we plan redirects from important old URLs to their replacements. We also check the navigation and enquiry journey before launch.',
+    link: { href: '/services/web-design/', text: 'Explore website design and redesign services' }
+  },
+  {
+    question: 'What should I prepare before we start?',
+    answer: 'Useful starting material includes your logo, brand colours, service or product details, contact information and any photos you want to use. Share your goals and examples of websites you like, too. We agree who will provide the written content, photography and other assets when we scope the project.'
+  },
+  {
+    question: 'Will my website work on mobile phones?',
+    answer: 'Yes. Our website packages include responsive layouts for mobile and desktop. We check how the content, navigation, buttons and enquiry forms work on smaller screens as part of preparing the site for launch.'
+  },
+  {
+    question: 'Is SEO included, and can you guarantee a first-place Google ranking?',
+    answer: 'Our website packages include SEO setup at the level listed for each package, from basic on-page setup to more advanced local search work. An ongoing SEO or advertising campaign is a separate service unless included in your proposal. No provider can guarantee a first-place organic Google ranking: results depend on competition, relevance and many other factors.',
+    link: { href: '/services/seo-optimization/', text: 'See our SEO and local search services' }
+  },
+  {
+    question: 'Are hosting and a domain included in the website price?',
+    answer: 'Hosting, your domain and ongoing support are confirmed in your proposal. We publish separate hosting packages, and our monthly website plans bundle hosting with the services listed for that plan. Check the package details so you know which costs are once-off and which recur.',
+    link: { href: '/pricing/', text: 'View hosting packages and plan inclusions' }
+  },
+  {
+    question: 'Can I update my website after it launches?',
+    answer: 'We agree how updates will be handled before building. That may mean managed content updates or a content management setup if your team needs regular editing access. Ongoing maintenance and support are scoped separately unless they are included in your plan.',
+    link: { href: '/services/website-maintenance/', text: 'Explore website maintenance and support' }
+  }
+];
+---
+
+<section class="home-faq" id="faq" aria-labelledby="home-faq-heading">
+  <div class="faq-container">
+    <header class="faq-intro">
+      <p class="faq-eyebrow">Frequently asked questions</p>
+      <h2 id="home-faq-heading">Questions about your next website?</h2>
+      <p>Clear answers to help you plan your project, understand the costs and know what to expect.</p>
+    </header>
+    <div class="faq-list">
+      {questions.map(item => (
+        <details class="faq-item">
+          <summary>{item.question}</summary>
+          <div class="faq-answer">
+            <p>{item.answer}</p>
+            {item.link && <a href={item.link.href}>{item.link.text} <span aria-hidden="true">→</span></a>}
+          </div>
+        </details>
+      ))}
+    </div>
+    <p class="faq-contact">Have a question about your business? <a href="#contact">Tell us what you have in mind.</a></p>
+  </div>
+</section>
+
+<style>
+  .home-faq { width: 100%; padding: 64px 24px; background: #101b31; border-block: 1px solid #34445e; scroll-margin-top: 210px; }
+  .faq-container { width: 100%; max-width: 1000px; margin-inline: auto; }
+  .faq-intro { text-align: center; margin-bottom: 32px; }
+  .faq-eyebrow { color: #89cff0; font-size: .78rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 14px; }
+  .faq-intro h2 { color: #fff; font-size: clamp(1.9rem, 3vw, 2.7rem); line-height: 1.15; margin-bottom: 18px; }
+  .faq-intro > p:last-child { color: #bdcce0; line-height: 1.8; max-width: 650px; margin-inline: auto; }
+  .faq-list { display: grid; gap: 12px; }
+  .faq-item { min-width: 0; border: 1px solid #405570; border-radius: 10px; background: #1c2a43; }
+  .faq-item summary { padding: 20px 24px; cursor: pointer; color: #f3f6ff; font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; line-height: 1.45; overflow-wrap: anywhere; }
+  .faq-item summary::marker { color: #89cff0; }
+  .faq-item[open] { border-color: #89cff0; }
+  .faq-answer { padding: 0 24px 24px; color: #d0dcec; font-size: .95rem; line-height: 1.85; overflow-wrap: anywhere; }
+  .faq-answer a { display: inline-block; margin-top: 16px; font-weight: 600; }
+  .home-faq a { color: #89cff0; text-underline-offset: 4px; }
+  .home-faq a:hover { color: #c3edff; }
+  .faq-item summary:focus-visible, .home-faq a:focus-visible { outline: 2px solid #89cff0; outline-offset: 4px; border-radius: 6px; }
+  .faq-contact { color: #bdcce0; text-align: center; margin-top: 28px; line-height: 1.8; }
+  @media (max-width: 600px) {
+    .home-faq { padding: 48px 18px; scroll-margin-top: 115px; }
+    .faq-item summary { padding: 18px; font-size: 1.08rem; }
+    .faq-answer { padding: 0 18px 20px; }
+  }
+</style>

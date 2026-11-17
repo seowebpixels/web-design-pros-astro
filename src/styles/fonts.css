@@ -28,7 +28,7 @@
    Match text sizing while the local brand fonts load to reduce layout shift. */
 @font-face {
   font-family: 'Cabinet Grotesk Fallback';
-  src: local('Arial');
+  src: local('Arial'), local('Liberation Sans');
   font-weight: 100 500;
   size-adjust: 102.0635%;
   ascent-override: 85.2410%;
@@ -37,7 +37,7 @@
 }
 @font-face {
   font-family: 'Cabinet Grotesk Fallback';
-  src: local('Arial Bold');
+  src: local('Arial Bold'), local('Liberation Sans Bold');
   font-weight: 600 900;
   size-adjust: 94.7955%;
   ascent-override: 91.7765%;
@@ -46,7 +46,7 @@
 }
 @font-face {
   font-family: 'Plus Jakarta Sans Fallback';
-  src: local('Arial');
+  src: local('Arial'), local('Liberation Sans');
   font-weight: 100 500;
   size-adjust: 104.9796%;
   ascent-override: 98.8763%;
@@ -55,7 +55,7 @@
 }
 @font-face {
   font-family: 'Plus Jakarta Sans Fallback';
-  src: local('Arial Bold');
+  src: local('Arial Bold'), local('Liberation Sans Bold');
   font-weight: 600 900;
   size-adjust: 97.5040%;
   ascent-override: 106.4572%;
